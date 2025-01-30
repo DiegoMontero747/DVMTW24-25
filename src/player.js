@@ -17,8 +17,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.score = 0;
 	
         this.scene.add.existing(this);
-        this.scene.physics.add.existing(this);
         // Queremos que el jugador no se salga de los límites del mundo
+        this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds();
         this.speed = 300;
         this.jumpSpeed = -400;
@@ -26,6 +26,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.updateScore();
+        this.play({key:'iddle',repeat:-1});
     }
 
     /**
@@ -35,6 +36,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
     point() {
         this.score++;
         this.updateScore();
+        this.play('attack');
+        this.chain({key:'iddle',repeat:-1});
     }
 
     /**

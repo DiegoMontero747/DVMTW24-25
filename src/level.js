@@ -25,8 +25,11 @@ export default class Level extends Phaser.Scene {
     create() {
         this.stars = 10;
         this.bases = this.add.group();
-        this.player = new Player(this, 200, 300);
-
+        const tag=this.anims.createFromAseprite('player');
+        console.log(tag);
+        this.player = new Player(this, 0, 0);
+        this.player.setScale(2);
+        this.player.setSize(16,16);
         new Platform(this, this.player, this.bases, 150, 350);
         new Platform(this, this.player, this.bases, 850, 350);
         new Platform(this, this.player, this.bases, 500, 200);
