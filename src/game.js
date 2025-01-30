@@ -18,6 +18,7 @@ let config = {
     },
     pixelArt: true,
     scene: [Boot, Level, End],
+    //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
     physics: {
         default: 'arcade',
         arcade: {
