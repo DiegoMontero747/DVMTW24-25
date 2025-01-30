@@ -1,0 +1,3 @@
+EL programa se lanza desde main.js este crea el servidor con el juego. ahi e carga src/game.js, que es el nucleo del juego, 
+cada juego se divide en escenas, la primera es la escena boot que es donde carga los assets, despues pasa ala escena level, 
+que es el juego en si, de ahi pasa a end una vez haya terminado el juego, 
