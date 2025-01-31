@@ -21,7 +21,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds();
         // Esta label es la UI en la que pondremos la puntuación del jugador
-        this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
+        //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.updateScore();
 
@@ -51,7 +51,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
      * Actualiza la UI con la puntuación actual
      */
     updateScore() {
-        this.label.text = 'Score: ' + this.score;
+        //this.label.text = 'Score: ' + this.score;
     }
 
 

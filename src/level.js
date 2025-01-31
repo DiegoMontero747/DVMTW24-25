@@ -12,6 +12,8 @@ import Phaser from 'phaser';
  * @extends Phaser.Scene
  */
 export default class Level extends Phaser.Scene {
+
+    map;
     /**
      * Constructor de la escena
      */
@@ -38,14 +40,13 @@ export default class Level extends Phaser.Scene {
 
         */
         /*Crear layers json*/
-        const map= this.make.tilemap({key:'map'});  
-        console.log(map);
-        const tileset = map.addTilesetImage('Tiles','Tiles');
-        const floor_layer = map.createLayer("floor", tileset, 0, 0);
-        const wall_layer = map.createLayer("walls", tileset, 0, 0);
+        this.map= this.make.tilemap({key:'map'});  
+        const tileset = this.map.addTilesetImage('Tiles','Tiles');
+        const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
+        const wall_layer = this.map.createLayer("walls", tileset, 0, 0);
 
         wall_layer.setCollisionByProperty({collides:true});
-        wall_layer.renderDebug(this.add.graphics());
+        //wall_layer.renderDebug(this.add.graphics());
 
         const tag=this.anims.createFromAseprite('player');
         console.log(tag);
@@ -56,6 +57,13 @@ export default class Level extends Phaser.Scene {
         cam.setZoom(2);
         this.physics.add.collider(this.player.body, wall_layer);
 
+        /* Creación de cruadicula que sigue al cursor,
+            su movimiento se gestiona en update
+        */
+        var tileSize=48;
+        this.marker = this.add.graphics();
+        this.marker.lineStyle(2, 0xFFFFFF, 1);
+        this.marker.strokeRect(0, 0, tileSize, tileSize);
     }
 
     /**
@@ -82,5 +90,23 @@ export default class Level extends Phaser.Scene {
             this.spawn(s.filter(o => o !== base));
 
         }
+    }
+
+    update(time, delta)
+    {
+        const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
+        //Movimiento del cuadro marcador siguiendo al raton
+        /* condenada centrada en el raton
+        const pointerTileX = this.map.worldToTileX(worldPoint.x)-1;
+        const pointerTileY = this.map.worldToTileY(worldPoint.y)-1;
+        */  
+        // Movimiento del cuadro marcador siguiendo la coordenada por grid del ratón
+        const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
+        const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
+        const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
+        //Mueve a cordenada
+        this.marker.x = this.map.tileToWorldX(pointerTileX);
+        this.marker.y = this.map.tileToWorldY(pointerTileY);
+
     }
 }
