@@ -32,8 +32,10 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.moveDist=48;
         
         //re-ajuste de collision box
-        this.body.setSize(48,16,true);
-        this.body.setOffset(8,40);
+        const cbWidth=32,cbHeight=32,cbOffsetX=16,cbOffsetY=40; //Colision parcial
+        //const cbWidth=48,cbHeight=48,cbOffsetX=8,cbOffsetY=32; //Cuadrado grid completo
+        this.body.setSize(cbWidth,cbHeight,true);
+        this.body.setOffset(cbOffsetX,cbOffsetY);
     }
 
     /**
@@ -56,15 +58,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
 
 
 
-    
-    /**
-     * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
-     * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
-     * ya son gestionadas por la estrella (no gestionar las colisiones dos veces)
-     * @override
-     */
-    preUpdate(t, dt) {
-        super.preUpdate(t, dt);
+    /*Gestiona el movimiento teletransportando al jugador a la posicion correspondiente */
+    teleport_grid_movement(){
         if (this.scene.input.keyboard.checkDown(this.cursors.up,100)) {
             this.y-=this.moveDist;
         } 
@@ -77,6 +72,45 @@ export default class Player extends Phaser.GameObjects.Sprite {
         else if (this.scene.input.keyboard.checkDown(this.cursors.right,100)) {
             this.x+=this.moveDist;
         }
+    }
+
+    //Gestiona el movimiento mediante fisica
+    physics_4way_movement(){
+        const velocity=200;
+        if (this.cursors.up.isDown) {
+            this.body.setVelocityY(-velocity);
+            this.body.setVelocityX(0);
+        }
+        else if (this.cursors.down.isDown) {
+            this.body.setVelocityY(velocity);
+            this.body.setVelocityX(0);
+
+        } 
+        else if (this.cursors.right.isDown) {
+            this.body.setVelocityX(velocity);
+            this.body.setVelocityY(0);
+
+        }
+        else if (this.cursors.left.isDown) {
+            this.body.setVelocityX(-velocity);
+            this.body.setVelocityY(0);
+        }
+        else {
+            this.body.setVelocityX(0);
+            this.body.setVelocityY(0);
+        }
+        
+    }
+    
+    /**
+     * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
+     * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
+     * ya son gestionadas por la estrella (no gestionar las colisiones dos veces)
+     * @override
+     */
+    preUpdate(t, dt) {
+        super.preUpdate(t, dt);
+        this.teleport_grid_movement();
     }
 
 }

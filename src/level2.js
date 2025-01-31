@@ -1,5 +1,5 @@
 import Platform from './platform.js';
-import Player from './player.js';
+import Player from './player_warrior.js';
 import Phaser from 'phaser';
 
 
@@ -11,14 +11,14 @@ import Phaser from 'phaser';
  * El juego termina cuando el jugador ha recogido 10 estrellas.
  * @extends Phaser.Scene
  */
-export default class Level extends Phaser.Scene {
+export default class Level2 extends Phaser.Scene {
 
     map;
     /**
      * Constructor de la escena
      */
     constructor() {
-        super({ key: 'level' });
+        super({ key: 'level2' });
     }
 
     /**
@@ -37,8 +37,8 @@ export default class Level extends Phaser.Scene {
         const wall_layer = map_walls.createLayer(0, tileset, 0, 0);
         wall_layer.setDepth(2);
         wall_layer.setCollisionByExclusion([75,76,77]),true;
-        */
 
+        */
         /*Crear layers json*/
         this.map= this.make.tilemap({key:'map'});  
         const tileset = this.map.addTilesetImage('Tiles','Tiles');
@@ -50,7 +50,7 @@ export default class Level extends Phaser.Scene {
         this.wall_layer.renderDebug(this.add.graphics());
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
 
-        const tag=this.anims.createFromAseprite('player');
+        const tag=this.anims.createFromAseprite('player_warrior');
         console.log(tag);
         this.player = new Player(this, 72, 128);
         var cam=this.cameras.main;
@@ -101,7 +101,7 @@ export default class Level extends Phaser.Scene {
         /* condenada centrada en el raton
         const pointerTileX = this.map.worldToTileX(worldPoint.x)-1;
         const pointerTileY = this.map.worldToTileY(worldPoint.y)-1;
-        */ 
+        */  
         // Movimiento del cuadro marcador siguiendo la coordenada por grid del ratón
         const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
         const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;

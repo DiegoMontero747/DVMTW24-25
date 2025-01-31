@@ -26,6 +26,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('base', 'base.png');
     this.load.image('star', 'star.png');
     this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json')
+    this.load.aseprite('player_warrior','warrior.png','warrior.json')
 
     //this.load.image('player', player);
 
@@ -47,6 +48,6 @@ export default class Boot extends Phaser.Scene {
    * nivel del juego
    */
   create() {
-    this.scene.start('level');
+    this.scene.start('level2');
   }
 }
