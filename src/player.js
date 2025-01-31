@@ -20,13 +20,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds();
-        this.speed = 300;
-        this.jumpSpeed = -400;
         // Esta label es la UI en la que pondremos la puntuación del jugador
         this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.updateScore();
         this.play({key:'iddle',repeat:-1});
+        this.moveDist=32;
     }
 
     /**
@@ -47,6 +46,9 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.label.text = 'Score: ' + this.score;
     }
 
+
+
+    
     /**
      * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
      * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
@@ -55,21 +57,18 @@ export default class Player extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if (this.cursors.up.isDown) {
-            this.body.setVelocityY(-this.speed);
-        } else
-        if (this.cursors.down.isDown) {
-            this.body.setVelocityY(this.speed);
-        } else
-        if (this.cursors.left.isDown) {
-            this.body.setVelocityX(-this.speed);
+        if (this.scene.input.keyboard.checkDown(this.cursors.up,100)) {
+            this.y-=this.moveDist;
+        } 
+        else if (this.scene.input.keyboard.checkDown(this.cursors.down,100)) {
+            this.y+=this.moveDist;
+        } 
+        else if (this.scene.input.keyboard.checkDown(this.cursors.left,100)) {
+            this.x-=this.moveDist;
+
         }
-        else if (this.cursors.right.isDown) {
-            this.body.setVelocityX(this.speed);
-        }
-        else {
-            this.body.setVelocityX(0);
-            this.body.setVelocityY(0);
+        else if (this.scene.input.keyboard.checkDown(this.cursors.right,100)) {
+            this.x+=this.moveDist;
         }
     }
 
