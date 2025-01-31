@@ -25,8 +25,21 @@ export default class Boot extends Phaser.Scene {
     this.load.image('platform', 'platform.png');
     this.load.image('base', 'base.png');
     this.load.image('star', 'star.png');
-    //this.load.image('player', player);
     this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json')
+
+    //this.load.image('player', player);
+
+    //Carga de tilemap
+    this.load.setPath('/assets/tilemaps/');
+
+    /*Carga .CSV (formato mas sencillo algoritmos de generacion procedural)
+    this.load.tilemapCSV('map_floor', 'movetest_floor.csv');
+    this.load.tilemapCSV('map_walls', 'movetest_walls.csv');*/
+
+    //Carga .JSON (formato mas comodo en codigo)
+    this.load.tilemapTiledJSON("map","movetest.json");
+
+    this.load.image('Tiles', 'Tiles.png');
   }
 
   /**

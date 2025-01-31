@@ -24,8 +24,16 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.updateScore();
+
+
         this.play({key:'iddle',repeat:-1});
-        this.moveDist=32;
+        
+        //pixeles que se mueve
+        this.moveDist=48;
+        
+        //re-ajuste de collision box
+        this.body.setSize(48,16,true);
+        this.body.setOffset(8,40);
     }
 
     /**
@@ -65,7 +73,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
         } 
         else if (this.scene.input.keyboard.checkDown(this.cursors.left,100)) {
             this.x-=this.moveDist;
-
         }
         else if (this.scene.input.keyboard.checkDown(this.cursors.right,100)) {
             this.x+=this.moveDist;

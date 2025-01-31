@@ -23,11 +23,39 @@ export default class Level extends Phaser.Scene {
      * Creación de los elementos de la escena principal de juego
      */
     create() {
+
+        /*Crear layers csv
+        const map_floor = this.make.tilemap({ key: 'map_floor', tileWidth: 16, tileHeight: 16 });
+        const map_walls = this.make.tilemap({ key: 'map_walls', tileWidth: 16, tileHeight: 16 });
+
+        const tileset = map_floor.addTilesetImage('tiles');
+        map_walls.addTilesetImage('tiles');
+        
+        const floor_layer = map_floor.createLayer(0, tileset, 0, 0);
+        const wall_layer = map_walls.createLayer(0, tileset, 0, 0);
+        wall_layer.setDepth(2);
+        wall_layer.setCollisionByExclusion([75,76,77]),true;
+
+        */
+        /*Crear layers json*/
+        const map= this.make.tilemap({key:'map'});  
+        console.log(map);
+        const tileset = map.addTilesetImage('Tiles','Tiles');
+        const floor_layer = map.createLayer("floor", tileset, 0, 0);
+        const wall_layer = map.createLayer("walls", tileset, 0, 0);
+
+        wall_layer.setCollisionByProperty({collides:true});
+        wall_layer.renderDebug(this.add.graphics());
+
         const tag=this.anims.createFromAseprite('player');
         console.log(tag);
-        this.player = new Player(this, 200, 100);
-        this.player.setScale(2);
-        this.player.setSize(16,16);
+        this.player = new Player(this, 72, 128);
+        var cam=this.cameras.main;
+        cam.startFollow(this.player);
+        cam.setBounds(0,0);
+        cam.setZoom(2);
+        this.physics.add.collider(this.player.body, wall_layer);
+
     }
 
     /**
