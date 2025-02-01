@@ -193,7 +193,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      * Comprueba si ha pasado mas tiempo del permitido para un movimiento
      */
     checkMoveTimeLimit(dt){
-        const timeLimit=60,delta_ellapsed=dt-this.lastMoveDt;
+        const timeLimit=360,delta_ellapsed=dt-this.lastMoveDt;
         console.log(delta_ellapsed);
         return delta_ellapsed> timeLimit;
     }
@@ -207,7 +207,18 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         else if(this.facing=="right" || this.facing=="left")return deltaX<error;
         else return false;
     }
-    
+
+    /**
+     * Gestiona movimiento de teletransporte
+     */
+    player_tp(x,y){
+        this.x=x;
+        this.y=y;
+        this.goal_x=x;
+        this.lastGridX=x;
+        this.goal_y=y;
+        this.lastGridY=y;
+    }
     /**
      * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
      * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
@@ -216,7 +227,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        this.physics_grid_movement(t/dt);
+        this.physics_grid_movement(t);
     }
 
 }

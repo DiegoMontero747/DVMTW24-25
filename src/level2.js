@@ -13,7 +13,6 @@ import Phaser from 'phaser';
  */
 export default class Level2 extends Phaser.Scene {
 
-    map;
     /**
      * Constructor de la escena
      */
@@ -44,10 +43,13 @@ export default class Level2 extends Phaser.Scene {
         const tileset = this.map.addTilesetImage('Tiles','Tiles');
         const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
-        //wall_layer.setDepth(2);
-
         this.wall_layer.setCollisionByProperty({collides:true});
-        this.wall_layer.renderDebug(this.add.graphics());
+        this.wall_layer.renderDebug(this.add.graphics(),
+        {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
+            faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
+        });
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
 
         const tag=this.anims.createFromAseprite('player_warrior');
@@ -66,6 +68,8 @@ export default class Level2 extends Phaser.Scene {
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);
         this.marker.strokeRect(0, 0, tileSize, tileSize);
+
+        this.input.on('pointerup',this.playerTP,this);
     }
 
     /**
@@ -92,6 +96,11 @@ export default class Level2 extends Phaser.Scene {
             this.spawn(s.filter(o => o !== base));
 
         }
+    }
+    playerTP(){
+        const x=this.marker.x+24;
+        const y=this.marker.y;
+        this.player.player_tp(x,y);
     }
 
     update(time, delta)
