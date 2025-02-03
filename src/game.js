@@ -3,6 +3,7 @@ import End from './end.js';
 import Level from './level.js';
 import Level2 from './level2.js';
 import Phaser from 'phaser';
+import GameShader from "./crtShader.js"; 
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -26,7 +27,8 @@ let config = {
             gravity: { y: 0 },
             debug: true
         }
-    }
+    },
+    pipeline: [GameShader]
 };
 
 new Phaser.Game(config);

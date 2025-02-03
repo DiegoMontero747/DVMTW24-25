@@ -1,7 +1,7 @@
 import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Phaser from 'phaser';
-
+import GameShader from "./crtShader.js"; 
 
 /**
  * Escena principal del juego. La escena se compone de una serie de plataformas 
@@ -70,6 +70,8 @@ export default class Level2 extends Phaser.Scene {
         this.marker.strokeRect(0, 0, tileSize, tileSize);
 
         this.input.on('pointerup',this.playerTP,this);
+
+        this.setShaders();
     }
 
     /**
@@ -101,6 +103,12 @@ export default class Level2 extends Phaser.Scene {
         const x=this.marker.x+24;
         const y=this.marker.y;
         this.player.player_tp(x,y);
+    }
+
+    setShaders(){
+        let cam = this.cameras.main;
+        cam.setPostPipeline(GameShader);
+        var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.58);
     }
 
     update(time, delta)
