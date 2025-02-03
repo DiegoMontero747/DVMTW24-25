@@ -46,6 +46,23 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         //const cbWidth=48,cbHeight=48,cbOffsetX=8,cbOffsetY=32; //Cuadrado grid completo
         this.body.setSize(cbWidth,cbHeight,true);
         this.body.setOffset(cbOffsetX,cbOffsetY);
+
+        const shape = new Phaser.Geom.Rectangle(cbOffsetX,cbOffsetY,cbWidth,cbHeight);
+
+        this.setInteractive(this.scene.input.makePixelPerfect());
+        this.on('pointerover',function (event)
+        {
+            this.effect=this.postFX.addGlow();
+        });
+        this.on('pointerout', function (event)
+        {
+            this.postFX.remove(this.effect);
+        });
+        this.on('pointerdown', function (event)
+        {
+            this.scene.marker.setVisible(!this.scene.marker.visible);
+        });
+
     }
 
     /**
@@ -186,7 +203,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             this.body.setVelocityY(0);
             this.isMoving=false;
         }
-        console.log(this.goal_x +" "+this.goal_y);
+        //console.log(this.goal_x +" "+this.goal_y);
     }
 
     /**
@@ -194,7 +211,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     checkMoveTimeLimit(dt){
         const timeLimit=360,delta_ellapsed=dt-this.lastMoveDt;
-        console.log(delta_ellapsed);
+        //console.log(delta_ellapsed);
         return delta_ellapsed> timeLimit;
     }
     /**

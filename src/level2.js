@@ -12,7 +12,7 @@ import GameShader from "./crtShader.js";
  * @extends Phaser.Scene
  */
 export default class Level2 extends Phaser.Scene {
-
+    marker;
     /**
      * Constructor de la escena
      */
@@ -68,41 +68,18 @@ export default class Level2 extends Phaser.Scene {
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);
         this.marker.strokeRect(0, 0, tileSize, tileSize);
-
+        this.marker.setVisible(false);
         this.input.on('pointerup',this.playerTP,this);
 
         this.setShaders();
     }
 
-    /**
-     * Genera una estrella en una de las bases del escenario
-     * @param {Array<Base>} from Lista de bases sobre las que se puede crear una estrella
-     * Si es null, entonces se crea aleatoriamente sobre cualquiera de las bases existentes
-     */
-    spawn(from = null) {
-        Phaser.Math.RND.pick(from || this.bases.children.entries).spawn();
-    }
-
-    /**
-     * Método que se ejecuta al coger una estrella. Se pasa la base
-     * sobre la que estaba la estrella cogida para evitar repeticiones
-     * @param {Base} base La base sobre la que estaba la estrella que se ha cogido
-     */
-    starPickt(base) {
-        this.player.point();
-        if (this.player.score == this.stars) {
-            this.scene.start('end');
-        }
-        else {
-            let s = this.bases.children.entries;
-            this.spawn(s.filter(o => o !== base));
-
-        }
-    }
     playerTP(){
-        const x=this.marker.x+24;
-        const y=this.marker.y;
-        this.player.player_tp(x,y);
+        if(this.marker.visible){
+            const x=this.marker.x+24;
+            const y=this.marker.y;
+            this.player.player_tp(x,y);
+        }
     }
 
     setShaders(){
@@ -110,7 +87,6 @@ export default class Level2 extends Phaser.Scene {
         cam.setPostPipeline(GameShader);
         var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.58);
     }
-
     update(time, delta)
     {
         const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
