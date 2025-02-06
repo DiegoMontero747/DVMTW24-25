@@ -1,7 +1,13 @@
 import Boot from './boot.js';
 import End from './end.js';
 import Level from './level.js';
+import Level2 from './level2.js';
 import Phaser from 'phaser';
+import GameShaderCRT from "./shaders/crtShader.js"; 
+import GameShaderRetro from "./shaders/retroShader.js"; 
+import GameShaderGBA from "./shaders/gbaShader.js"; 
+import GameShaderPixel from "./shaders/pixelShader.js"; 
+
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -17,7 +23,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, Level, End],
+    scene: [Boot, Level,Level2, End],
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
     physics: {
         default: 'arcade',
@@ -25,7 +31,8 @@ let config = {
             gravity: { y: 0 },
             debug: false
         }
-    }
+    },
+    pipeline: [GameShaderCRT,GameShaderRetro,GameShaderGBA,GameShaderPixel]
 };
 
 new Phaser.Game(config);

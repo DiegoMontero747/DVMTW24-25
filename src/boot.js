@@ -1,10 +1,5 @@
 import Phaser from 'phaser'
 
-
-import platform from '../assets/sprites/platform.png'
-import base from '../assets/sprites/base.png'
-import star from '../assets/sprites/star.png'
-import player from '../assets/sprites/player.png'
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
  * Esta escena se puede mejorar añadiendo una imagen del juego y una 
@@ -25,11 +20,27 @@ export default class Boot extends Phaser.Scene {
    */
   preload() {
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
-    //this.load.setPath('assets/sprites/');
-    this.load.image('platform', platform);
-    this.load.image('base', base);
-    this.load.image('star', star);
-    this.load.image('player', player);
+    this.load.setBaseURL('http://localhost:5173/DVMTW24-25');
+    this.load.setPath('/assets/sprites/');
+    this.load.image('platform', 'platform.png');
+    this.load.image('base', 'base.png');
+    this.load.image('star', 'star.png');
+    this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json')
+    this.load.aseprite('player_warrior','warrior.png','warrior.json')
+
+    //this.load.image('player', player);
+
+    //Carga de tilemap
+    this.load.setPath('/assets/tilemaps/');
+
+    /*Carga .CSV (formato mas sencillo algoritmos de generacion procedural)
+    this.load.tilemapCSV('map_floor', 'movetest_floor.csv');
+    this.load.tilemapCSV('map_walls', 'movetest_walls.csv');*/
+
+    //Carga .JSON (formato mas comodo en codigo)
+    this.load.tilemapTiledJSON("map","movetest.json");
+
+    this.load.image('Tiles', 'Tiles.png');
   }
 
   /**
@@ -37,6 +48,6 @@ export default class Boot extends Phaser.Scene {
    * nivel del juego
    */
   create() {
-    this.scene.start('level');
+    this.scene.start('level2');
   }
 }
