@@ -13,6 +13,7 @@ import GameShader from "./crtShader.js";
  */
 export default class Level2 extends Phaser.Scene {
     marker;
+    playerPreview;
     /**
      * Constructor de la escena
      */
@@ -24,7 +25,7 @@ export default class Level2 extends Phaser.Scene {
      * Creación de los elementos de la escena principal de juego
      */
     create() {
-
+        var scene=this;
         /*Crear layers csv
         const map_floor = this.make.tilemap({ key: 'map_floor', tileWidth: 16, tileHeight: 16 });
         const map_walls = this.make.tilemap({ key: 'map_walls', tileWidth: 16, tileHeight: 16 });
@@ -66,27 +67,47 @@ export default class Level2 extends Phaser.Scene {
         */
         var tileSize=48;
         this.marker = this.add.graphics();
-        this.marker.lineStyle(2, 0xFFFFFF, 1);
+        this.marker.lineStyle(2, 0xFFFFFF, 1);  
         this.marker.strokeRect(0, 0, tileSize, tileSize);
-        this.marker.setVisible(false);
-        this.input.on('pointerup',this.playerTP,this);
+        this.container= this.add.container(0,0)
+        this.container.add(this.marker);
+        this.playerPreview= this.add.sprite(24,0,"player_warrior");
+        this.playerPreview.setAlpha(0.6);
+        this.container.add(this.playerPreview);
+        this.container.setVisible(false);
+
+        this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
         this.setShaders();
+
+        //gestion de combos de teclado
+        this.input.keyboard.createCombo('crt',{resetOnMatch:true}).comboName='crt';
+        this.input.keyboard.createCombo('reset',{resetOnMatch:true}).comboName='reset';
+        this.input.keyboard.on('keycombomatch', function (combo) {
+            if(combo.comboName=='reset'){
+                cam.resetPostPipeline();
+            }else if(combo.comboName=='crt'){
+                scene.setShaders();
+            }
+        });
+
     }
 
     playerTP(){
-        if(this.marker.visible){
-            const x=this.marker.x+24;
-            const y=this.marker.y;
+        if(this.container.visible){
+            const x=this.container.x+24;
+            const y=this.container.y;
             this.player.player_tp(x,y);
         }
     }
 
     setShaders(){
         let cam = this.cameras.main;
+        cam.startFollow(this.player);
         cam.setPostPipeline(GameShader);
         var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.58);
     }
+
     update(time, delta)
     {
         const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
@@ -96,12 +117,14 @@ export default class Level2 extends Phaser.Scene {
         const pointerTileY = this.map.worldToTileY(worldPoint.y)-1;
         */  
         // Movimiento del cuadro marcador siguiendo la coordenada por grid del ratón
-        const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
-        const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
-        const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
-        //Mueve a cordenada
-        this.marker.x = this.map.tileToWorldX(pointerTileX);
-        this.marker.y = this.map.tileToWorldY(pointerTileY);
+        
+            const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
+            const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
+            const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
+            //Mueve a cordenada
+            this.container.x = this.map.tileToWorldX(pointerTileX);
+            this.container.y = this.map.tileToWorldY(pointerTileY);
+        
 
     }
 }

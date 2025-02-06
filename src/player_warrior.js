@@ -58,9 +58,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         {
             this.postFX.remove(this.effect);
         });
-        this.on('pointerdown', function (event)
-        {
-            this.scene.marker.setVisible(!this.scene.marker.visible);
+        this.on('pointerup', function (event)
+        {   
+            /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
+            this.scene.container.add(this); */
+            this.scene.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
+            this.scene.container.setVisible(!this.scene.container.visible);
         });
 
     }
@@ -191,6 +194,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             }
         }
         else if(this.checkMoveTimeLimit(dt)){
+            /*this.x=this.lastGridX;
+            this.y=this.lastGridY;*/
             this.goal_x=this.lastGridX;
             this.goal_y=this.lastGridY;
             this.body.setVelocityX(0);
@@ -199,6 +204,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         }else if(this.checkInGoalPositionProximity()){
             this.lastGridX=this.goal_x;
             this.lastGridY=this.goal_y;
+            /*this.x=this.goal_x;
+            this.y=this.goal_y;*/
             this.body.setVelocityX(0);
             this.body.setVelocityY(0);
             this.isMoving=false;
@@ -229,6 +236,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      * Gestiona movimiento de teletransporte
      */
     player_tp(x,y){
+        this.scene.container.remove(this);
+        this.scene.container.setVisible(false);
         this.x=x;
         this.y=y;
         this.goal_x=x;
