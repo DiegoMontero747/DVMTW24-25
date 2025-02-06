@@ -58,7 +58,7 @@ export default class crtShader extends Phaser.Renderer.WebGL.Pipelines.PostFXPip
             super({
                 game,
                 renderTarget: true,
-                fragShader:crtWarp   
+                fragShader:crtWarp,   
                 });
                 this._time=0;
                 this.colorDist=0.2;

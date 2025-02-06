@@ -3,7 +3,11 @@ import End from './end.js';
 import Level from './level.js';
 import Level2 from './level2.js';
 import Phaser from 'phaser';
-import GameShader from "./crtShader.js"; 
+import GameShaderCRT from "./shaders/crtShader.js"; 
+import GameShaderRetro from "./shaders/retroShader.js"; 
+import GameShaderGBA from "./shaders/gbaShader.js"; 
+import GameShaderPixel from "./shaders/pixelShader.js"; 
+
 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
@@ -28,7 +32,7 @@ let config = {
             debug: false
         }
     },
-    pipeline: [GameShader]
+    pipeline: [GameShaderCRT,GameShaderRetro,GameShaderGBA,GameShaderPixel]
 };
 
 new Phaser.Game(config);

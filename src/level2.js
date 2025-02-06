@@ -1,7 +1,11 @@
 import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Phaser from 'phaser';
-import GameShader from "./crtShader.js"; 
+import GameShaderCRT from "./shaders/crtShader.js"; 
+import GameShaderRetro from "./shaders/retroShader.js"; 
+import GameShaderGBA from "./shaders/gbaShader.js"; 
+import GameShaderPixel from "./shaders/pixelShader.js"; 
+
 
 /**
  * Escena principal del juego. La escena se compone de una serie de plataformas 
@@ -20,7 +24,6 @@ export default class Level2 extends Phaser.Scene {
     constructor() {
         super({ key: 'level2' });
     }
-
     /**
      * Creación de los elementos de la escena principal de juego
      */
@@ -78,17 +81,34 @@ export default class Level2 extends Phaser.Scene {
 
         this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
-        this.setShaders();
+        this.initShaders();
 
         //gestion de combos de teclado
         this.input.keyboard.createCombo('crt',{resetOnMatch:true}).comboName='crt';
         this.input.keyboard.createCombo('reset',{resetOnMatch:true}).comboName='reset';
+        this.input.keyboard.createCombo('retro',{resetOnMatch:true}).comboName='retro';
+        this.input.keyboard.createCombo('gba',{resetOnMatch:true}).comboName='gba';
+        this.input.keyboard.createCombo('pixel',{resetOnMatch:true}).comboName='pixel';
+
         this.input.keyboard.on('keycombomatch', function (combo) {
-            if(combo.comboName=='reset'){
-                cam.resetPostPipeline();
-            }else if(combo.comboName=='crt'){
-                scene.setShaders();
+            switch(combo.comboName){
+                case 'reset':
+                    cam.resetPostPipeline();
+                break;
+                case 'crt':
+                    scene.setCrtShader();
+                break;
+                case 'gba':
+                    scene.setGBAShader();
+                break;
+                case 'retro':
+                    scene.setRetroShader();
+                break;
+                case 'pixel':
+                    scene.setPixelShader();
+                break;
             }
+
         });
 
     }
@@ -101,11 +121,28 @@ export default class Level2 extends Phaser.Scene {
         }
     }
 
-    setShaders(){
+    initShaders(){
         let cam = this.cameras.main;
         cam.startFollow(this.player);
-        cam.setPostPipeline(GameShader);
+        this.setRetroShader();
+    }
+
+    setCrtShader(){
+        let cam = this.cameras.main;
+        cam.setPostPipeline(GameShaderCRT);
         var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.58);
+    }
+    setRetroShader(){
+        let cam = this.cameras.main;
+        cam.setPostPipeline(GameShaderRetro);
+    }
+    setGBAShader(){
+        let cam = this.cameras.main;
+        cam.setPostPipeline(GameShaderGBA);
+    }
+    setPixelShader(){
+        let cam = this.cameras.main;
+        cam.setPostPipeline(GameShaderPixel);
     }
 
     update(time, delta)
