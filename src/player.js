@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import MapaGenerador from './generador.js';
 
 /**
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
@@ -60,6 +61,17 @@ export default class Player extends Phaser.GameObjects.Sprite {
         } else
         if (this.cursors.left.isDown) {
             this.body.setVelocityX(-this.speed);
+        }
+        else if (this.cursors.space.isDown){
+            var mg = new MapaGenerador;
+            mg.generamapa();
+            console.log(mg.obtenerMapaComoCadena());
+            
+        }
+        else if (this.cursors.shift.isDown){
+            var mg = new MapaGenerador(40, 40);
+            mg.mapamundi();
+            console.log(mg.obtenerMapaComoCadena());
         }
         else if (this.cursors.right.isDown) {
             this.body.setVelocityX(this.speed);
