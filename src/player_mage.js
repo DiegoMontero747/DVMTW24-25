@@ -4,7 +4,7 @@ import Phaser from 'phaser';
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.
  * También almacena la puntuación o número de estrellas que ha recogido hasta el momento.
  */
-export default class Player_warrior extends Phaser.GameObjects.Sprite {
+export default class Player_mage extends Phaser.GameObjects.Sprite {
 
     /**
      * Constructor del jugador
@@ -13,12 +13,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      * @param {number} y Coordenada Y
      */
     constructor(scene, x, y) {
-        super(scene, x, y, 'player_warrior');	
+        super(scene, x, y, 'player_mage');	
         this.score = 0;
 
         //Auxiliares para animaciones
         this.facing="right";
-        this.anims.createFromAseprite('player_warrior');
+        this.anims.createFromAseprite('player_mage');
 
         var tileSize=48;
         this.marker = this.scene.add.graphics();
@@ -26,12 +26,11 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.marker.strokeRect(0, 0, tileSize, tileSize);
         this.container= this.scene.add.container(0,0)
         this.container.add(this.marker);
-        this.playerPreview= this.scene.add.sprite(24,0,"player_warrior");
-        this.playerPreview.anims.createFromAseprite('player_warrior');
+        this.playerPreview= this.scene.add.sprite(24,0,"player_mage");
+        this.playerPreview.anims.createFromAseprite('player_mage');
         this.playerPreview.setAlpha(0.6);
         this.container.add(this.playerPreview);
         this.container.setVisible(false);
-
 
         //Auxiliares de movimiento grid con fisicas
         this.isMoving=false;
@@ -56,8 +55,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.moveDist=48;
         
         //re-ajuste de collision box 
-        //const cbWidth=32,cbHeight=32,cbOffsetX=16,cbOffsetY=40; //Colision parcial (64x64)
-        const cbWidth=32,cbHeight=32,cbOffsetX=64,cbOffsetY=72; //Colision parcial (160x128)
+        const cbWidth=32,cbHeight=32,cbOffsetX=16,cbOffsetY=40; //Colision parcial (64x64)
+        //const cbWidth=32,cbHeight=32,cbOffsetX=64,cbOffsetY=70; //Colision parcial (160x128)
         //const cbWidth=48,cbHeight=48,cbOffsetX=8,cbOffsetY=32; //Cuadrado grid completo
         this.body.setSize(cbWidth,cbHeight,true);
         this.body.setOffset(cbOffsetX,cbOffsetY);
@@ -77,6 +76,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         {   
             /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
             this.scene.container.add(this); */
+            console.log(this.anims.currentAnim.key);
+            console.log(this.playerPreview.anims);
             this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
             this.container.setVisible(!this.container.visible);
         });
@@ -278,7 +279,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.activeCharacter=="warrior")this.physics_grid_movement(t);
+        if(this.scene.activeCharacter=="mage")this.physics_grid_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
     }

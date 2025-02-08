@@ -25,8 +25,9 @@ export default class Boot extends Phaser.Scene {
     this.load.image('platform', 'platform.png');
     this.load.image('base', 'base.png');
     this.load.image('star', 'star.png');
-    this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json')
-    this.load.aseprite('player_warrior','warrior.png','warrior.json')
+    this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json');
+    this.load.aseprite('player_warrior','warrior.png','warrior.json');
+    this.load.aseprite('player_mage','mage.png','mage.json')
 
     //this.load.image('player', player);
 
