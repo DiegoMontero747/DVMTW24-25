@@ -1,6 +1,7 @@
 import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
+import Orc from './orc.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -45,10 +46,18 @@ export default class Level2 extends Phaser.Scene {
         */
         /*Crear layers json*/
         this.map= this.make.tilemap({key:'map'});  
-        const tileset = this.map.addTilesetImage('Tiles','Tiles');
-        const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
-        this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
-        this.wall_layer.setCollisionByProperty({collides:true});
+        const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
+        const props=this.map.addTilesetImage('PropsA','PropsA');
+        const propsA=this.map.addTilesetImage('Props','Props');
+        //const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
+        //this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
+        //this.wall_layer.setCollisionByProperty({collides:true});
+        const floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
+        this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
+        this.map.createLayer("Puertas", tileset, 0, 0);
+        this.map.createLayer("Decorado", [props,propsA], 0, 0);
+
+
         /*this.wall_layer.renderDebug(this.add.graphics(),
         {
             tileColor: null,
@@ -60,6 +69,7 @@ export default class Level2 extends Phaser.Scene {
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, 72, 128);
         this.player2 = new Mage(this, 72, 176);
+        this.orc = new Orc(this, 72, 144);
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
         cam.startFollow(this.player);
@@ -86,7 +96,7 @@ export default class Level2 extends Phaser.Scene {
 
         this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
         this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
-
+        this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
 
         this.input.keyboard.on('keycombomatch', function (combo) {
             switch(combo.comboName){
@@ -112,6 +122,10 @@ export default class Level2 extends Phaser.Scene {
                 case 'warrior':
                     scene.activeCharacter="warrior";
                     cam.startFollow(scene.player);
+                break;
+                case 'orc':
+                    scene.activeCharacter="orc";
+                    cam.startFollow(scene.orc);
                 break;
             }
 

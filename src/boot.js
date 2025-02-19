@@ -27,7 +27,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('star', 'star.png');
     this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json');
     this.load.aseprite('player_warrior','warrior.png','warrior.json');
-    this.load.aseprite('player_mage','mage.png','mage.json')
+    this.load.aseprite('player_mage','mage.png','mage.json');
+    this.load.aseprite('orc2','orc2.png','orc2.json');
 
     //this.load.image('player', player);
 
@@ -39,9 +40,11 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapCSV('map_walls', 'movetest_walls.csv');*/
 
     //Carga .JSON (formato mas comodo en codigo)
-    this.load.tilemapTiledJSON("map","movetest.json");
+    this.load.tilemapTiledJSON("map","dungeon.json");
 
-    this.load.image('Tiles', 'Tiles.png');
+    this.load.image('TilesDungeon', 'Tiles.png');
+    this.load.image('PropsA', 'PropsF.png');
+    this.load.image('Props', 'Props.png');
   }
 
   /**
