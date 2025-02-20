@@ -19,8 +19,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         //Auxiliares para animaciones
         this.facing="right";
         this.anims.createFromAseprite('player_warrior');
-
-        var tileSize=48;
+        this.scale=2/3;
+        var tileSize=32;
         this.marker = this.scene.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);  
         this.marker.strokeRect(0, 0, tileSize, tileSize);
@@ -31,6 +31,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.playerPreview.setAlpha(0.6);
         this.container.add(this.playerPreview);
         this.container.setVisible(false);
+        this.container.setScale(this.scale);
 
 
         //Auxiliares de movimiento grid con fisicas
@@ -53,7 +54,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.play({key:'iddle_right',repeat:-1});
         
         //pixeles que se mueve
-        this.moveDist=48;
+        this.moveDist=tileSize;
         
         //re-ajuste de collision box 
         //const cbWidth=32,cbHeight=32,cbOffsetX=16,cbOffsetY=40; //Colision parcial (64x64)
@@ -259,7 +260,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      * Gestiona movimiento de teletransporte
      */
     player_tp(){
-        if(this.container.visible){
+        if(this.container.visible && this.scene.activeCharacter=="warrior"){
         const x=this.container.x+24, y =this.container.y; 
         this.container.setVisible(false);
         this.x=x;
@@ -268,6 +269,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.lastGridX=x;
         this.goal_y=y;
         this.lastGridY=y;
+        this.scene.turn="enemy";
+        this.emit("player_End_Turn");
         }
     }
     /**
@@ -278,7 +281,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.activeCharacter=="warrior")this.physics_grid_movement(t);
+        if(this.scene.activeCharacter=="warrior")this.physics_4way_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
     }

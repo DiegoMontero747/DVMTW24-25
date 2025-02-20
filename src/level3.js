@@ -17,14 +17,15 @@ import GameShaderPixel from "./shaders/pixelShader.js";
  * El juego termina cuando el jugador ha recogido 10 estrellas.
  * @extends Phaser.Scene
  */
-export default class Level2 extends Phaser.Scene {
+export default class Level3 extends Phaser.Scene {
     marker;
     activeCharacter; // Para testing de personajes
+    turn;
     /**
      * Constructor de la escena
      */
     constructor() {
-        super({ key: 'level2' });
+        super({ key: 'level3' });
     }
     /**
      * Creación de los elementos de la escena principal de juego
@@ -57,7 +58,6 @@ export default class Level2 extends Phaser.Scene {
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
 
-
         /*this.wall_layer.renderDebug(this.add.graphics(),
         {
             tileColor: null,
@@ -77,12 +77,10 @@ export default class Level2 extends Phaser.Scene {
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer);
         this.physics.add.collider(this.player2.body, this.wall_layer);
-
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
         */
         
-
         //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
         this.initShaders();
@@ -131,6 +129,13 @@ export default class Level2 extends Phaser.Scene {
 
         });
 
+        this.player.on("player_End_turn",function(){
+            console.log("player end turn");
+        });
+        this.orc.on("enemy_End_turn",function(){
+            console.log("enemy end turn");
+        })
+        this.turn="player";
     }
 
     initShaders(){
@@ -173,5 +178,13 @@ export default class Level2 extends Phaser.Scene {
             //Mueve a cordenada
             this.pointerGridX= this.map.tileToWorldX(pointerTileX);
             this.pointerGridY = this.map.tileToWorldY(pointerTileY);
+
+            if(this.turn=="player"){
+                this.activeCharacter="warrior";
+                this.cameras.main.startFollow(this.player);
+            }else if(this.turn=="enemy"){   
+                this.activeCharacter="orc";
+                this.cameras.main.startFollow(this.orc);
+            }
     }
 }

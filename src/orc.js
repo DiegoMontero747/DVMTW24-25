@@ -16,7 +16,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         super(scene, x, y, 'orc2');	
         this.score = 0;
         //Auxiliares para animaciones
-        let escala=1.5;
+        let escala=1;
         this.facing="right";
         this.anims.createFromAseprite('orc2');
         this.scale=escala;
@@ -262,7 +262,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
      * Gestiona movimiento de teletransporte
      */
     player_tp(){
-        if(this.container.visible){
+        if(this.container.visible && this.scene.activeCharacter){
         const x=this.container.x+24, y =this.container.y+16; 
         this.container.setVisible(false);
         this.x=x;
@@ -271,6 +271,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.lastGridX=x;
         this.goal_y=y;
         this.lastGridY=y;
+        this.scene.turn="player";
+        this.emit("enemy_End_Turn");
         }
     }
     /**
