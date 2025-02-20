@@ -142,10 +142,10 @@ export default class Level3 extends Phaser.Scene {
 
         });
 
-        this.player.on("player_End_turn",function(){
+        this.player.on("player_End_Turn",function(){
             console.log("player end turn");
         });
-        this.orc.on("enemy_End_turn",function(){
+        this.orc.on("enemy_End_Turn",function(){
             console.log("enemy end turn");
         })
         this.turn="player";
