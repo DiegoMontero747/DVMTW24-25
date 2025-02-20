@@ -58,6 +58,19 @@ export default class Level3 extends Phaser.Scene {
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
 
+        let botonNextTurn = this.add.image(300, 190, 'NextTurn')
+        .setInteractive();
+        botonNextTurn.setScale(0.8);
+        //BOTON PASO DE TURNO
+        botonNextTurn.on('pointerdown', () => {
+            console.log('Botón presionado');
+        });
+        botonNextTurn.on('pointerover', () => {
+            botonNextTurn.setTint(0xcccccc);
+        });
+        botonNextTurn.on('pointerout', () => {
+            botonNextTurn.clearTint();
+        });
         /*this.wall_layer.renderDebug(this.add.graphics(),
         {
             tileColor: null,
