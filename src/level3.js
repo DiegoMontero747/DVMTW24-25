@@ -49,14 +49,31 @@ export default class Level3 extends Phaser.Scene {
         this.map= this.make.tilemap({key:'map'});  
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
         const props=this.map.addTilesetImage('PropsA','PropsA');
-        const propsA=this.map.addTilesetImage('Props','Props');
+        const propsA=this.map.addTilesetImage('Props','Objetos');
         //const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
         //this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
         //this.wall_layer.setCollisionByProperty({collides:true});
         const floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
+        this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
+        if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
+            this.wall_layer.setCollisionByExclusion([-1]);
+        }
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
+
+        //Puertas
+
+        const doors = this.doors_layer.objects
+        .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
+        .map(obj => {
+            let door = this.physics.add.staticSprite(obj.x, obj.y, "doorTexture"); // Crear sprite estático
+            door.setOrigin(0, 1); // Ajustar la posición si es necesario
+            return door;
+        });
+
+        const doorsGroup = this.physics.add.staticGroup(doors);
+        
 
         let botonNextTurn = this.add.image(300, 190, 'NextTurn')
         .setInteractive();
@@ -90,6 +107,7 @@ export default class Level3 extends Phaser.Scene {
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer);
         this.physics.add.collider(this.player2.body, this.wall_layer);
+        this.physics.add.collider(this.player.body, doorsGroup);
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
         */

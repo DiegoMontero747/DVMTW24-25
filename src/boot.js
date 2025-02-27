@@ -45,7 +45,7 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapCSV('map_walls', 'movetest_walls.csv');*/
 
     //Carga .JSON (formato mas comodo en codigo)
-    this.load.tilemapTiledJSON("map","dungeon.json");
+    this.load.tilemapTiledJSON("map","sinNombre2.json");
 
     this.load.image('TilesDungeon', 'Tiles.png');
     this.load.image('PropsA', 'PropsF.png');
