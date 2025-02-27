@@ -75,12 +75,16 @@ export default class Level3 extends Phaser.Scene {
         const doorsGroup = this.physics.add.staticGroup(doors);
         
 
-        let botonNextTurn = this.add.image(300, 190, 'NextTurn')
+
+        let botonNextTurn = this.add.image(600, 300, 'NextTurn')
         .setInteractive();
+        botonNextTurn.setScrollFactor(0);
         botonNextTurn.setScale(0.8);
         //BOTON PASO DE TURNO
         botonNextTurn.on('pointerdown', () => {
             console.log('Botón presionado');
+            if(this.turn=="player") this.turn="enemy";
+            else if(this.turn=="enemy") this.turn="player";
         });
         botonNextTurn.on('pointerover', () => {
             botonNextTurn.setTint(0xcccccc);
@@ -97,9 +101,9 @@ export default class Level3 extends Phaser.Scene {
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
 
         //const tag=this.anims.createFromAseprite('player_warrior');
-        this.player = new Player(this, 72, 128);
+        this.player = new Player(this, 128, 200);
         this.player2 = new Mage(this, 72, 176);
-        this.orc = new Orc(this, 72, 144);
+        this.orc = new Orc(this, 176, 200);
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
         cam.startFollow(this.player);
@@ -163,6 +167,12 @@ export default class Level3 extends Phaser.Scene {
         this.player.on("player_End_Turn",function(){
             console.log("player end turn");
         });
+
+        this.player.on("player_attack",() =>{
+            console.log("player ataca");
+            this.orc.onHit(1);
+        });
+
         this.orc.on("enemy_End_Turn",function(){
             console.log("enemy end turn");
         })
@@ -171,7 +181,7 @@ export default class Level3 extends Phaser.Scene {
 
     initShaders(){
         let cam = this.cameras.main;
-        cam.startFollow(this.player);
+        //cam.startFollow(this.player);
         this.setCrtShader();
     }
 

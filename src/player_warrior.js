@@ -15,7 +15,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, 'player_warrior');	
         this.score = 0;
-
+        console.log("a");
         //Auxiliares para animaciones
         this.facing="right";
         this.anims.createFromAseprite('player_warrior');
@@ -269,7 +269,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.lastGridX=x;
         this.goal_y=y;
         this.lastGridY=y;
-        this.scene.turn="enemy";
         this.emit("player_End_Turn");
         }
     }
@@ -281,7 +280,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.activeCharacter=="warrior")this.physics_4way_movement(t);
+        if(this.scene.activeCharacter=="warrior")this.physics_grid_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
     }
