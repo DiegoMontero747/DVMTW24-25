@@ -14,6 +14,9 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
      */
     constructor(scene, x, y) {
         super(scene, x, y, 'orc2');	
+
+        this.hp=5;
+
         this.score = 0;
         //Auxiliares para animaciones
         let escala=1;
@@ -48,7 +51,6 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
-        this.updateScore();
 
 
         this.play({key:'iddle_right',repeat:-1});
@@ -67,8 +69,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
         this.setInteractive(this.scene.input.makePixelPerfect());
         this.on('pointerover',function (event)
-        {
-            this.effect=this.postFX.addGlow();
+        {   if(this.scene.turn=="enemy")this.effect=this.postFX.addGlow();
+            else this.effect=this.postFX.addGlow("0xc4180f");
         });
         this.on('pointerout', function (event)
         {
@@ -78,10 +80,13 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         {   
             /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
             this.scene.container.add(this); */
-            console.log(this.anims.currentAnim.key);
-            console.log(this.playerPreview.anims);
-            this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
-            this.container.setVisible(!this.container.visible);
+            if(this.scene.turn=="enemy"){
+                console.log(this.anims.currentAnim.key);
+                console.log(this.playerPreview.anims);
+                this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
+                this.container.setVisible(!this.container.visible);
+            }
+            if(this.scene.turn=="player") this.onHit(1);
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
@@ -89,22 +94,10 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
     }
 
-    /**
-     * El jugador ha recogido una estrella por lo que este método añade un punto y
-     * actualiza la UI con la puntuación actual.
-     */
-    point() {
-        this.score++;
-        this.updateScore();
-        this.play('attack');
-        this.chain({key:'iddle',repeat:-1});
-    }
-
-    /**
-     * Actualiza la UI con la puntuación actual
-     */
-    updateScore() {
-        //this.label.text = 'Score: ' + this.score;
+    onHit(dmg){
+        this.hp-=dmg;
+        console.log("Done "+dmg+" dmg points, orc has "+this.hp+" hp left");
+        if(this.hp<=0) console.log("Ripperoni in peperonni");
     }
 
 
@@ -211,6 +204,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 this.play({key:'attack_'+this.facing},true);
                 this.isMoving=true;
                 this.lastMoveDt=dt;
+                
             }
             else {
                 this.isMoving==false;
@@ -271,7 +265,6 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.lastGridX=x;
         this.goal_y=y;
         this.lastGridY=y;
-        this.scene.turn="player";
         this.emit("enemy_End_Turn");
         }
     }
