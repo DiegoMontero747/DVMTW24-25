@@ -34,6 +34,14 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.container.setScale(this.scale);
 
 
+        /*this.attackArea=this.scene.add.graphics();
+        this.attackArea.lineStyle(2, 0xFFFFFF, 1);
+        this.attackArea.fillStyle(0xff0000,0.2);
+        this.attackArea.fillRect(this.x-64,this.y-64,128,128);
+        this.attackArea.strokeRect(this.x-64,this.y-64,128,128);*/
+        this.attackArea=this.scene.add.rectangle(this.x,this.y+5, 128, 128, 0xff0000,0.2);
+        //this.scene.physics.add(this.attackArea);
+
         //Auxiliares de movimiento grid con fisicas
         this.isMoving=false;
         this.goal_x=this.x;

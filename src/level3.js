@@ -92,17 +92,17 @@ export default class Level3 extends Phaser.Scene {
         botonNextTurn.on('pointerout', () => {
             botonNextTurn.clearTint();
         });
-        /*this.wall_layer.renderDebug(this.add.graphics(),
+        this.wall_layer.renderDebug(this.add.graphics(),
         {
             tileColor: null,
             collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
             faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
-        });*/
+        });
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
 
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, 128, 200);
-        this.player2 = new Mage(this, 72, 176);
+        //this.player2 = new Mage(this, 72, 176);
         this.orc = new Orc(this, 176, 200);
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
@@ -110,12 +110,23 @@ export default class Level3 extends Phaser.Scene {
         cam.setBounds(0,0);
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer);
-        this.physics.add.collider(this.player2.body, this.wall_layer);
+        //this.physics.add.collider(this.player2.body, this.wall_layer);
         this.physics.add.collider(this.player.body, doorsGroup);
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
         */
-        
+
+
+        this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
+        //this.physics.world.enable(this.player.attackArea);
+        //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
+        /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
+        const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
+        graphics.strokeRectShape(this.attackArea);
+        // Util para entrar en combate */
+        this.physics.add.existing(this.player.attackArea);
+        this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
+        console.log();
         //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
         this.initShaders();
@@ -212,7 +223,8 @@ export default class Level3 extends Phaser.Scene {
         const pointerTileY = this.map.worldToTileY(worldPoint.y)-1;
         */  
         // Movimiento del cuadro marcador siguiendo la coordenada por grid del ratón
-        
+            this.player.attackArea.x= this.player.x;
+            this.player.attackArea.y=this.player.y+5;
             const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
             const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
             const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;

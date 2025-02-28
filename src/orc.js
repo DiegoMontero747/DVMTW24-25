@@ -68,9 +68,9 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         const shape = new Phaser.Geom.Rectangle(cbOffsetX,cbOffsetY,cbWidth,cbHeight);
 
         this.setInteractive(this.scene.input.makePixelPerfect());
-        this.on('pointerover',function (event)
-        {   if(this.scene.turn=="enemy")this.effect=this.postFX.addGlow();
-            else this.effect=this.postFX.addGlow("0xc4180f");
+        this.on('pointerover',function (event){
+            if(this.scene.turn=="player" && this.scene.physics.overlap(this.scene.player.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
+            else this.effect=this.postFX.addGlow();
         });
         this.on('pointerout', function (event)
         {
@@ -86,7 +86,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
                 this.container.setVisible(!this.container.visible);
             }
-            if(this.scene.turn=="player") this.onHit(1);
+            if(this.scene.turn=="player" && this.scene.physics.overlap(this.scene.player.attackArea, this.body)) this.onHit(1);
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
@@ -96,8 +96,34 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
     onHit(dmg){
         this.hp-=dmg;
+        let offsetY=Math.random()*(15)+5
+        let offsetX=Math.random()*(35)-20
         console.log("Done "+dmg+" dmg points, orc has "+this.hp+" hp left");
-        if(this.hp<=0) console.log("Ripperoni in peperonni");
+        let hitText=this.scene.add.text(this.x,this.y-offsetY,"-"+dmg);
+        const hitTextAnim=this.scene.tweens.add({
+            targets: [hitText],
+            scale: 0.2,
+            x:this.x+offsetX,
+            ease: 'linear',
+            duration: 1000,
+            delay: this.scene.tweens.stagger(100),
+            onComplete:(tween, targets, param)=>{
+                hitText.destroy();
+            }
+        });
+        if(this.hp<=0){ console.log("Ripperoni in peperonni");
+            const deadAnim=this.scene.tweens.add({
+                targets: [this],
+                scale: 0.2,
+                angle:-190,
+                ease: 'linear',
+                duration: 500,
+                delay: this.scene.tweens.stagger(100),
+                onComplete:(tween, targets, param)=>{
+                    this.destroy();
+                }
+            });
+        }
     }
 
 
@@ -276,7 +302,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.activeCharacter=="orc")this.physics_grid_movement(t);
+        if(this.scene.activeCharacter=="orc")this.physics_4way_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
     }
