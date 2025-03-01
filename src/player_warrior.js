@@ -20,7 +20,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.facing="right";
         this.anims.createFromAseprite('player_warrior');
         this.scale=2/3;
-        var tileSize=32;
+        var tileSize=48;
         this.marker = this.scene.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);  
         this.marker.strokeRect(0, 0, tileSize, tileSize);
@@ -32,6 +32,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.container.add(this.playerPreview);
         this.container.setVisible(false);
         this.container.setScale(this.scale);
+        this.hp=10;
 
 
         /*this.attackArea=this.scene.add.graphics();
@@ -39,7 +40,20 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.attackArea.fillStyle(0xff0000,0.2);
         this.attackArea.fillRect(this.x-64,this.y-64,128,128);
         this.attackArea.strokeRect(this.x-64,this.y-64,128,128);*/
-        this.attackArea=this.scene.add.rectangle(this.x,this.y+5, 128, 128, 0xff0000,0.2);
+        this.attackArea=this.scene.add.rectangle(this.x,this.y+5, 128, 128, 0xff0000,0.25).setVisible(false);
+        this.attackArea.setStrokeStyle(1, 0xff0000, 1);
+        this.moveArea=new Phaser.Geom.Rectangle(0,0, 200, 200)//this.scene.add.rectangle(this.x,this.y+5, 200, 200, 0x0080ff,0.25);
+
+        this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
+        this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
+        this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
+        Phaser.Geom.Rectangle.CenterOn(this.moveArea,this.x,this.y+5);
+        this.moveAreaGraphics.fillRectShape(this.moveArea);
+        this.moveAreaGraphics.strokeRectShape(this.moveArea);
+
+
+
+        console.log()
         //this.scene.physics.add(this.attackArea);
 
         //Auxiliares de movimiento grid con fisicas
@@ -53,6 +67,11 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds();
+        console.log(this.body.customBoundsRectangle);
+        this.body.setBoundsRectangle(this.moveArea);
+        console.log(this.body.customBoundsRectangle);
+
+
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -75,8 +94,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
         this.setInteractive(this.scene.input.makePixelPerfect());
         this.on('pointerover',function (event)
-        {
-            this.effect=this.postFX.addGlow();
+        {            
+            if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
+            else this.effect=this.postFX.addGlow();
         });
         this.on('pointerout', function (event)
         {
@@ -86,8 +106,14 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         {   
             /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
             this.scene.container.add(this); */
-            this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
-            this.container.setVisible(!this.container.visible);
+            if(this.scene.turn=="player"){
+                this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
+                this.container.setVisible(!this.container.visible);
+            }
+            if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)){ 
+                this.onHit(1);
+                this.emit("player_hitted");
+            };
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
@@ -114,7 +140,37 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     }
 
 
-
+    onHit(dmg){
+        this.hp-=dmg;
+        let offsetY=Math.random()*(15)+5
+        let offsetX=Math.random()*(35)-20
+        console.log("Done "+dmg+" dmg points, orc has "+this.hp+" hp left");
+        let hitText=this.scene.add.text(this.x,this.y-offsetY,"-"+dmg).setDepth(this.depth+1);
+        const hitTextAnim=this.scene.tweens.add({
+            targets: [hitText],
+            scale: 0.2,
+            x:this.x+offsetX,
+            ease: 'linear',
+            duration: 1000,
+            delay: this.scene.tweens.stagger(100),
+            onComplete:(tween, targets, param)=>{
+                hitText.destroy();
+            }
+        });
+        if(this.hp<=0){ console.log("Ripperoni in peperonni");
+            const deadAnim=this.scene.tweens.add({
+                targets: [this],
+                scale: 0.2,
+                angle:-190,
+                ease: 'linear',
+                duration: 500,
+                delay: this.scene.tweens.stagger(100),
+                onComplete:(tween, targets, param)=>{
+                    this.destroy();
+                }
+            });
+        }
+    }
     /**
      * Gestiona el movimiento grid cambiando las coordenadas 
      * del jugador a la posicion correspondiente directamente
@@ -168,8 +224,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             this.play({key:'walk_left'},true);
             this.facing="left";
         }
-        else {
-            this.play({key:'iddle_'+this.facing},true);
+        else if (this.isMoving==false){
+            this.play({key:'iddle_'+this.facing,repeat:-1},true);
             this.body.setVelocityX(0);
             this.body.setVelocityY(0);
         }
@@ -264,6 +320,27 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         else return false;
     }
 
+    playAttack(){
+        this.isMoving=true;
+        this.play({key:'attack_'+this.facing},true);
+        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
+        this.chain({key:'iddle_'+this.facing,repeat:-1},true);
+    }
+
+    onTurnStart(){
+        //Volver a pintar el area de movimiento
+        Phaser.Geom.Rectangle.CenterOn(this.moveArea,this.x,this.y+5);
+        this.moveAreaGraphics.clear();
+        this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
+        this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
+        this.moveAreaGraphics.fillRectShape(this.moveArea);
+        this.moveAreaGraphics.strokeRectShape(this.moveArea);
+    }
+    onTurnEnd(){
+        this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
+        this.attackArea.setVisible(false);
+    }
+
     /**
      * Gestiona movimiento de teletransporte
      */
@@ -288,9 +365,11 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.activeCharacter=="warrior")this.physics_grid_movement(t);
+        if(this.scene.activeCharacter=="warrior")this.physics_4way_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
+        this.attackArea.x= this.x;
+        this.attackArea.y=this.y+5;
     }
 
 }

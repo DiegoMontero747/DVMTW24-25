@@ -44,14 +44,25 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.lastGridX=this.x;
         this.lastGridY=this.y;
 
+        this.attackArea=this.scene.add.rectangle(this.x,this.y+5, 128, 128, 0xff0000,0.25).setVisible(false);
+        this.attackArea.setStrokeStyle(1, 0xff0000, 1);
+        this.moveArea=new Phaser.Geom.Rectangle(0,0, 200, 200)//this.scene.add.rectangle(this.x,this.y+5, 200, 200, 0x0080ff,0.25);
+        this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
+        this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
+        this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
+        Phaser.Geom.Rectangle.CenterOn(this.moveArea,this.x,this.y+5);
+        this.moveAreaGraphics.fillRectShape(this.moveArea);
+        this.moveAreaGraphics.strokeRectShape(this.moveArea);
+
         this.scene.add.existing(this);
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds();
+        this.body.setBoundsRectangle(this.moveArea);
+
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
-
 
         this.play({key:'iddle_right',repeat:-1});
         
@@ -59,7 +70,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.moveDist=48;
         
         //re-ajuste de collision box 
-        const cbWidth=32/escala,cbHeight=32/escala,cbOffsetX=21.5,cbOffsetY=27; //Colision parcial (64x64)
+        const cbWidth=22.25,cbHeight=22.25,cbOffsetX=21.5,cbOffsetY=27; //Colision parcial (64x64)
         //const cbWidth=32,cbHeight=32,cbOffsetX=64,cbOffsetY=70; //Colision parcial (160x128)
         //const cbWidth=48,cbHeight=48,cbOffsetX=8,cbOffsetY=32; //Cuadrado grid completo
         this.body.setSize(cbWidth,cbHeight,true);
@@ -86,7 +97,10 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
                 this.container.setVisible(!this.container.visible);
             }
-            if(this.scene.turn=="player" && this.scene.physics.overlap(this.scene.player.attackArea, this.body)) this.onHit(1);
+            if(this.scene.turn=="player" && this.scene.physics.overlap(this.scene.player.attackArea, this.body)){ 
+                this.onHit(1);
+                this.emit("enemy_hitted");
+            };
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
@@ -99,7 +113,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         let offsetY=Math.random()*(15)+5
         let offsetX=Math.random()*(35)-20
         console.log("Done "+dmg+" dmg points, orc has "+this.hp+" hp left");
-        let hitText=this.scene.add.text(this.x,this.y-offsetY,"-"+dmg);
+        let hitText=this.scene.add.text(this.x,this.y-offsetY,"-"+dmg).setDepth(this.depth+1);
         const hitTextAnim=this.scene.tweens.add({
             targets: [hitText],
             scale: 0.2,
@@ -155,7 +169,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
     /**
      *Gestiona movimiento 4-direccional mediante fisica
      */
-    physics_4way_movement(){
+   physics_4way_movement(){
         const velocity=200;
         if (this.cursors.up.isDown) {
             this.body.setVelocityY(-velocity);
@@ -181,8 +195,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             this.play({key:'walk_left'},true);
             this.facing="left";
         }
-        else {
-            this.play({key:'iddle_'+this.facing},true);
+        else if (this.isMoving==false){
+            this.play({key:'iddle_'+this.facing,repeat:-1},true);
             this.body.setVelocityX(0);
             this.body.setVelocityY(0);
         }
@@ -294,6 +308,27 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.emit("enemy_End_Turn");
         }
     }
+
+    onTurnStart(){
+        //Volver a pintar el area de movimiento
+        Phaser.Geom.Rectangle.CenterOn(this.moveArea,this.x,this.y+5);
+        this.moveAreaGraphics.clear();
+        this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
+        this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
+        this.moveAreaGraphics.fillRectShape(this.moveArea);
+        this.moveAreaGraphics.strokeRectShape(this.moveArea);
+    }
+    onTurnEnd(){
+        this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
+        this.attackArea.setVisible(false);
+    }
+
+    playAttack(){
+        this.isMoving=true;
+        this.play({key:'attack_'+this.facing},true);
+        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
+        this.chain({key:'iddle_'+this.facing,repeat:-1},true);
+    }
     /**
      * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
      * Como se puede ver, no se tratan las colisiones con las estrellas, ya que estas colisiones 
@@ -305,6 +340,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         if(this.scene.activeCharacter=="orc")this.physics_4way_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
+        this.attackArea.x= this.x;
+        this.attackArea.y=this.y+5;
     }
 
 }
