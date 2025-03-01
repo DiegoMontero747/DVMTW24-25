@@ -335,10 +335,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
         this.moveAreaGraphics.fillRectShape(this.moveArea);
         this.moveAreaGraphics.strokeRectShape(this.moveArea);
+        this.setDepth(2);
     }
     onTurnEnd(){
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         this.attackArea.setVisible(false);
+        this.setDepth(1);
     }
 
     /**

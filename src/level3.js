@@ -46,6 +46,7 @@ export default class Level3 extends Phaser.Scene {
 
         */
         /*Crear layers json*/
+
         this.map= this.make.tilemap({key:'map'});  
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
         const props=this.map.addTilesetImage('PropsA','PropsA');
@@ -94,11 +95,29 @@ export default class Level3 extends Phaser.Scene {
             botonNextTurn.clearTint();
         });
         this.events.on("enemy_turn_start",()=>{
+            this.textDisplay.setText("Enemy Turn");
+            this.tweens.add({
+                targets: this.textDisplay,
+                y:{from:100,to:200},
+                ease:'expo.out',
+                duration: 600,
+                hold:600,
+                yoyo:true
+            });
             this.turn="enemy";
             this.orc.onTurnStart();
             this.player.onTurnEnd();
         });
         this.events.on("player_turn_start",()=>{
+            this.textDisplay.setText("Player Turn");
+            this.tweens.add({
+                targets: this.textDisplay,
+                y:{from:100,to:200},
+                ease:'expo.out',
+                duration: 600,
+                hold:600,
+                yoyo:true
+            });
             this.turn="player"; 
             this.player.onTurnStart();
             this.orc.onTurnEnd();
@@ -161,6 +180,8 @@ export default class Level3 extends Phaser.Scene {
             faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
         }); */
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
+        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        this.textDisplay=this.add.text(screenCenterX,200,"").setOrigin(0.5).setScrollFactor(0).setDepth(20);
 
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, 128, 200).setDepth(1);
@@ -168,6 +189,7 @@ export default class Level3 extends Phaser.Scene {
         this.orc = new Orc(this, 176, 200).setDepth(1);
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
+        this.showTurnMsg();
         cam.startFollow(this.player);
         cam.setBounds(0,0);
         cam.setZoom(3);
@@ -271,7 +293,6 @@ export default class Level3 extends Phaser.Scene {
 
     initShaders(){
         let cam = this.cameras.main;
-        //cam.startFollow(this.player);
         this.setCrtShader();
     }
 
@@ -291,6 +312,12 @@ export default class Level3 extends Phaser.Scene {
     setPixelShader(){
         let cam = this.cameras.main;
         cam.setPostPipeline(GameShaderPixel);
+    }
+
+
+    showTurnMsg(){
+        console.log(this.cameras.main);
+        //a.setScrollFactor(0);
     }
 
     update(time, delta)
