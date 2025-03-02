@@ -84,6 +84,12 @@ export default class Level3 extends Phaser.Scene {
         //BOTON PASO DE TURNO
         botonNextTurn.setDepth(20);
         botonNextTurn.on('pointerdown', () => {
+            this.tweens.add({
+                targets: [botonNextTurn],
+                scale:{from:1,to:0.8},
+                ease:'power1',
+                duration: 1000,
+            });
             console.log('Botón presionado');
             if(this.turn=="player"){this.events.emit("enemy_turn_start");} 
             else if(this.turn=="enemy"){this.events.emit("player_turn_start");} 
@@ -94,30 +100,29 @@ export default class Level3 extends Phaser.Scene {
         botonNextTurn.on('pointerout', () => {
             botonNextTurn.clearTint();
         });
+        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        this.textDisplay=this.add.text(screenCenterX,200,"").setOrigin(0.5).setScrollFactor(0).setDepth(20);
+        var displayTween=this.tweens.add({
+            targets: this.textDisplay,
+            y:{from:100,to:200},
+            ease:'expo.out',
+            duration: 600,
+            hold:600,
+            yoyo:true,
+            persist:true
+        })
         this.events.on("enemy_turn_start",()=>{
             this.textDisplay.setText("Enemy Turn");
-            this.tweens.add({
-                targets: this.textDisplay,
-                y:{from:100,to:200},
-                ease:'expo.out',
-                duration: 600,
-                hold:600,
-                yoyo:true
-            });
+            if(displayTween.isActive)displayTween.restart();
+            else displayTween.play();
             this.turn="enemy";
             this.orc.onTurnStart();
             this.player.onTurnEnd();
         });
         this.events.on("player_turn_start",()=>{
             this.textDisplay.setText("Player Turn");
-            this.tweens.add({
-                targets: this.textDisplay,
-                y:{from:100,to:200},
-                ease:'expo.out',
-                duration: 600,
-                hold:600,
-                yoyo:true
-            });
+            if(displayTween.isActive)displayTween.restart();
+            else displayTween.play();            
             this.turn="player"; 
             this.player.onTurnStart();
             this.orc.onTurnEnd();
@@ -129,6 +134,12 @@ export default class Level3 extends Phaser.Scene {
         botonMove.setScale(0.8);
         botonMove.setDepth(20);
         botonMove.on('pointerdown', () => {
+            this.tweens.add({
+                targets: [botonMove],
+                scale:{from:1,to:0.8},
+                ease:'power1',
+                duration: 1000,
+            });
             if(this.turn=="player"){this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)} 
             else if(this.turn=="enemy"){this.orc.moveAreaGraphics.setVisible(!this.orc.moveAreaGraphics.visible)} 
         });
@@ -145,6 +156,12 @@ export default class Level3 extends Phaser.Scene {
         botonAttack.setScale(0.8);
         botonAttack.setDepth(20);
         botonAttack.on('pointerdown', () => {
+            this.tweens.add({
+                targets: [botonAttack],
+                scale:{from:1,to:0.8},
+                ease:'power1',
+                duration: 1000,
+            });
             if(this.turn=="player"){this.player.attackArea.setVisible(!this.player.attackArea.visible)} 
             else if(this.turn=="enemy"){this.orc.attackArea.setVisible(!this.orc.attackArea.visible)} 
         });
@@ -161,9 +178,33 @@ export default class Level3 extends Phaser.Scene {
         botonMenu.setScale(0.8);
         botonMenu.setDepth(20);
         botonMenu.on('pointerdown', () => {
-            botonAttack.setVisible(!botonAttack.visible);
-            botonMove.setVisible(!botonMove.visible);
-            botonNextTurn.setVisible(!botonNextTurn.visible);
+            //botonAttack.setVisible(!botonAttack.visible);
+            //botonMove.setVisible(!botonMove.visible);
+            //botonNextTurn.setVisible(!botonNextTurn.visible);
+            this.tweens.add({
+                targets: [botonMenu],
+                scale:{from:1,to:0.8},
+                ease:'power1',
+                duration: 1000,
+            });
+            if(this.menuOpen===undefined) this.menuOpen=true;
+            if(this.menuOpen){
+            this.tweens.add({
+                targets: [botonMove,botonAttack,botonNextTurn],
+                y:350,
+                ease:'expo.inout',
+                duration: 1000,
+                delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
+            });
+            }else{
+                this.tweens.add({
+                    targets: [botonMove,botonAttack,botonNextTurn],
+                    y:300,
+                    ease:'expo.inout',
+                    duration: 1000,
+                    delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
+                });
+            }this.menuOpen=!this.menuOpen;
         });
         botonMenu.on('pointerover', () => {
             botonMenu.setTint(0xcccccc);
@@ -180,13 +221,12 @@ export default class Level3 extends Phaser.Scene {
             faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
         }); */
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
-        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.textDisplay=this.add.text(screenCenterX,200,"").setOrigin(0.5).setScrollFactor(0).setDepth(20);
+
 
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, 128, 200).setDepth(1);
         //this.player2 = new Mage(this, 72, 176);
-        this.orc = new Orc(this, 176, 200).setDepth(1);
+        this.orc = new Orc(this, 240, 190).setDepth(1);
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
         this.showTurnMsg();

@@ -20,7 +20,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.score = 0;
         //Auxiliares para animaciones
         let escala=1;
-        this.facing="right";
+        this.facing="left";
         this.anims.createFromAseprite('orc2');
         this.scale=escala;
         var tileSize=48;
@@ -64,7 +64,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
 
-        this.play({key:'iddle_right',repeat:-1});
+        this.play({key:'iddle_'+this.facing,repeat:-1});
         
         //pixeles que se mueve
         this.moveDist=48;
