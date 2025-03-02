@@ -47,7 +47,7 @@ void main( void ) {
     vec3 filter = reflect(texColor.rgb, vec3(0.0, colorDist, 0.4)); //Pasar un filtro de color a la imagen movida
     vec3 filter2 = reflect(texColor2.rgb, vec3(0.0, colorDist*0.1, 0.3)); //Pasar un filtro de color a la imagen movida
     if(uv.y > 0.98 || uv.x < 0.01 || uv.x > 0.99 || uv.y < 0.02) //En limite de bordes
-        gl_FragColor = vec4(0.7,0.7,0.7,1.0); //Color bordes
+        gl_FragColor = vec4(0.0,0.0,0.0,1.0); //Color bordes
     else if(mod((sin(outTexCoord.y+time)*150.0),0.5)>0.1 && mod((sin(outTexCoord.x)*150.0),0.5)>0.1)
        gl_FragColor = vec4(vec3(filter), 1.0); // cambiar la imagen por la que tiene filtro
     else gl_FragColor = vec4(vec3(filter2), 1.0); // cambiar la imagen por la que tiene filtro

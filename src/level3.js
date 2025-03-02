@@ -348,7 +348,7 @@ export default class Level3 extends Phaser.Scene {
     setCrtShader(){
         let cam = this.cameras.main;
         cam.setPostPipeline(GameShaderCRT);
-        var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.58);
+        var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.40);
     }
     setRetroShader(){
         let cam = this.cameras.main;
