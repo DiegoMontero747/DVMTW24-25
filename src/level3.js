@@ -101,9 +101,10 @@ export default class Level3 extends Phaser.Scene {
             botonNextTurn.clearTint();
         });
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.textDisplay=this.add.text(screenCenterX,200,"").setOrigin(0.5).setScrollFactor(0).setDepth(20);
+        this.turnBanner=this.add.image(screenCenterX,100,"turnBanner").setOrigin(0.5).setScrollFactor(0).setDepth(20).setScale(1.2);
+        this.textDisplay=this.add.text(screenCenterX,200,"Combat Start",{strokeThickness:3,stroke:"rgb(65, 32, 5)",color:"rgb(164, 193, 212)"}).setOrigin(0.5).setScrollFactor(0).setDepth(20);
         var displayTween=this.tweens.add({
-            targets: this.textDisplay,
+            targets: [this.textDisplay,this.turnBanner],
             y:{from:100,to:200},
             ease:'expo.out',
             duration: 600,

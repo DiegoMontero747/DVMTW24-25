@@ -40,8 +40,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('StatsBar', 'StatsBar.png');
     this.load.image('warriorPortrait', 'warriorPortrait.png');
     this.load.image('orcPortrait', 'orcPortrait.png');
-
-
+    this.load.image('turnBanner', 'turnBar.png');
 
     //this.load.image('player', player);
 
