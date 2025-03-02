@@ -213,6 +213,14 @@ export default class Level3 extends Phaser.Scene {
             botonMenu.clearTint();
         });
 
+        
+
+        //Stats UI TODO -> pasar a container y clase propia
+        this.statsUI={
+            UIbg:this.add.image(410, 350, 'StatsBar').setScrollFactor(0).setDepth(20),
+            hpDisplay:this.add.text(390,350,"HP: ?/?",{fontSize:11,strokeThickness:4,stroke:'rgb(49, 0, 0)'}).setScrollFactor(0).setDepth(20),
+            portrait:this.add.image(367, 350, 'warriorPortrait').setScrollFactor(0).setDepth(20)
+        };
 
         /* this.wall_layer.renderDebug(this.add.graphics(),
         {
@@ -353,6 +361,27 @@ export default class Level3 extends Phaser.Scene {
         let cam = this.cameras.main;
         cam.setPostPipeline(GameShaderPixel);
     }
+    changeStatsUI(portrait,currentHP,maxHP){
+        this.statsUI.hpDisplay.setText("HP: "+currentHP+"/"+maxHP);
+        this.statsUI.portrait.setTexture(portrait+'Portrait');
+    }
+
+    showStatsUI(){
+        this.tweens.add({
+            targets: [this.statsUI.hpDisplay, this.statsUI.portrait,this.statsUI.UIbg],
+            y:function(target, key, value, targetIndex, totalTargets, tween) { let values=[292,300,300];return values[targetIndex]; },
+            ease:'expo.inout',
+            duration: 1000,
+        })
+    }
+    hideStatsUI(){
+        this.tweens.add({
+            targets: [this.statsUI.hpDisplay, this.statsUI.portrait,this.statsUI.UIbg],
+            y:350,
+            ease:'expo.inout',
+            duration: 1000
+        })
+    }
 
 
     showTurnMsg(){
@@ -381,7 +410,7 @@ export default class Level3 extends Phaser.Scene {
 
             if(this.turn=="player"){
                 this.activeCharacter="warrior";
-                this.cameras.main.startFollow(this.player);
+                this.cameras.main.startFollow(this.player);                
             }else if(this.turn=="enemy"){   
                 this.activeCharacter="orc";
                 this.cameras.main.startFollow(this.orc);

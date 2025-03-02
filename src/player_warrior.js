@@ -33,6 +33,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.container.setVisible(false);
         this.container.setScale(this.scale);
         this.hp=10;
+        this.maxHp=10;
 
 
         /*this.attackArea=this.scene.add.graphics();
@@ -94,12 +95,15 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
         this.setInteractive(this.scene.input.makePixelPerfect());
         this.on('pointerover',function (event)
-        {            
+        {
+            this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
+            this.scene.showStatsUI();
             if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
             else this.effect=this.postFX.addGlow();
         });
         this.on('pointerout', function (event)
         {
+            this.scene.hideStatsUI();
             this.postFX.remove(this.effect);
         });
         this.on('pointerup', function (event)
@@ -142,6 +146,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
     onHit(dmg){
         this.hp-=dmg;
+        this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
         let offsetY=Math.random()*(15)+5
         let offsetX=Math.random()*(35)-20
         console.log("Done "+dmg+" dmg points, orc has "+this.hp+" hp left");
@@ -157,6 +162,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                 hitText.destroy();
             }
         });
+        this.setTintFill(0xffffff);
+        this.scene.time.addEvent({
+            delay:130,
+            callbackScope:this,
+            callback:()=>{this.clearTint()}
+        })
         if(this.hp<=0){ console.log("Ripperoni in peperonni");
             const deadAnim=this.scene.tweens.add({
                 targets: [this],
@@ -336,6 +347,15 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.fillRectShape(this.moveArea);
         this.moveAreaGraphics.strokeRectShape(this.moveArea);
         this.setDepth(2);
+
+        //Animacion personaje activo
+        this.scene.tweens.add({
+            targets: [this],
+            scale:{from:2/3,to:6/8},
+            ease:'linear',
+            duration: 220,
+            yoyo:true,
+        });
     }
     onTurnEnd(){
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
