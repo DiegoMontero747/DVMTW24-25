@@ -76,8 +76,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
-        this.updateScore();
-
 
         this.play({key:'iddle_right',repeat:-1});
         
@@ -126,27 +124,25 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
     }
 
-    /**
-     * El jugador ha recogido una estrella por lo que este método añade un punto y
-     * actualiza la UI con la puntuación actual.
-     */
-    point() {
-        this.score++;
-        this.updateScore();
-        this.play('attack');
-        this.chain({key:'iddle',repeat:-1});
-    }
-
-    /**
-     * Actualiza la UI con la puntuación actual
-     */
-    updateScore() {
-        //this.label.text = 'Score: ' + this.score;
+    createBlood(){
+        let blood= this.scene.add.sprite(this.x,this.y-12,"blood").setDepth(this.depth+1).setScale(0.5);
+        blood.anims.createFromAseprite("blood");
+        let splatterFade=this.scene.tweens.add({
+            targets: [blood],
+            alpha: 0,
+            ease: 'linear',
+            duration: 1000,
+            onComplete:(tween, targets, param)=>{
+                blood.destroy();
+            }
+        }).pause();
+        blood.play("splatter").on("animationcomplete",()=>{blood.setDepth(blood.depth-1);splatterFade.resume()});
     }
 
 
     onHit(dmg){
         this.scene.sound.play("hitSound");
+        this.createBlood();
         this.hp-=dmg;
         this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
         let offsetY=Math.random()*(15)+5
@@ -171,7 +167,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             callback:()=>{this.clearTint()}
         })
         if(this.hp<=0){ console.log("Ripperoni in peperonni");
-            this.scene.sound.play("wilhelm");
+            this.scene.sound.play("wilhelm").vol;
             const deadAnim=this.scene.tweens.add({
                 targets: [this],
                 scale: 0.2,

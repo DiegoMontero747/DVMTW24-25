@@ -112,9 +112,24 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
 
     }
+    createBlood(){
+        let blood= this.scene.add.sprite(this.x,this.y-22,"blood").setDepth(this.depth+1).setScale(0.5);
+        blood.anims.createFromAseprite("blood");
+        let splatterFade=this.scene.tweens.add({
+            targets: [blood],
+            alpha: 0,
+            ease: 'linear',
+            duration: 1000,
+            onComplete:(tween, targets, param)=>{
+                blood.destroy();
+            }
+        }).pause();
+        blood.play("splatter").on("animationcomplete",()=>{blood.setDepth(blood.depth-1);splatterFade.resume()});
+    }
 
     onHit(dmg){
         this.scene.sound.play("hitSound");
+        this.createBlood();
         this.hp-=dmg;
         this.scene.changeStatsUI("orc",this.hp,this.maxHp);
         let offsetY=Math.random()*(15)+5
