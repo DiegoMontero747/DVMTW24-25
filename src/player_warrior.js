@@ -67,10 +67,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
-        this.body.setCollideWorldBounds();
-        console.log(this.body.customBoundsRectangle);
+        this.body.setCollideWorldBounds(true,false,false,true);
+        //console.log(this.body);
         this.body.setBoundsRectangle(this.moveArea);
-        console.log(this.body.customBoundsRectangle);
 
 
         // Esta label es la UI en la que pondremos la puntuación del jugador
@@ -120,8 +119,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
-
-
     }
 
     createBlood(){
@@ -142,6 +139,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
     onHit(dmg){
         this.scene.sound.play("hitSound");
+        this.scene.cameras.main.shake(300,0.001);
         this.createBlood();
         this.hp-=dmg;
         this.scene.changeStatsUI("warrior",this.hp,this.maxHp);

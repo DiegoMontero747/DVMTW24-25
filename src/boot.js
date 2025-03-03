@@ -51,6 +51,8 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('showGridSound', 'showGridSound.mp3');
     this.load.audio('slideSound', 'slideSound.wav');
     this.load.audio('wilhelm', 'Wilhelm.wav');
+    this.load.audio('boundLimits', 'boundLimits.wav');
+
 
     this.load.setPath('/assets/audio/music/');
     this.load.audio('combatMusic', 'combatMusic.mp3');

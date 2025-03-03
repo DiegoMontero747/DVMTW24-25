@@ -268,8 +268,8 @@ export default class Level3 extends Phaser.Scene {
         /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
         const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
         graphics.strokeRectShape(this.attackArea);
-        // Util para entrar en combate 
-        this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});*/
+        // Util para entrar en combate */
+        this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
 
         this.physics.add.existing(this.player.attackArea);
         this.physics.add.existing(this.orc.attackArea);
@@ -344,6 +344,18 @@ export default class Level3 extends Phaser.Scene {
         this.turn="player";
 
         if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        this.boundLimitSound= this.sound.add("boundLimits")
+        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
+        {   
+            if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
+            console.log("collide");
+            if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
+                this.cameras.main.shake(300,0.0002);
+                this.boundLimitSound.play({volume:0.7});
+                this.boundLimitSoundTimeOut=true;
+                this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
+            } 
+        });
     }
 
     initShaders(){

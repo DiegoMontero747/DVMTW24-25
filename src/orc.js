@@ -58,7 +58,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
-        this.body.setCollideWorldBounds();
+        this.body.setCollideWorldBounds(true,false,false,true);
         this.body.setBoundsRectangle(this.moveArea);
 
         // Esta label es la UI en la que pondremos la puntuación del jugador
@@ -129,6 +129,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
     onHit(dmg){
         this.scene.sound.play("hitSound");
+        this.scene.cameras.main.shake(300,0.001);
         this.createBlood();
         this.hp-=dmg;
         this.scene.changeStatsUI("orc",this.hp,this.maxHp);
