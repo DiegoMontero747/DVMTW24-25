@@ -81,6 +81,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
         this.setInteractive(this.scene.input.makePixelPerfect());
         this.on('pointerover',function (event){
+            this.scene.sound.play("touchUISound");
             this.scene.changeStatsUI("orc",this.hp,this.maxHp);
             this.scene.showStatsUI();
             if(this.scene.turn=="player" && this.scene.physics.overlap(this.scene.player.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
@@ -113,6 +114,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
     }
 
     onHit(dmg){
+        this.scene.sound.play("hitSound");
         this.hp-=dmg;
         this.scene.changeStatsUI("orc",this.hp,this.maxHp);
         let offsetY=Math.random()*(15)+5

@@ -96,6 +96,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.setInteractive(this.scene.input.makePixelPerfect());
         this.on('pointerover',function (event)
         {
+            this.scene.sound.play("touchUISound");
             this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
             this.scene.showStatsUI();
             if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
@@ -145,6 +146,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
 
     onHit(dmg){
+        this.scene.sound.play("hitSound");
         this.hp-=dmg;
         this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
         let offsetY=Math.random()*(15)+5

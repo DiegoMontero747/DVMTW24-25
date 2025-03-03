@@ -84,6 +84,7 @@ export default class Level3 extends Phaser.Scene {
         //BOTON PASO DE TURNO
         botonNextTurn.setDepth(20);
         botonNextTurn.on('pointerdown', () => {
+            this.sound.play("woodButton");
             this.tweens.add({
                 targets: [botonNextTurn],
                 scale:{from:1,to:0.8},
@@ -95,6 +96,7 @@ export default class Level3 extends Phaser.Scene {
             else if(this.turn=="enemy"){this.events.emit("player_turn_start");} 
         });
         botonNextTurn.on('pointerover', () => {
+            this.sound.play("touchUISound");
             botonNextTurn.setTint(0xcccccc);
         });
         botonNextTurn.on('pointerout', () => {
@@ -135,6 +137,7 @@ export default class Level3 extends Phaser.Scene {
         botonMove.setScale(0.8);
         botonMove.setDepth(20);
         botonMove.on('pointerdown', () => {
+            this.sound.play("woodButton");
             this.tweens.add({
                 targets: [botonMove],
                 scale:{from:1,to:0.8},
@@ -145,6 +148,7 @@ export default class Level3 extends Phaser.Scene {
             else if(this.turn=="enemy"){this.orc.moveAreaGraphics.setVisible(!this.orc.moveAreaGraphics.visible)} 
         });
         botonMove.on('pointerover', () => {
+            this.sound.play("touchUISound");
             botonMove.setTint(0xcccccc);
         });
         botonMove.on('pointerout', () => {
@@ -157,6 +161,7 @@ export default class Level3 extends Phaser.Scene {
         botonAttack.setScale(0.8);
         botonAttack.setDepth(20);
         botonAttack.on('pointerdown', () => {
+            this.sound.play("woodButton");
             this.tweens.add({
                 targets: [botonAttack],
                 scale:{from:1,to:0.8},
@@ -167,6 +172,7 @@ export default class Level3 extends Phaser.Scene {
             else if(this.turn=="enemy"){this.orc.attackArea.setVisible(!this.orc.attackArea.visible)} 
         });
         botonAttack.on('pointerover', () => {
+            this.sound.play("touchUISound");
             botonAttack.setTint(0xcccccc);
         });
         botonAttack.on('pointerout', () => {
@@ -182,6 +188,7 @@ export default class Level3 extends Phaser.Scene {
             //botonAttack.setVisible(!botonAttack.visible);
             //botonMove.setVisible(!botonMove.visible);
             //botonNextTurn.setVisible(!botonNextTurn.visible);
+            this.sound.play("woodButton");
             this.tweens.add({
                 targets: [botonMenu],
                 scale:{from:1,to:0.8},
@@ -208,6 +215,7 @@ export default class Level3 extends Phaser.Scene {
             }this.menuOpen=!this.menuOpen;
         });
         botonMenu.on('pointerover', () => {
+            this.sound.play("touchUISound");
             botonMenu.setTint(0xcccccc);
         });
         botonMenu.on('pointerout', () => {
@@ -338,6 +346,8 @@ export default class Level3 extends Phaser.Scene {
 
         })
         this.turn="player";
+
+        this.sound.play("combatMusic",{loop:true,volume:0.5});
     }
 
     initShaders(){
@@ -372,7 +382,7 @@ export default class Level3 extends Phaser.Scene {
             targets: [this.statsUI.hpDisplay, this.statsUI.portrait,this.statsUI.UIbg],
             y:function(target, key, value, targetIndex, totalTargets, tween) { let values=[292,300,300];return values[targetIndex]; },
             ease:'expo.inout',
-            duration: 1000,
+            duration: 1000
         })
     }
     hideStatsUI(){
