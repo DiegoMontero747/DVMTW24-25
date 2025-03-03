@@ -287,35 +287,32 @@ export default class Level3 extends Phaser.Scene {
         this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
         this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
         this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
+        this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
+        this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
 
-        this.input.keyboard.on('keycombomatch', function (combo) {
+
+        this.input.keyboard.on('keycombomatch', (combo) => {
             switch(combo.comboName){
                 case 'reset':
                     cam.resetPostPipeline();
                 break;
                 case 'crt':
-                    scene.setCrtShader();
+                    this.setCrtShader();
                 break;
                 case 'gba':
-                    scene.setGBAShader();
+                    this.setGBAShader();
                 break;
                 case 'retro':
-                    scene.setRetroShader();
+                    this.setRetroShader();
                 break;
                 case 'pixel':
-                    scene.setPixelShader();
+                    this.setPixelShader();
                 break;
-                case 'mage':
-                    scene.activeCharacter="mage";
-                    cam.startFollow(scene.player2);
+                case 'mute':
+                    this.sound.setMute(!scene.sound.mute);
                 break;
-                case 'warrior':
-                    scene.activeCharacter="warrior";
-                    cam.startFollow(scene.player);
-                break;
-                case 'orc':
-                    scene.activeCharacter="orc";
-                    cam.startFollow(scene.orc);
+                case 'restart':
+                    this.scene.restart();
                 break;
             }
 
@@ -343,11 +340,10 @@ export default class Level3 extends Phaser.Scene {
             console.log("player hitted");
             this.events.emit("player_turn_start");         
             this.orc.playAttack();
-
         })
         this.turn="player";
 
-        this.sound.play("combatMusic",{loop:true,volume:0.5});
+        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
     }
 
     initShaders(){
