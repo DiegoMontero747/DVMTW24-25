@@ -54,7 +54,7 @@ export default class Level3 extends Phaser.Scene {
         //const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
         //this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
         //this.wall_layer.setCollisionByProperty({collides:true});
-        const floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
+        this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
         this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
         if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
@@ -244,6 +244,7 @@ export default class Level3 extends Phaser.Scene {
         this.player = new Player(this, 128, 200).setDepth(1);
         //this.player2 = new Mage(this, 72, 176);
         this.orc = new Orc(this, 240, 190).setDepth(1);
+
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
         this.showTurnMsg();
@@ -289,6 +290,8 @@ export default class Level3 extends Phaser.Scene {
         this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
         this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
         this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
+        this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
+
 
 
         this.input.keyboard.on('keycombomatch', (combo) => {
@@ -313,6 +316,9 @@ export default class Level3 extends Phaser.Scene {
                 break;
                 case 'restart':
                     this.scene.restart();
+                break;
+                case 'lights':
+                    this.setLights();
                 break;
             }
 
@@ -356,6 +362,7 @@ export default class Level3 extends Phaser.Scene {
                 this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
             } 
         });
+        //this.player.setPostPipeline(GameShaderPixel);
     }
 
     initShaders(){
@@ -383,6 +390,14 @@ export default class Level3 extends Phaser.Scene {
     changeStatsUI(portrait,currentHP,maxHP){
         this.statsUI.hpDisplay.setText("HP: "+currentHP+"/"+maxHP);
         this.statsUI.portrait.setTexture(portrait+'Portrait');
+    }
+    setLights(){
+        this.wall_layer.setPipeline("Light2D")
+        this.floor_layer.setPipeline("Light2D")
+        this.orc.setPipeline("Light2D")
+        this.player.setPipeline("Light2D")
+        this.lights.enable().setAmbientColor(0x000000);
+        this.playerLight = this.lights.addLight(240, 190, 200).setColor(0xffffff).setIntensity(1.2);
     }
 
     showStatsUI(){
@@ -433,6 +448,10 @@ export default class Level3 extends Phaser.Scene {
             }else if(this.turn=="enemy"){   
                 this.activeCharacter="orc";
                 this.cameras.main.startFollow(this.orc);
+            }
+            if(this.playerLight){
+                this.playerLight.x=this.player.x;
+                this.playerLight.y=this.player.y;
             }
     }
 }
