@@ -57,6 +57,7 @@ export default class Level3 extends Phaser.Scene {
         this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
         this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
+
         if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
         }
@@ -362,7 +363,14 @@ export default class Level3 extends Phaser.Scene {
                 this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
             } 
         });
-        //this.player.setPostPipeline(GameShaderPixel);
+        let mask=this.wall_layer.createBitmapMask();
+        mask.invertAlpha=true;
+        this.player.moveAreaGraphics.setMask(mask);
+        let mask2=this.player.attackArea.createGeometryMask();
+        mask2.setInvertAlpha(true);
+        console.log(mask)
+        console.log(mask2)
+        //this.player.moveAreaGraphics.setMask(mask2);
     }
 
     initShaders(){
