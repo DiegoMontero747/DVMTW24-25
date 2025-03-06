@@ -12,7 +12,33 @@
 
 <body>
     <h1><img src="assets/misc/banner.png" alt="Dungeons & Pixels"></h1>
-    <script src="./src/game.js" type="module"></script>
+    
+    <audio id="musicaFondo" loop>
+        <source src="src/musica/prueba.mp3" type="audio/mpeg">
+        Tu navegador no soporta el audio.
+    </audio>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const musica = document.getElementById("musicaFondo");
+
+            // Intentar reproducir la música al cargar la página
+            musica.play().catch(error => {
+                console.log("Error al reproducir la música automáticamente:", error);
+            });
+
+            // Asegurar que la música sigue en bucle manualmente
+            musica.addEventListener("ended", function () {
+                musica.currentTime = 0;
+                musica.play();
+            });
+        });
+    </script>
+    
+    <script src="./src/game.js" type="module">
+
+
+    </script>
     <!-- El juego irá dentro de este <div> por la propiedad `parent` que pasamos `new Phaser.Game` -->
     <div id="juego"></div>
     <p><center><a href="https://github.com/DiegoMontero747/DVMTW24-25">Repositorio de GitHub</a></center></p>
