@@ -84,6 +84,11 @@
                          "name":"Collide",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"texture",
+                         "type":"string",
+                         "value":"Portontxt"
                         }],
                  "rotation":0,
                  "type":"",
@@ -101,6 +106,11 @@
                          "name":"Collide",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"puertatxt"
                         }],
                  "rotation":0,
                  "type":"",
@@ -155,6 +165,12 @@
                  "height":20.2313,
                  "id":4,
                  "name":"Cerradura",
+                 "properties":[
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"cerraduratxt"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -166,6 +182,17 @@
                  "height":0,
                  "id":6,
                  "name":"Llave",
+                 "properties":[
+                        {
+                         "name":"Collide",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"llavetxt"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -182,6 +209,11 @@
                          "name":"Collide",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"trampatxt"
                         }],
                  "rotation":0,
                  "type":"",
@@ -199,6 +231,11 @@
                          "name":"Collide",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"trampatxt"
                         }],
                  "rotation":0,
                  "type":"",
@@ -216,6 +253,11 @@
                          "name":"Collide",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"chesstxt"
                         }],
                  "rotation":0,
                  "type":"",
@@ -223,6 +265,28 @@
                  "width":16.5,
                  "x":399.25,
                  "y":56.5
+                }, 
+                {
+                 "height":31.25,
+                 "id":29,
+                 "name":"Palanca",
+                 "properties":[
+                        {
+                         "name":"Collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"palancaOff"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16.75,
+                 "x":447.5,
+                 "y":160.25
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -231,7 +295,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":21,
+ "nextobjectid":30,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

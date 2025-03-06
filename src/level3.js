@@ -57,6 +57,7 @@ export default class Level3 extends Phaser.Scene {
         this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
         this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
+        this.objects_layer = this.map.getObjectLayer("Objetos", tileset)
 
         if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
@@ -64,18 +65,38 @@ export default class Level3 extends Phaser.Scene {
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
 
+        this.objects_layer.objects.forEach(obj => {
+            // Crear el sprite con la textura especificada en Tiled
+            let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
+            const sprite = this.physics.add.sprite(obj.x+7, obj.y+7, textura);
+        
+            // Ajustar el origen porque Tiled usa la esquina superior izquierda
+            sprite.setOrigin(0.5, 0.5);
+        
+            // Si el campo "collide" es verdadero, activamos colisión
+            if (obj.properties.Collide) {
+                this.physics.add.existing(sprite);
+                sprite.body.setImmovable(true);
+                sprite.body.allowGravity = false;
+            }
+        });
+
+        const objectsGroup = this.physics.add.staticGroup();
+
+        
+
         //Puertas
 
         const doors = this.doors_layer.objects
         .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
         .map(obj => {
-            let door = this.physics.add.staticSprite(obj.x, obj.y, "doorTexture"); // Crear sprite estático
-            door.setOrigin(0, 1); // Ajustar la posición si es necesario
+            let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
+            let door = this.physics.add.staticSprite(obj.x+7, obj.y+7, textura); // Crear sprite estático
+            door.setOrigin(0.5, 0.5); // Ajustar la posición si es necesario
             return door;
         });
 
         const doorsGroup = this.physics.add.staticGroup(doors);
-        
 
 
         let botonNextTurn = this.add.image(600, 300, 'NextTurn')
@@ -254,6 +275,7 @@ export default class Level3 extends Phaser.Scene {
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer);
         //this.physics.add.collider(this.player2.body, this.wall_layer);
+        this.physics.add.collider(this.player, objectsGroup);
         this.physics.add.collider(this.player.body, doorsGroup);
 
         this.physics.add.collider(this.orc.body, this.wall_layer);
