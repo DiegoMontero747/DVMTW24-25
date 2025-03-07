@@ -65,6 +65,8 @@ export default class Level3 extends Phaser.Scene {
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
 
+        this.wall_layer.setDepth(1);
+
         this.objects_layer.objects.forEach(obj => {
             // Crear el sprite con la textura especificada en Tiled
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
@@ -263,9 +265,9 @@ export default class Level3 extends Phaser.Scene {
 
 
         //const tag=this.anims.createFromAseprite('player_warrior');
-        this.player = new Player(this, 128, 200).setDepth(1);
+        this.player = new Player(this, 128, 200).setDepth(3);
         //this.player2 = new Mage(this, 72, 176);
-        this.orc = new Orc(this, 240, 190).setDepth(1);
+        this.orc = new Orc(this, 240, 190).setDepth(2);
 
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
@@ -296,6 +298,7 @@ export default class Level3 extends Phaser.Scene {
         this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
 
         this.physics.add.existing(this.player.attackArea);
+        this.player.attackArea.body.setCircle(64);
         this.physics.add.existing(this.orc.attackArea);
         //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
@@ -376,23 +379,18 @@ export default class Level3 extends Phaser.Scene {
         this.boundLimitSound= this.sound.add("boundLimits")
         this.physics.world.on('worldbounds', (body, up, down, left, right) =>
         {   
-            if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
-            console.log("collide");
+            this.playCollideEffect();
+        });
+    }
+
+    playCollideEffect(){
+        if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
             if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
                 this.cameras.main.shake(300,0.0002);
                 this.boundLimitSound.play({volume:0.7});
                 this.boundLimitSoundTimeOut=true;
                 this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
             } 
-        });
-        let mask=this.wall_layer.createBitmapMask();
-        mask.invertAlpha=true;
-        this.player.moveAreaGraphics.setMask(mask);
-        let mask2=this.player.attackArea.createGeometryMask();
-        mask2.setInvertAlpha(true);
-        console.log(mask)
-        console.log(mask2)
-        //this.player.moveAreaGraphics.setMask(mask2);
     }
 
     initShaders(){
@@ -435,7 +433,7 @@ export default class Level3 extends Phaser.Scene {
             targets: [this.statsUI.hpDisplay, this.statsUI.portrait,this.statsUI.UIbg],
             y:function(target, key, value, targetIndex, totalTargets, tween) { let values=[292,300,300];return values[targetIndex]; },
             ease:'expo.inout',
-            duration: 1000
+            duration: 1000,
         })
     }
     hideStatsUI(){

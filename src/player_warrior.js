@@ -42,15 +42,20 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.attackArea.fillRect(this.x-64,this.y-64,128,128);
         this.attackArea.strokeRect(this.x-64,this.y-64,128,128);*/
         this.attackArea=this.scene.add.rectangle(this.x,this.y+5, 128, 128, 0xff0000,0.25).setVisible(false);
+        this.attackArea=this.scene.add.circle(this.x,this.y+5, 64, 0xff0000,0.25).setVisible(false);
         this.attackArea.setStrokeStyle(1, 0xff0000, 1);
-        this.moveArea=new Phaser.Geom.Rectangle(0,0, 200, 200)//this.scene.add.rectangle(this.x,this.y+5, 200, 200, 0x0080ff,0.25);
+        this.attackArea;
+        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+5,100)//this.scene.add.rectangle(this.x,this.y+5, 200, 200, 0x0080ff,0.25);
 
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
-        Phaser.Geom.Rectangle.CenterOn(this.moveArea,this.x,this.y+5);
-        this.moveAreaGraphics.fillRectShape(this.moveArea);
-        this.moveAreaGraphics.strokeRectShape(this.moveArea);
+        this.moveAreaGraphics.fillCircleShape(this.moveArea);
+        this.moveAreaGraphics.strokeCircleShape(this.moveArea);
+
+        console.log(this.moveArea);
+        console.log(this);
+
 
 
 
@@ -69,7 +74,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds(true,false,false,true);
         //console.log(this.body);
-        this.body.setBoundsRectangle(this.moveArea);
+        //this.body.setBoundsRectangle(this.moveArea);
 
 
         // Esta label es la UI en la que pondremos la puntuación del jugador
@@ -203,6 +208,58 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         }
     }
 
+
+
+    physics_combat_movement(){
+        const velocity=200;
+        this.body.setVelocityX(0);
+        this.body.setVelocityY(0);
+
+        if (this.cursors.up.isDown) {
+            this.facing="up";
+            if(this.moveArea.contains(this.body.center.x,this.body.top)){
+                this.body.setVelocityY(-velocity);
+                this.body.setVelocityX(0);
+                this.play({key:'walk_up'},true);
+            }else{
+                this.scene.playCollideEffect();
+            }
+        }
+        else if (this.cursors.down.isDown) {
+            this.facing="down";
+            if(this.moveArea.contains(this.body.center.x,this.body.bottom)){
+                this.body.setVelocityY(velocity);
+                this.body.setVelocityX(0);
+                this.play({key:'walk_down'},true);
+            }else{
+                this.scene.playCollideEffect();
+            }
+        } 
+        else if (this.cursors.right.isDown) {
+            this.facing="right";
+            if(this.moveArea.contains(this.body.right,this.body.center.y)){
+                this.body.setVelocityX(velocity);
+                this.body.setVelocityY(0);
+                this.play({key:'walk_right'},true);
+            }else{
+                this.scene.playCollideEffect();
+            }
+        }
+        else if (this.cursors.left.isDown) {
+            this.facing="left";
+            if(this.moveArea.contains(this.body.left,this.body.center.y)){
+                this.body.setVelocityX(-velocity);
+                this.body.setVelocityY(0);
+                this.play({key:'walk_left'},true);
+            }else{
+                this.scene.playCollideEffect();
+            }
+        }
+        if(this.body.velocity.x==0 && this.body.velocity.y==0 && this.isMoving==false){
+            this.play({key:'iddle_'+this.facing,repeat:-1},true);
+        }
+
+    }
     /**
      *Gestiona movimiento 4-direccional mediante fisica
      */
@@ -245,7 +302,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     physics_grid_movement(dt){
         const velocity=200;
         if(this.isMoving==false){
-            if (this.cursors.up.isDown) {
+            if (this.cursors.up.isDown ) {
                 this.body.setVelocityY(-velocity);
                 this.goal_y=this.lastGridY-this.moveDist;
                 this.play({key:'walk_up'},true);
@@ -337,14 +394,13 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
     onTurnStart(){
         //Volver a pintar el area de movimiento
-        Phaser.Geom.Rectangle.CenterOn(this.moveArea,this.x,this.y+5);
+        this.setDepth(this.depth+1);
+        this.moveArea.setPosition(this.x,this.y+5);
         this.moveAreaGraphics.clear();
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
-        this.moveAreaGraphics.fillRectShape(this.moveArea);
-        this.moveAreaGraphics.strokeRectShape(this.moveArea);
-        this.setDepth(2);
-
+        this.moveAreaGraphics.fillCircleShape(this.moveArea);
+        this.moveAreaGraphics.strokeCircleShape(this.moveArea);
         //Animacion personaje activo
         this.scene.tweens.add({
             targets: [this],
@@ -357,7 +413,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     onTurnEnd(){
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         this.attackArea.setVisible(false);
-        this.setDepth(1);
+        this.setDepth(this.depth-1);
     }
 
     /**
@@ -384,7 +440,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.activeCharacter=="warrior")this.physics_4way_movement(t);
+        if(this.scene.activeCharacter=="warrior")this.physics_combat_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
         this.attackArea.x= this.x;
