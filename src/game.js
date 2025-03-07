@@ -17,10 +17,10 @@ import GameShaderPixel from "./shaders/pixelShader.js";
 let config = {
     type: Phaser.AUTO,
     width: 1000,
-    height: 500,
+    height: 800,
     parent: 'juego',
     scale: {
-        //mode: Phaser.Scale.FIT,  
+        mode: Phaser.Scale.FIT,  
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
@@ -30,7 +30,7 @@ let config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
     pipeline: [GameShaderCRT,GameShaderRetro,GameShaderGBA,GameShaderPixel]

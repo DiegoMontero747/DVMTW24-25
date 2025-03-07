@@ -84,6 +84,7 @@ export default class Boot extends Phaser.Scene {
    * nivel del juego
    */
   create() {
+    this.input.mouse.disableContextMenu();
     this.scene.start('level3');
   }
 }

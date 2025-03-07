@@ -41,15 +41,15 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.attackArea.fillStyle(0xff0000,0.2);
         this.attackArea.fillRect(this.x-64,this.y-64,128,128);
         this.attackArea.strokeRect(this.x-64,this.y-64,128,128);*/
-        this.attackArea=this.scene.add.rectangle(this.x,this.y+5, 128, 128, 0xff0000,0.25).setVisible(false);
+        //this.attackArea=this.scene.add.rectangle(this.x,this.y+5, 128, 128, 0xff0000,0.25).setVisible(false);
         this.attackArea=this.scene.add.circle(this.x,this.y+5, 64, 0xff0000,0.25).setVisible(false);
         this.attackArea.setStrokeStyle(1, 0xff0000, 1);
-        this.attackArea;
-        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+5,100)//this.scene.add.rectangle(this.x,this.y+5, 200, 200, 0x0080ff,0.25);
+        this.attackArea.setDepth(this.depth+1);
+        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100)//this.scene.add.rectangle(this.x,this.y+5, 200, 200, 0x0080ff,0.25);
 
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
-        this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
-        this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
+        this.moveAreaGraphics.lineStyle(1, 0x0069ff, 0.50);  
+        this.moveAreaGraphics.fillStyle("0x0069ff",0.20);
         this.moveAreaGraphics.fillCircleShape(this.moveArea);
         this.moveAreaGraphics.strokeCircleShape(this.moveArea);
 
@@ -395,7 +395,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     onTurnStart(){
         //Volver a pintar el area de movimiento
         this.setDepth(this.depth+1);
-        this.moveArea.setPosition(this.x,this.y+5);
+        this.moveArea.setPosition(this.x,this.y+14);
         this.moveAreaGraphics.clear();
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
@@ -444,7 +444,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
         this.attackArea.x= this.x;
-        this.attackArea.y=this.y+5;
+        this.attackArea.y=this.y+14;
     }
 
 }

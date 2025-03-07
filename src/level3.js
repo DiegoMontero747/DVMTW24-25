@@ -101,7 +101,7 @@ export default class Level3 extends Phaser.Scene {
         const doorsGroup = this.physics.add.staticGroup(doors);
 
 
-        let botonNextTurn = this.add.image(600, 300, 'NextTurn')
+        let botonNextTurn = this.add.image(600, 500, 'NextTurn')
         .setInteractive();
         botonNextTurn.setScrollFactor(0);
         botonNextTurn.setScale(0.8);
@@ -131,7 +131,7 @@ export default class Level3 extends Phaser.Scene {
         this.textDisplay=this.add.text(screenCenterX,200,"Combat Start",{strokeThickness:3,stroke:"rgb(65, 32, 5)",color:"rgb(164, 193, 212)"}).setOrigin(0.5).setScrollFactor(0).setDepth(20);
         var displayTween=this.tweens.add({
             targets: [this.textDisplay,this.turnBanner],
-            y:{from:100,to:200},
+            y:{from:200,to:300},
             ease:'expo.out',
             duration: 600,
             hold:600,
@@ -155,7 +155,7 @@ export default class Level3 extends Phaser.Scene {
             this.orc.onTurnEnd();
         });
 
-        let botonMove = this.add.image(500, 300, 'Move')
+        let botonMove = this.add.image(500, 500, 'Move')
         .setInteractive();
         botonMove.setScrollFactor(0);
         botonMove.setScale(0.8);
@@ -179,7 +179,7 @@ export default class Level3 extends Phaser.Scene {
             botonMove.clearTint();
         });
 
-        let botonAttack = this.add.image(550, 300, 'Attack')
+        let botonAttack = this.add.image(550, 500, 'Attack')
         .setInteractive();
         botonAttack.setScrollFactor(0);
         botonAttack.setScale(0.8);
@@ -203,7 +203,7 @@ export default class Level3 extends Phaser.Scene {
             botonAttack.clearTint();
         });
 
-        let botonMenu = this.add.image(640, 300, 'Menu')
+        let botonMenu = this.add.image(640, 500, 'Menu')
         .setInteractive();
         botonMenu.setScrollFactor(0);
         botonMenu.setScale(0.8);
@@ -223,7 +223,7 @@ export default class Level3 extends Phaser.Scene {
             if(this.menuOpen){
             this.tweens.add({
                 targets: [botonMove,botonAttack,botonNextTurn],
-                y:350,
+                y:550,
                 ease:'expo.inout',
                 duration: 1000,
                 delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
@@ -231,7 +231,7 @@ export default class Level3 extends Phaser.Scene {
             }else{
                 this.tweens.add({
                     targets: [botonMove,botonAttack,botonNextTurn],
-                    y:300,
+                    y:500,
                     ease:'expo.inout',
                     duration: 1000,
                     delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
@@ -250,9 +250,9 @@ export default class Level3 extends Phaser.Scene {
 
         //Stats UI TODO -> pasar a container y clase propia
         this.statsUI={
-            UIbg:this.add.image(410, 350, 'StatsBar').setScrollFactor(0).setDepth(20),
-            hpDisplay:this.add.text(390,350,"HP: ?/?",{fontSize:11,strokeThickness:4,stroke:'rgb(49, 0, 0)'}).setScrollFactor(0).setDepth(20),
-            portrait:this.add.image(367, 350, 'warriorPortrait').setScrollFactor(0).setDepth(20)
+            UIbg:this.add.image(410, 550, 'StatsBar').setScrollFactor(0).setDepth(20),
+            hpDisplay:this.add.text(390,550,"HP: ?/?",{fontSize:11,strokeThickness:4,stroke:'rgb(49, 0, 0)'}).setScrollFactor(0).setDepth(20),
+            portrait:this.add.image(367, 550, 'warriorPortrait').setScrollFactor(0).setDepth(20)
         };
 
         /* this.wall_layer.renderDebug(this.add.graphics(),
@@ -275,7 +275,7 @@ export default class Level3 extends Phaser.Scene {
         cam.startFollow(this.player);
         cam.setBounds(0,0);
         cam.setZoom(3);
-        this.physics.add.collider(this.player.body, this.wall_layer);
+        this.physics.add.collider(this.player.body, this.wall_layer,()=>{this.playCollideEffect()});
         //this.physics.add.collider(this.player2.body, this.wall_layer);
         this.physics.add.collider(this.player, objectsGroup);
         this.physics.add.collider(this.player.body, doorsGroup);
@@ -286,7 +286,6 @@ export default class Level3 extends Phaser.Scene {
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
         */
-
 
         this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
         //this.physics.world.enable(this.player.attackArea);
@@ -386,7 +385,7 @@ export default class Level3 extends Phaser.Scene {
     playCollideEffect(){
         if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
             if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
-                this.cameras.main.shake(300,0.0002);
+                this.cameras.main.shake(500,0.0002);
                 this.boundLimitSound.play({volume:0.7});
                 this.boundLimitSoundTimeOut=true;
                 this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
@@ -431,7 +430,7 @@ export default class Level3 extends Phaser.Scene {
     showStatsUI(){
         this.tweens.add({
             targets: [this.statsUI.hpDisplay, this.statsUI.portrait,this.statsUI.UIbg],
-            y:function(target, key, value, targetIndex, totalTargets, tween) { let values=[292,300,300];return values[targetIndex]; },
+            y:function(target, key, value, targetIndex, totalTargets, tween) { let values=[492,500,500];return values[targetIndex]; },
             ease:'expo.inout',
             duration: 1000,
         })
@@ -439,7 +438,7 @@ export default class Level3 extends Phaser.Scene {
     hideStatsUI(){
         this.tweens.add({
             targets: [this.statsUI.hpDisplay, this.statsUI.portrait,this.statsUI.UIbg],
-            y:350,
+            y:550,
             ease:'expo.inout',
             duration: 1000
         })
