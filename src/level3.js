@@ -129,9 +129,9 @@ export default class Level3 extends Phaser.Scene {
         const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
         graphics.strokeRectShape(this.attackArea);
         // Util para entrar en combate */
-        this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
+        // this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
 
-        this.physics.add.existing(this.orc.attackArea);
+        //this.physics.add.existing(this.orc.attackArea);
         //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
         this.initShaders();
@@ -161,6 +161,7 @@ export default class Level3 extends Phaser.Scene {
             this.orc.playAttack();
         })
         this.turn="player";
+        this.player.onTurnStart();
 
         this.initMusic()
     }
@@ -198,7 +199,7 @@ export default class Level3 extends Phaser.Scene {
                 this.input.keyboard.on('keycombomatch', (combo) => {
                     switch(combo.comboName){
                         case 'reset':
-                            cam.resetPostPipeline();
+                            this.cameras.main.resetPostPipeline();
                         break;
                         case 'crt':
                             this.setCrtShader();
@@ -328,7 +329,12 @@ export default class Level3 extends Phaser.Scene {
                 ease:'power1',
                 duration: 1000,
             });
-            if(this.turn=="player"){this.player.attackArea.setVisible(!this.player.attackArea.visible)} 
+            if(this.turn=="player"){
+                if(this.player.attackAreaType=="directional")
+                    this.player.attackCursorContainer.setVisible(!this.player.attackCursorContainer.visible)
+                else
+                this.player.attackArea.setVisible(!this.player.attackArea.visible)
+            } 
             else if(this.turn=="enemy"){this.orc.attackArea.setVisible(!this.orc.attackArea.visible)} 
         });
         botonAttack.on('pointerover', () => {
@@ -435,6 +441,10 @@ export default class Level3 extends Phaser.Scene {
             ease:'expo.inout',
             duration: 1000
         })
+    }
+
+    async checkHits(){
+        this.orc.checkHit();     
     }
 
 

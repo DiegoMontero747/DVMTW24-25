@@ -84,7 +84,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             this.scene.sound.play("touchUISound");
             this.scene.changeStatsUI("orc",this.hp,this.maxHp);
             this.scene.showStatsUI();
-            if(this.scene.turn=="player" && this.scene.physics.overlap(this.scene.player.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
+            if(this.scene.turn=="player" /*&& this.scene.physics.overlap(this.scene.player.attackArea, this.body)*/) this.effect=this.postFX.addGlow("0xc4180f");
             else this.effect=this.postFX.addGlow();
         });
         this.on('pointerout', function (event)
@@ -102,7 +102,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
                 this.container.setVisible(!this.container.visible);
             }
-            if(this.scene.turn=="player" && this.scene.physics.overlap(this.scene.player.attackArea, this.body)){ 
+            if(this.scene.turn=="player" && this.scene.attackArea &&this.scene.physics.overlap(this.scene.attackArea, this.body)){ 
                 this.onHit(1);
                 this.emit("enemy_hitted");
             };
@@ -125,6 +125,10 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             }
         }).pause();
         blood.play("splatter").on("animationcomplete",()=>{blood.setDepth(blood.depth-1);splatterFade.resume()});
+    }
+
+    checkHit(){
+        if(this.scene.physics.overlap(this.scene.attackArea, this.body))this.onHit(this.scene.attackEffect.dmg)
     }
 
     onHit(dmg){

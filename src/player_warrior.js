@@ -35,7 +35,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.hp=10;
         this.maxHp=10;
 
-        this.addAttackArea("circle");
+        this.attackAreaType="directional";
+        this.addAttackArea(this.attackAreaType);
 
         this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100)
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
@@ -377,6 +378,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
     onTurnStart(){
         //Volver a pintar el area de movimiento
+        this.scene.attackArea=this.attackArea;
+        this.attackEffect={dmg:2,push:{x:15,y:0}}
+        this.scene.attackEffect=this.attackEffect;
         this.setDepth(this.depth+1);
         this.moveArea.setPosition(this.x,this.y+14);
         this.moveAreaGraphics.clear();
@@ -401,10 +405,10 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
 
     addAttackArea(type){
+        this.attackAreaOffsetX=0;
+        this.attackAreaOffsetY=14;
         switch(type){
             case "circle":
-                this.attackAreaOffsetX=0;
-                this.attackAreaOffsetY=14;
                 this.attackArea=this.scene.add.circle(this.x+this.attackAreaOffsetX,this.y+this.attackAreaOffsetY, 64, 0xff0000,0.25).setVisible(false);
                 this.attackArea.setStrokeStyle(1, 0xff0000, 1);
                 this.attackArea.setDepth(this.depth+1);
@@ -412,15 +416,80 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                 this.attackArea.body.setCircle(64);
             break;
             case "rectangle":
-                this.attackAreaOffsetX=0;
-                this.attackAreaOffsetY=14;
                 this.attackArea=this.scene.add.rectangle(this.x+ this.attackAreaOffsetX,this.y+this.attackAreaOffsetY, 128,128, 0xff0000,0.25).setVisible(false);
                 this.attackArea.setStrokeStyle(1, 0xff0000, 1);
                 this.attackArea.setDepth(this.depth+1);
                 this.scene.physics.add.existing(this.attackArea);
             break;
+            case "directional":
+                const dirs=["up","down","left","right"];
+                const offsets=[{x:0,y:-37+this.attackAreaOffsetY},{x:0,y:37+this.attackAreaOffsetY},{x:-37,y:this.attackAreaOffsetY},{x:37,y:this.attackAreaOffsetY}];
+                const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:-64},{x:64,y:64}];
+                const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
+                this.dirAttackArea={};
+                this.attackAreaContainer=this.scene.add.container(this.x,this.y).setDepth(this.depth+1);
+                this.attackCursorContainer=this.scene.add.container(this.x,this.y).setDepth(20);
+
+                for(let i=0;i<dirs.length;i++){
+                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsets[i].x, offsets[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.25).setVisible(false);
+                    this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xff0000, 1);
+                    this.dirAttackArea[dirs[i]].setDepth();
+                    this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
+                    let dirSelector=this.scene.add.image(offsets[i].x, offsets[i].y,"dirCursor").setScale(0.8).setRotation(rotations[i]);
+                    dirSelector.setInteractive(this.scene.input.makePixelPerfect());
+                    dirSelector.on('pointerover', () => {
+                        this.scene.sound.play("touchUISound");
+                        this.dirAttackArea[dirs[i]].setVisible(true);
+                        dirSelector.setTint(0xcccccc);
+                    });
+                    dirSelector.on('pointerout', () => {
+                        this.dirAttackArea[dirs[i]].setVisible(false);
+                        dirSelector.clearTint();
+                    });
+                    dirSelector.on('pointerup', () => {
+                        this.scene.sound.play("woodButton");
+                        this.scene.tweens.add({
+                            targets: [dirSelector],
+                            scale:{from:1,to:0.8},
+                            ease:'power1',
+                            duration: 1000,
+                        });
+                        this.scene.attackArea=this.dirAttackArea[dirs[i]];
+                        this.facing=dirs[i];
+                        this.playAttack();
+                        this.scene.checkHits();
+                        dirSelector.clearTint();
+                    });
+                    
+                    this.attackAreaContainer.add(this.dirAttackArea[dirs[i]]);
+                    this.attackCursorContainer.add(dirSelector);
+                }
+                //this.attackContainer.add(new Phaser.GameObjects.Rectangle(this.scene,this.x+ offsets[i].x,this.y+ offsets[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.2))
+
+            break;
             
         }
+    }
+    centerAttackArea(type){
+        switch(type){
+            case "circle":
+                this.attackArea.x= this.x+this.attackAreaOffsetX;
+                this.attackArea.y=this.y+this.attackAreaOffsetY;
+            break;
+
+            case "rectangle":
+                this.attackArea.x= this.x+this.attackAreaOffsetX;
+                this.attackArea.y=this.y+this.attackAreaOffsetY;
+            break;
+
+            case "directional":
+                this.attackAreaContainer.x= this.x;
+                this.attackAreaContainer.y=this.y;
+                this.attackCursorContainer.x=this.x;
+                this.attackCursorContainer.y=this.y;
+            break;
+        }
+
     }
 
     /**
@@ -450,8 +519,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         if(this.scene.activeCharacter=="warrior")this.physics_combat_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
-        this.attackArea.x= this.x+this.attackAreaOffsetX;
-        this.attackArea.y=this.y+this.attackAreaOffsetY;
+        this.centerAttackArea(this.attackAreaType);
     }
 
 }
