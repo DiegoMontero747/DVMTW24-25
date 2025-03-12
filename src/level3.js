@@ -194,6 +194,7 @@ export default class Level3 extends Phaser.Scene {
                 this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
                 this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
                 this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
+                this.input.keyboard.createCombo('music',{resetOnMatch:true}).comboName='music';
                 this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
         
                 this.input.keyboard.on('keycombomatch', (combo) => {

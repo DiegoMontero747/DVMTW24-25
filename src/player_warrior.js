@@ -440,19 +440,31 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                     dirSelector.on('pointerover', () => {
                         this.scene.sound.play("touchUISound");
                         this.dirAttackArea[dirs[i]].setVisible(true);
+                        this.scene.tweens.add({
+                            targets: [dirSelector],
+                            scale:{from:0.8,to:1.0},
+                            ease:'power1',
+                            duration: 300,
+                        });
                         dirSelector.setTint(0xcccccc);
                     });
                     dirSelector.on('pointerout', () => {
                         this.dirAttackArea[dirs[i]].setVisible(false);
+                        this.scene.tweens.add({
+                            targets: [dirSelector],
+                            scale:{from:1.0,to:0.8},
+                            ease:'power1',
+                            duration: 300,
+                        });
                         dirSelector.clearTint();
                     });
                     dirSelector.on('pointerup', () => {
                         this.scene.sound.play("woodButton");
                         this.scene.tweens.add({
                             targets: [dirSelector],
-                            scale:{from:1,to:0.8},
+                            scale:{from:1.4,to:1.0},
                             ease:'power1',
-                            duration: 1000,
+                            duration: 200,
                         });
                         this.scene.attackArea=this.dirAttackArea[dirs[i]];
                         this.facing=dirs[i];
