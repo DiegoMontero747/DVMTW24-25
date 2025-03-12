@@ -76,7 +76,7 @@
          "name":"Puertas",
          "objects":[
                 {
-                 "height":45.5,
+                 "height":62,
                  "id":17,
                  "name":"Porton",
                  "properties":[
@@ -86,19 +86,19 @@
                          "value":true
                         }, 
                         {
-                         "name":"texture",
+                         "name":"Texture",
                          "type":"string",
-                         "value":"Portontxt"
+                         "value":"portontxt"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":48.5,
+                 "width":48,
                  "x":383.75,
-                 "y":87.25
+                 "y":80.25
                 }, 
                 {
-                 "height":35.5,
+                 "height":32,
                  "id":18,
                  "name":"Puerta final",
                  "properties":[
@@ -115,9 +115,147 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":20.25,
-                 "x":398,
-                 "y":12.5
+                 "width":16,
+                 "x":400,
+                 "y":15.5
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":6,
+         "name":"Objetos",
+         "objects":[
+                {
+                 "height":32,
+                 "id":4,
+                 "name":"Cerradura",
+                 "properties":[
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"cerraduratxt"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":432.5,
+                 "y":110.5
+                }, 
+                {
+                 "height":16,
+                 "id":6,
+                 "name":"Llave",
+                 "properties":[
+                        {
+                         "name":"Collide",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"llavetxt"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":399.5,
+                 "y":280.5
+                }, 
+                {
+                 "height":16,
+                 "id":14,
+                 "name":"Trampa",
+                 "properties":[
+                        {
+                         "name":"Collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"trampatxt"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":359.5,
+                 "y":272.5
+                }, 
+                {
+                 "height":16,
+                 "id":15,
+                 "name":"Trampa",
+                 "properties":[
+                        {
+                         "name":"Collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"trampatxt"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":359.5,
+                 "y":288.5
+                }, 
+                {
+                 "height":32,
+                 "id":20,
+                 "name":"Cofre",
+                 "properties":[
+                        {
+                         "name":"Collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"chesstxt"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16.5,
+                 "x":399.5,
+                 "y":57
+                }, 
+                {
+                 "height":32,
+                 "id":29,
+                 "name":"Palanca",
+                 "properties":[
+                        {
+                         "name":"Collide",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"Texture",
+                         "type":"string",
+                         "value":"palancaOff"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":447.5,
+                 "y":159.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -155,147 +293,9 @@
          "width":30,
          "x":0,
          "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":6,
-         "name":"Objetos",
-         "objects":[
-                {
-                 "height":20.2313,
-                 "id":4,
-                 "name":"Cerradura",
-                 "properties":[
-                        {
-                         "name":"Texture",
-                         "type":"string",
-                         "value":"cerraduratxt"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":14.0063,
-                 "x":433.157,
-                 "y":116.719
-                }, 
-                {
-                 "height":0,
-                 "id":6,
-                 "name":"Llave",
-                 "properties":[
-                        {
-                         "name":"Collide",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"Texture",
-                         "type":"string",
-                         "value":"llavetxt"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":407.219,
-                 "y":288.425
-                }, 
-                {
-                 "height":15.875,
-                 "id":14,
-                 "name":"Trampa",
-                 "properties":[
-                        {
-                         "name":"Collide",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Texture",
-                         "type":"string",
-                         "value":"trampatxt"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":15.75,
-                 "x":359.5,
-                 "y":272.75
-                }, 
-                {
-                 "height":15.875,
-                 "id":15,
-                 "name":"Trampa",
-                 "properties":[
-                        {
-                         "name":"Collide",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Texture",
-                         "type":"string",
-                         "value":"trampatxt"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":15.75,
-                 "x":359.375,
-                 "y":288.438
-                }, 
-                {
-                 "height":22.5,
-                 "id":20,
-                 "name":"Cofre",
-                 "properties":[
-                        {
-                         "name":"Collide",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Texture",
-                         "type":"string",
-                         "value":"chesstxt"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16.5,
-                 "x":399.25,
-                 "y":56.5
-                }, 
-                {
-                 "height":31.25,
-                 "id":29,
-                 "name":"Palanca",
-                 "properties":[
-                        {
-                         "name":"Collide",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Texture",
-                         "type":"string",
-                         "value":"palancaOff"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16.75,
-                 "x":447.5,
-                 "y":160.25
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":30,
+ "nextobjectid":32,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

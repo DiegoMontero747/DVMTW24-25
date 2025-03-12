@@ -68,7 +68,7 @@ export default class Level3 extends Phaser.Scene {
         this.objects_layer.objects.forEach(obj => {
             // Crear el sprite con la textura especificada en Tiled
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            const sprite = this.physics.add.sprite(obj.x+7, obj.y+7, textura);
+            const sprite = this.physics.add.sprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura);
         
             // Ajustar el origen porque Tiled usa la esquina superior izquierda
             sprite.setOrigin(0.5, 0.5);
@@ -83,21 +83,18 @@ export default class Level3 extends Phaser.Scene {
 
         const objectsGroup = this.physics.add.staticGroup();
 
-        
-
         //Puertas
 
         const doors = this.doors_layer.objects
         .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
         .map(obj => {
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            let door = this.physics.add.staticSprite(obj.x+7, obj.y+7, textura); // Crear sprite estático
-            door.setOrigin(0.5, 0.5); // Ajustar la posición si es necesario
+            let door = this.physics.add.staticSprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura); // Crear sprite estático
+            door.setOrigin(0.5,0.5); // Ajustar la posición si es necesario
             return door;
         });
 
         const doorsGroup = this.physics.add.staticGroup(doors);
-
 
         let botonNextTurn = this.add.image(600, 300, 'NextTurn')
         .setInteractive();
