@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-const int tamx = 50, tamy = 50, num_salas =5;
+const int tamx = 100, tamy = 100, num_salas = ((tamx + tamy)/2) /10, max_errores= (tamx + tamy) / 5;
 
 const char
 c_pared = '#',
@@ -29,10 +29,10 @@ i_pared_r = 130,
 i_pared_u = 52,
 i_pared_u2 = 27,
 
-i_pared_esquina_pequeña_dl = 154,
-i_pared_esquina_pequeña_dr = 78,
-i_pared_esquina_pequeña_ur = 105,
-i_pared_esquina_pequeña_ul = 104,
+i_pared_esquina_pequeÃ±a_dl = 154,
+i_pared_esquina_pequeÃ±a_dr = 78,
+i_pared_esquina_pequeÃ±a_ur = 105,
+i_pared_esquina_pequeÃ±a_ul = 104,
 
 i_pared_esquina_grande_dl = 1,
 i_pared_esquina_grande_dr = 2,
@@ -40,7 +40,7 @@ i_pared_esquina_grande_ur = 3,
 i_pared_esquina_grande_ul = 4;
 
 struct coordenada {
-    int y,x;
+    int y, x;
 };
 
 struct sala {
@@ -73,7 +73,6 @@ sala salaPPal = {
         {{2,2}}//salidas mazmorra
 
 };
-
 
 vector<sala> sala_11x11{
     {
@@ -833,7 +832,7 @@ void imprimeVectorJSON(const sala& s) {
                     && adyacente[6]
                     && adyacente[7]
                     ) {
-                    mapa_paredes[fila][col] = i_pared_esquina_pequeña_ul;
+                    mapa_paredes[fila][col] = i_pared_esquina_pequeÃ±a_ul;
                 }
 
                 /*
@@ -857,7 +856,7 @@ void imprimeVectorJSON(const sala& s) {
                     && adyacente[6]
                     && adyacente[7]
                     ) {
-                    mapa_paredes[fila][col] = i_pared_esquina_pequeña_ur;
+                    mapa_paredes[fila][col] = i_pared_esquina_pequeÃ±a_ur;
                 }
 
                 /*
@@ -881,7 +880,7 @@ void imprimeVectorJSON(const sala& s) {
                     && adyacente[6]
                     && !adyacente[7]
                     ) {
-                    mapa_paredes[fila][col] = i_pared_esquina_pequeña_dr;
+                    mapa_paredes[fila][col] = i_pared_esquina_pequeÃ±a_dr;
                 }
 
                 /*
@@ -905,7 +904,7 @@ void imprimeVectorJSON(const sala& s) {
                     && adyacente[6]
                     && adyacente[7]
                     ) {
-                    mapa_paredes[fila][col] = i_pared_esquina_pequeña_dl;
+                    mapa_paredes[fila][col] = i_pared_esquina_pequeÃ±a_dl;
                 }
 
                 /*
@@ -1111,9 +1110,9 @@ sala traduce_sala() {
     //pintaSala(sala_aux);
 }
 
-bool cabeLaSala(const vector<vector<char>> &m, int posy, int posx, sala s, int dir) {
+bool cabeLaSala(const vector<vector<char>>& m, int posy, int posx, sala s, int dir) {
 
-    int cx=-1, cy=-1, fx=-1, fy=-1;
+    int cx = -1, cy = -1, fx = -1, fy = -1;
     //0 = arriba, 1= izquierda, 2 = derecha, 3 = abajo
     if (dir == 0) {
         fy = posy - 1;
@@ -1140,15 +1139,15 @@ bool cabeLaSala(const vector<vector<char>> &m, int posy, int posx, sala s, int d
         fx = posx + (s.tamx / 2);
     }
     //comprobamos que no nos salimos de rango
-    if (cy< 0 || cy>=tamy ||
-        fy< 0 || fy>=tamy ||
-        cx< 0 || cx>=tamx ||
-        fx< 0 || fx>=tamx
+    if (cy < 0 || cy >= tamy ||
+        fy < 0 || fy >= tamy ||
+        cx < 0 || cx >= tamx ||
+        fx < 0 || fx >= tamx
         ) {
         return false;
     }
 
-    
+
 
     for (int i = cy; i < fy; i++) {
         for (int j = cx; j < fx; j++) {
@@ -1165,9 +1164,9 @@ bool cabeLaSala(const vector<vector<char>> &m, int posy, int posx, sala s, int d
 void pintaSalaOffset(vector<vector<char>>& m, int ofy, int ofx, vector<coordenada> v, char c) {
 
     while (!v.empty()) {
-        int cx = v[v.size() - 1].x+ofx, cy = v[v.size() - 1].y+ofy;
+        int cx = v[v.size() - 1].x + ofx, cy = v[v.size() - 1].y + ofy;
 
-        if (v[v.size() - 1].x != -1 && v[v.size() - 1].y !=-1) {
+        if (v[v.size() - 1].x != -1 && v[v.size() - 1].y != -1) {
             m[cy][cx] = c;
         }
         v.pop_back();
@@ -1176,9 +1175,9 @@ void pintaSalaOffset(vector<vector<char>>& m, int ofy, int ofx, vector<coordenad
 }
 
 
-void ponerSala(vector<vector<char>>& m, int posy, int posx, sala s, int dir, vector<vector<coordenada>> &puertas) {
+void ponerSala(vector<vector<char>>& m, int posy, int posx, sala s, int dir, vector<vector<coordenada>>& puertas) {
 
-    
+
 
     int cx = -1, cy = -1;
     //0 = arriba, 1= izquierda, 2 = derecha, 3 = abajo
@@ -1204,49 +1203,49 @@ void ponerSala(vector<vector<char>>& m, int posy, int posx, sala s, int dir, vec
 
     }
 
-    
 
-    pintaSalaOffset(m,cy,cx, s.cura, c_cura);
-    pintaSalaOffset(m,cy,cx, s.enemigo_melee, c_ene_melee);
-    pintaSalaOffset(m,cy,cx, s.enemigo_ranged, c_ene_ran);
-    pintaSalaOffset(m,cy,cx, s.explosivo, c_explosivo);
-    pintaSalaOffset(m,cy,cx, s.obstaculo, c_obstaculo);
-    pintaSalaOffset(m,cy,cx, s.pared, c_pared);
+
+    pintaSalaOffset(m, cy, cx, s.cura, c_cura);
+    pintaSalaOffset(m, cy, cx, s.enemigo_melee, c_ene_melee);
+    pintaSalaOffset(m, cy, cx, s.enemigo_ranged, c_ene_ran);
+    pintaSalaOffset(m, cy, cx, s.explosivo, c_explosivo);
+    pintaSalaOffset(m, cy, cx, s.obstaculo, c_obstaculo);
+    pintaSalaOffset(m, cy, cx, s.pared, c_pared);
 
     if (dir != -1) {
         m[posy][posx] = c_vacio;
         puertas[dir].pop_back();
     }
 
-    pintaSalaOffset(m,cy,cx, s.puerta, c_puerta);
-        if (s.puerta[0].x != -1 && s.puerta[0].y != -1 && dir!=3) {
-            puertas[0].push_back({ cy+s.puerta[0].y ,cx+s.puerta[0].x });
-        }
-        else if (dir == 3) {
-            m[cy + s.puerta[0].y][cx + s.puerta[0].x] = c_vacio;
-        }
-        if (s.puerta[1].x != -1 && s.puerta[1].y != -1 && dir!=2) {
-            puertas[1].push_back({ cy + s.puerta[1].y ,cx + s.puerta[1].x });
-        }
-        else if (dir == 2) {
-            m[cy + s.puerta[1].y][cx + s.puerta[1].x] = c_vacio;
-        }
-        if (s.puerta[2].x != -1 && s.puerta[2].y != -1 && dir!=1) {
-            puertas[2].push_back({ cy + s.puerta[2].y ,cx + s.puerta[2].x });
-        }
-        else if (dir == 1) {
-            m[cy + s.puerta[2].y][cx + s.puerta[2].x]= c_vacio;
-        }
-        if (s.puerta[3].x != -1 && s.puerta[3].y != -1 && dir!=0) {
-            puertas[3].push_back({ cy + s.puerta[3].y ,cx + s.puerta[3].x });
-        }
-        else if (dir == 0) {
-            m[cy + s.puerta[3].y][cx + s.puerta[3].x] = c_vacio;
-        }
-    pintaSalaOffset(m,cy,cx, s.recompensa, c_recompensa);
-    pintaSalaOffset(m,cy,cx, s.trampa, c_trampa);
-    pintaSalaOffset(m,cy,cx, s.salida, c_salida);
-    
+    pintaSalaOffset(m, cy, cx, s.puerta, c_puerta);
+    if (s.puerta[0].x != -1 && s.puerta[0].y != -1 && dir != 3) {
+        puertas[0].push_back({ cy + s.puerta[0].y ,cx + s.puerta[0].x });
+    }
+    else if (dir == 3) {
+        m[cy + s.puerta[0].y][cx + s.puerta[0].x] = c_vacio;
+    }
+    if (s.puerta[1].x != -1 && s.puerta[1].y != -1 && dir != 2) {
+        puertas[1].push_back({ cy + s.puerta[1].y ,cx + s.puerta[1].x });
+    }
+    else if (dir == 2) {
+        m[cy + s.puerta[1].y][cx + s.puerta[1].x] = c_vacio;
+    }
+    if (s.puerta[2].x != -1 && s.puerta[2].y != -1 && dir != 1) {
+        puertas[2].push_back({ cy + s.puerta[2].y ,cx + s.puerta[2].x });
+    }
+    else if (dir == 1) {
+        m[cy + s.puerta[2].y][cx + s.puerta[2].x] = c_vacio;
+    }
+    if (s.puerta[3].x != -1 && s.puerta[3].y != -1 && dir != 0) {
+        puertas[3].push_back({ cy + s.puerta[3].y ,cx + s.puerta[3].x });
+    }
+    else if (dir == 0) {
+        m[cy + s.puerta[3].y][cx + s.puerta[3].x] = c_vacio;
+    }
+    pintaSalaOffset(m, cy, cx, s.recompensa, c_recompensa);
+    pintaSalaOffset(m, cy, cx, s.trampa, c_trampa);
+    pintaSalaOffset(m, cy, cx, s.salida, c_salida);
+
 
 }
 
@@ -1266,16 +1265,16 @@ vector<vector<char>> generamazmorra() {
     vector<vector<coordenada>> puertas = { {},{},{},{} };
 
     //ponemos sala de inicio
-    ponerSala(m, tamy / 2, tamx / 2, salaPPal, -1,puertas);
-    
-    int salas_puestas = 1;
+    ponerSala(m, tamy / 2 -(salaPPal.tamy/2), tamx / 2 - (salaPPal.tamx / 2), salaPPal, -1, puertas);
 
-    while (salas_puestas != num_salas) {
+    int salas_puestas = 1;
+    int errores_consecutivos = 0;
+    while (salas_puestas != num_salas && errores_consecutivos<=max_errores) {
 
         random_device rd;
         mt19937 gen(rd()); // Generador Mersenne Twister
 
-        // Definir el rango del número aleatorio
+        // Definir el rango del nÃºmero aleatorio
         uniform_int_distribution<> dir(0, 3); // Enteros entre 1 y 100
 
         int direccion_expansion = dir(gen);
@@ -1284,20 +1283,24 @@ vector<vector<char>> generamazmorra() {
 
         int tam_sala = tam(gen);
 
-        uniform_int_distribution<> sal(0,salas_vector[tam_sala].size()-1); // Enteros entre 1 y 100
+        uniform_int_distribution<> sal(0, salas_vector[tam_sala].size() - 1); // Enteros entre 1 y 100
 
         int sala_concreta = sal(gen);
 
         if (!puertas[direccion_expansion].empty()) {
 
-            
+
             int ul_elem = puertas[direccion_expansion].size() - 1;
 
             if (cabeLaSala(m, puertas[direccion_expansion][ul_elem].y, puertas[direccion_expansion][ul_elem].x, salas_vector[tam_sala][sala_concreta], direccion_expansion)) {
 
+                errores_consecutivos = 0;
                 ponerSala(m, puertas[direccion_expansion][ul_elem].y, puertas[direccion_expansion][ul_elem].x, salas_vector[tam_sala][sala_concreta], direccion_expansion, puertas);
                 salas_puestas++;
 
+            }
+            else {
+                errores_consecutivos++;
             }
         }
 
@@ -1322,28 +1325,37 @@ int main() {
 
 
     int prueba = 1;
-    
+
     if (prueba == 0) {
         for (int i = 0; i < salas_vector.size(); i++) {
 
             for (int j = 0; j < salas_vector[i].size(); j++) {
                 pintaSala(salas_vector[i][j]);
                 imprimeVectorJSON(salas_vector[i][j]);
-        
+
             }
 
         }
     }
     if (prueba == 1) {
 
-        vector<vector<char>>mapa = generamazmorra();
+        char c = '0';
 
-        for (int i = 0; i < mapa.size(); i++) {
-            for (int j = 0; j < mapa[0].size(); j++) {
-                cout << mapa[i][j];
+        do {
+            vector<vector<char>>mapa = generamazmorra();
+
+            for (int i = 0; i < mapa.size(); i++) {
+                for (int j = 0; j < mapa[0].size(); j++) {
+                    cout << mapa[i][j];
+                }
+                cout << "\n";
             }
-            cout << "\n";
-        }
+
+            cout << "\n\n";
+
+            cin >> c;
+        } while (c!='0');
+
     }
 
 
