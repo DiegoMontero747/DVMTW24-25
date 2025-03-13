@@ -448,6 +448,40 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         });
                         dirSelector.setTint(0xcccccc);
                     });
+                    dirSelector.on('showSelector', () => {
+                        if(!dirSelector.animationPlaying){
+                            if(dirSelector.visible){
+                                dirSelector.animationPlaying=true;
+                                this.attackCursorContainer.setDepth(this.depth-1)
+                                this.scene.tweens.add({
+                                    targets: [dirSelector],
+                                    x:{from:offsets[i].x,to:0},
+                                    y:{from:offsets[i].y,to:0},
+                                    ease:'power1',
+                                    duration: 250,
+                                    onComplete:()=>{
+                                        dirSelector.setVisible(false);
+                                        dirSelector.animationPlaying=false;
+                                    }
+                                });
+                            }
+                            else{
+                                dirSelector.setVisible(true);
+                                dirSelector.animationPlaying=true;
+                                this.scene.tweens.add({
+                                    targets: [dirSelector],
+                                    depth:0,
+                                    x:{from:0,to:offsets[i].x},
+                                    y:{from:0,to:offsets[i].y},
+                                    ease:'power1',
+                                    duration: 300,
+                                    onComplete:()=>{this.attackCursorContainer.setDepth(20)
+                                        dirSelector.animationPlaying=false;
+                                    }
+                                });
+                            }
+                        }
+                    });
                     dirSelector.on('pointerout', () => {
                         this.dirAttackArea[dirs[i]].setVisible(false);
                         this.scene.tweens.add({
@@ -472,14 +506,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         this.scene.checkHits();
                         dirSelector.clearTint();
                     });
-                    
                     this.attackAreaContainer.add(this.dirAttackArea[dirs[i]]);
                     this.attackCursorContainer.add(dirSelector);
                 }
                 //this.attackContainer.add(new Phaser.GameObjects.Rectangle(this.scene,this.x+ offsets[i].x,this.y+ offsets[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.2))
 
             break;
-            
         }
     }
     centerAttackArea(type){
@@ -501,7 +533,10 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                 this.attackCursorContainer.y=this.y;
             break;
         }
+    }
 
+    showAttackControls(){
+        this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
     }
 
     /**

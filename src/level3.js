@@ -332,7 +332,7 @@ export default class Level3 extends Phaser.Scene {
             });
             if(this.turn=="player"){
                 if(this.player.attackAreaType=="directional")
-                    this.player.attackCursorContainer.setVisible(!this.player.attackCursorContainer.visible)
+                    this.player.showAttackControls();
                 else
                 this.player.attackArea.setVisible(!this.player.attackArea.visible)
             } 
