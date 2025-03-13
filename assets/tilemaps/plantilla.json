@@ -1,0 +1,41 @@
+{ "compressionlevel":-1,
+ "height":10,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[1, 2, 3, 452, 455, 458, 278, 280, 0, 0,
+            26, 27, 28, 479, 480, 481, 326, 327, 0, 0,
+            51, 52, 53, 504, 505, 506, 329, 330, 0, 0,
+            5, 6, 7, 529, 530, 531, 311, 311, 0, 0,
+            30, 31, 32, 476, 477, 478, 311, 311, 0, 0,
+            55, 56, 57, 501, 502, 503, 311, 311, 0, 0,
+            76, 77, 78, 526, 527, 528, 311, 311, 0, 0,
+            101, 102, 103, 104, 105, 482, 483, 484, 0, 0,
+            126, 127, 128, 129, 130, 507, 508, 509, 0, 0,
+            151, 152, 153, 154, 155, 532, 533, 534, 0, 0],
+         "height":10,
+         "id":1,
+         "name":"Capa de patrones 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":10,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":2,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.11.2",
+ "tileheight":16,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"..\/..\/..\/TilesDungeon.tsx"
+        }],
+ "tilewidth":16,
+ "type":"map",
+ "version":"1.10",
+ "width":10
+}
