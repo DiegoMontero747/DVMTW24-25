@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-const int tamx = 100, tamy = 100, num_salas = ((tamx + tamy)/2) /10, max_errores= (tamx + tamy) / 5;
+const int tamx = 50, tamy = 50, num_salas = ((tamx + tamy) / 2) / 10, max_errores = (tamx + tamy) / 5;
 
 const char
 c_pared = '#',
@@ -18,26 +18,28 @@ c_cura = 'C',
 c_recompensa = 'R',
 c_salida = 'S',
 c_vacio = ' ';
+
+
 const int
-i_suelo = 31,
+i_suelo = 31, //comprobado ok
 
-i_pared_negro = 311,
+i_pared_negro = 311,    //comprobado ok
 
-i_pared_l = 129,
-i_pared_d = 77,
-i_pared_r = 130,
-i_pared_u = 52,
-i_pared_u2 = 27,
+i_pared_d = 77,     //comprobado ok
+i_pared_l = 129,    //comprobado ok
+i_pared_r = 130,    //comprobado ok
+i_pared_u = 2,     //comprobado ok
+i_pared_u2 = 27,     //comprobado ok
 
-i_pared_esquina_pequeña_dl = 154,
-i_pared_esquina_pequeña_dr = 78,
-i_pared_esquina_pequeña_ur = 105,
-i_pared_esquina_pequeña_ul = 104,
+i_pared_esquina_pequeña_dl = 154,//comprobado ok
+i_pared_esquina_pequeña_dr = 155,//comprobado ok
+i_pared_esquina_pequeña_ul = 104,//comprobado ok
+i_pared_esquina_pequeña_ur = 105,//comprobado ok
 
-i_pared_esquina_grande_dl = 1,
-i_pared_esquina_grande_dr = 2,
-i_pared_esquina_grande_ur = 3,
-i_pared_esquina_grande_ul = 4;
+i_pared_esquina_grande_dl = 102,//comprobado ok
+i_pared_esquina_grande_dr = 101,//comprobado ok
+i_pared_esquina_grande_ur = 79,//comprobado ok
+i_pared_esquina_grande_ul = 78;//comprobado ok
 
 struct coordenada {
     int y, x;
@@ -610,7 +612,6 @@ void imprimeJSON(const sala& sala_aux) {
     cout << "\n},\n";
 }
 
-
 void imprimeVectorJSON(const sala& s) {
 
     vector<vector<int>> mapa_paredes;
@@ -1016,11 +1017,16 @@ void imprimeVectorJSON(const sala& s) {
     for (int fila = 0; fila < s.tamy * 2; fila++) {
         for (int col = 0; col < s.tamx * 2; col++) {
             if (mapa_paredes[fila][col] == 0) {
-                cout << "000,";
+                cout << "0";
             }
             else {
-                cout << mapa_paredes[fila][col] << ",";
+                cout << mapa_paredes[fila][col];
+                
             }
+            if (fila != (s.tamy * 2) - 1 || col != (s.tamx * 2) - 1) {
+                cout << ",";
+            }
+
         }
         cout << "\n";
     }
@@ -1031,83 +1037,45 @@ void imprimeVectorJSON(const sala& s) {
 
 void CREARJSON(const sala& s) {
 
-    cout << "\"compressionlevel\":-1,\n\"height\":" << s.tamy << ", \n\"infinite\" : false,\n\"layers\" : [\"\n";
-}
+    const int tam_tile = 16;
+    printf("{\n\"compressionlevel\":-1,");
+    printf("\n\"height\" : %d,", s.tamy * 2);
+    printf("\n\"infinite\" : false,\n\"layers\" : [{\n\"data\": [\n");
+    imprimeVectorJSON(s);
+    printf("\n],\n\"height\": %d,", s.tamy * 2);
+    printf("\n\"id\" : 1,");
+    printf("\n\"name\" : \"Paredes\",");
+    printf("\n\"opacity\" : 1,");
+    printf("\n\"type\" : \"tilelayer\",");
+    printf("\n\"visible\" : true,");
+    printf("\n\"width\" : %d ,", s.tamx * 2);
 
+    printf("\n\"x\" : 0,\n\"y\" : 0}\n],");
+    printf("\n\"nextlayerid\":5,");
+    printf("\n\"nextobjectid\" : 1,");
+    printf("\n\"orientation\" : \"orthogonal\",");
+    printf("\n\"renderorder\" : \"right-down\",");
+    printf("\"tiledversion\" : \"1.11.2\",");
+    printf("\n\"tileheight\" : %d,", tam_tile);
+    printf("\n\"tilesets\" : [{");
 
-sala traduce_sala() {
-    cout << "introduce el numero de filas del mapa:";
-    int x, y;
-    cin >> y;
-    cout << "introduce el numero de columnas del mapa:";
-    cin >> x;
-    sala sala_aux;
-    sala_aux.tamx = x;
-    sala_aux.tamy = y;
-    cout << "introduce el mapa con caracteres\n";
-    char c;
-    for (int i = 0; i < y; i++) {
-        for (int j = 0; j < x; j++) {
-            cin >> c;
-            /*
-            c_pared = '#',
-            c_puerta = 'P',
-            c_obstaculo = 'O',
-            c_explosivo = 'X',
-            c_trampa = 'T',
-            c_ene_ran = 'e',
-            c_ene_melee = 'E',
-            c_cura = 'C',
-            c_recompensa = 'R';
-            c_salida = 'S'
-            */
-            switch (c) {
-            case c_pared:
-                sala_aux.pared.push_back({ i,j });
-                break;
-            case c_puerta:
-                sala_aux.puerta.push_back({ i,j });
-                break;
-            case c_obstaculo:
-                sala_aux.obstaculo.push_back({ i,j });
-                break;
-            case c_explosivo:
-                sala_aux.explosivo.push_back({ i,j });
-                break;
-            case c_trampa:
-                sala_aux.trampa.push_back({ i,j });
-                break;
-            case c_ene_ran:
-                sala_aux.enemigo_ranged.push_back({ i,j });
-                break;
-            case c_ene_melee:
-                sala_aux.enemigo_melee.push_back({ i,j });
-                break;
-            case c_cura:
-                sala_aux.cura.push_back({ i,j });
-                break;
-            case c_recompensa:
-                sala_aux.recompensa.push_back({ i,j });
-                break;
-            case c_salida:
-                sala_aux.salida.push_back({ i,j });
-                break;
-            default:
-                break;
-
-            }
-        }
-    }
-
-
-    imprimeJSON(sala_aux);
-
-
-
-
-
-    return sala_aux;
-    //pintaSala(sala_aux);
+    
+    printf("\n\"columns\": %d,",25);
+    printf("\n\"firstgid\": %d," , 1);
+    printf("\n\"image\": \"..\/sprites\/Pixel Crawler - FREE - 1.8\/Environment\/Dungeon Prison\/Assets\/Tiles.png\",");
+    printf("\n\"imageheight\": %d," , 400);
+    printf("\n\"imagewidth\": %d," , 400);
+    printf("\n\"margin\": %d," , 0);
+    printf("\n\"name\": \"TilesDungeon\",");
+    printf("\n\"spacing\": %d," , 0);
+    printf("\n\"tilecount\": %d," , 625);
+    printf("\n\"tileheight\": %d," , 16);
+    printf("\n\"tilewidth\": %d", 16);
+    
+    printf("\n}],\n\"tilewidth\" :%d,", tam_tile);
+    printf("\n\"type\" : \"map\",");
+    printf("\n\"version\" : \"1.10\",");
+    printf("\n\"width\" : %d}\n", s.tamx * 2);
 }
 
 bool cabeLaSala(const vector<vector<char>>& m, int posy, int posx, sala s, int dir) {
@@ -1173,7 +1141,6 @@ void pintaSalaOffset(vector<vector<char>>& m, int ofy, int ofx, vector<coordenad
     }
 
 }
-
 
 void ponerSala(vector<vector<char>>& m, int posy, int posx, sala s, int dir, vector<vector<coordenada>>& puertas) {
 
@@ -1265,11 +1232,11 @@ vector<vector<char>> generamazmorra() {
     vector<vector<coordenada>> puertas = { {},{},{},{} };
 
     //ponemos sala de inicio
-    ponerSala(m, tamy / 2 -(salaPPal.tamy/2), tamx / 2 - (salaPPal.tamx / 2), salaPPal, -1, puertas);
+    ponerSala(m, tamy / 2 - (salaPPal.tamy / 2), tamx / 2 - (salaPPal.tamx / 2), salaPPal, -1, puertas);
 
     int salas_puestas = 1;
     int errores_consecutivos = 0;
-    while (salas_puestas != num_salas && errores_consecutivos<=max_errores) {
+    while (salas_puestas != num_salas && errores_consecutivos <= max_errores) {
 
         random_device rd;
         mt19937 gen(rd()); // Generador Mersenne Twister
@@ -1321,6 +1288,133 @@ vector<vector<char>> generamazmorra() {
 
 }
 
+sala traduce_sala() {
+    cout << "introduce el numero de filas del mapa:";
+    int x, y;
+    cin >> y;
+    cout << "introduce el numero de columnas del mapa:";
+    cin >> x;
+    sala sala_aux;
+    sala_aux.tamx = x;
+    sala_aux.tamy = y;
+    cout << "introduce el mapa con caracteres\n";
+    char c;
+    for (int i = 0; i < y; i++) {
+        for (int j = 0; j < x; j++) {
+            cin >> c;
+            /*
+            c_pared = '#',
+            c_puerta = 'P',
+            c_obstaculo = 'O',
+            c_explosivo = 'X',
+            c_trampa = 'T',
+            c_ene_ran = 'e',
+            c_ene_melee = 'E',
+            c_cura = 'C',
+            c_recompensa = 'R';
+            c_salida = 'S'
+            */
+            switch (c) {
+            case c_pared:
+                sala_aux.pared.push_back({ i,j });
+                break;
+            case c_puerta:
+                sala_aux.puerta.push_back({ i,j });
+                break;
+            case c_obstaculo:
+                sala_aux.obstaculo.push_back({ i,j });
+                break;
+            case c_explosivo:
+                sala_aux.explosivo.push_back({ i,j });
+                break;
+            case c_trampa:
+                sala_aux.trampa.push_back({ i,j });
+                break;
+            case c_ene_ran:
+                sala_aux.enemigo_ranged.push_back({ i,j });
+                break;
+            case c_ene_melee:
+                sala_aux.enemigo_melee.push_back({ i,j });
+                break;
+            case c_cura:
+                sala_aux.cura.push_back({ i,j });
+                break;
+            case c_recompensa:
+                sala_aux.recompensa.push_back({ i,j });
+                break;
+            case c_salida:
+                sala_aux.salida.push_back({ i,j });
+                break;
+            default:
+                break;
+
+            }
+        }
+    }
+    return sala_aux;
+}
+
+sala traduce_mazmorra_a_sala(vector<vector<char>>m) {
+    
+    int x=m[0].size(), y=m.size();
+    sala sala_aux;
+    sala_aux.tamx = x;
+    sala_aux.tamy = y;
+    for (int i = 0; i < y; i++) {
+        for (int j = 0; j < x; j++) {
+            char c= m[i][j];
+            /*
+            c_pared = '#',
+            c_puerta = 'P',
+            c_obstaculo = 'O',
+            c_explosivo = 'X',
+            c_trampa = 'T',
+            c_ene_ran = 'e',
+            c_ene_melee = 'E',
+            c_cura = 'C',
+            c_recompensa = 'R';
+            c_salida = 'S'
+            */
+            switch (c) {
+            case c_pared:
+                sala_aux.pared.push_back({ i,j });
+                break;
+            case c_puerta:
+                sala_aux.puerta.push_back({ i,j });
+                break;
+            case c_obstaculo:
+                sala_aux.obstaculo.push_back({ i,j });
+                break;
+            case c_explosivo:
+                sala_aux.explosivo.push_back({ i,j });
+                break;
+            case c_trampa:
+                sala_aux.trampa.push_back({ i,j });
+                break;
+            case c_ene_ran:
+                sala_aux.enemigo_ranged.push_back({ i,j });
+                break;
+            case c_ene_melee:
+                sala_aux.enemigo_melee.push_back({ i,j });
+                break;
+            case c_cura:
+                sala_aux.cura.push_back({ i,j });
+                break;
+            case c_recompensa:
+                sala_aux.recompensa.push_back({ i,j });
+                break;
+            case c_salida:
+                sala_aux.salida.push_back({ i,j });
+                break;
+            default:
+                break;
+
+            }
+        }
+    }
+    return sala_aux;
+}
+
 int main() {
 
 
@@ -1353,8 +1447,13 @@ int main() {
 
             cout << "\n\n";
 
+            sala mazmorra_sala = traduce_mazmorra_a_sala(mapa);
+
+
+            CREARJSON(mazmorra_sala);
+
             cin >> c;
-        } while (c!='0');
+        } while (c != '0');
 
     }
 
