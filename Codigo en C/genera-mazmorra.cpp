@@ -36,10 +36,10 @@ i_pared_esquina_pequeña_dr = 155,//comprobado ok
 i_pared_esquina_pequeña_ul = 104,//comprobado ok
 i_pared_esquina_pequeña_ur = 105,//comprobado ok
 
-i_pared_esquina_grande_dl = 102,//comprobado ok
-i_pared_esquina_grande_dr = 101,//comprobado ok
-i_pared_esquina_grande_ur = 79,//comprobado ok
-i_pared_esquina_grande_ul = 78;//comprobado ok
+i_pared_esquina_grande_dl = 101,//comprobado ok
+i_pared_esquina_grande_dr = 103,//comprobado ok
+i_pared_esquina_grande_ur = 78,//comprobado ok
+i_pared_esquina_grande_ul = 76;//comprobado ok
 
 struct coordenada {
     int y, x;
