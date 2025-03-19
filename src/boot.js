@@ -40,13 +40,16 @@ export default class Boot extends Phaser.Scene {
     this.load.image('warriorPortrait', 'warriorPortrait.png');
     this.load.image('orcPortrait', 'orcPortrait.png');
     this.load.image('turnBanner', 'turnBar.png');
-    this.load.image('portontxt', 'Porton.png');
-    this.load.image('trampatxt', 'trampatxt.png');
-    this.load.image('llavetxt', 'llavetxt.png');
-    this.load.image('cerraduratxt', 'cerraduratxt.png');
-    this.load.image('chesstxt', 'chesstxt.png');
-    this.load.image('puertatxt', 'puertatxt.png');
-    this.load.image('palancaOff', 'palancaOff.png');
+    this.load.image('porton_txt', 'Porton.png');
+    this.load.image('trampa_txt', 'trampatxt.png');
+    this.load.image('trampaOn_txt', 'trampaOntxt.png');
+    this.load.image('llave_txt', 'llavetxt.png');
+    this.load.image('cerradura_txt', 'cerraduratxt.png');
+    this.load.image('cofre_txt', 'chesstxt.png');
+    this.load.image('openCofre_txt', 'Openchesstxt.png');
+    this.load.image('puerta_txt', 'puertatxt.png');
+    this.load.image('palanca_txt', 'palancaOff.png');
+    this.load.image('palancaOn_txt', 'palancaOn.png');
 
     //this.load.image('player', player);
 

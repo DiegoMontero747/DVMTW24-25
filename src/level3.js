@@ -2,11 +2,20 @@ import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
 import Orc from './orc.js';
+//import Caja from './objetos/caja.js';
+import Porton from './objetos/porton.js';
+import Cerradura from './objetos/cerradura.js';
+import Cofre from './objetos/cofre.js';
+import Llave from './objetos/llave.js';
+import Palanca from './objetos/palanca.js';
+import Puerta from './objetos/puerta.js';
+import Trampa from './objetos/trampa.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
 import GameShaderGBA from "./shaders/gbaShader.js"; 
 import GameShaderPixel from "./shaders/pixelShader.js"; 
+
 
 
 /**
@@ -57,7 +66,8 @@ export default class Level3 extends Phaser.Scene {
         this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
         this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
-        this.objects_layer = this.map.getObjectLayer("Objetos", tileset)
+        this.objects_layer = this.map.getObjectLayer("Objetos", tileset);
+        this.objetosConColision = this.physics.add.group();
 
         if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
@@ -65,7 +75,7 @@ export default class Level3 extends Phaser.Scene {
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
 
-        this.objects_layer.objects.forEach(obj => {
+        /*this.objects_layer.objects.forEach(obj => {
             // Crear el sprite con la textura especificada en Tiled
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
             const sprite = this.physics.add.sprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura);
@@ -79,13 +89,13 @@ export default class Level3 extends Phaser.Scene {
                 sprite.body.setImmovable(true);
                 sprite.body.allowGravity = false;
             }
-        });
+        });*/
 
         const objectsGroup = this.physics.add.staticGroup();
 
         //Puertas
 
-        const doors = this.doors_layer.objects
+        /*const doors = this.doors_layer.objects
         .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
         .map(obj => {
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
@@ -94,7 +104,7 @@ export default class Level3 extends Phaser.Scene {
             return door;
         });
 
-        const doorsGroup = this.physics.add.staticGroup(doors);
+        const doorsGroup = this.physics.add.staticGroup(doors);*/
 
         let botonNextTurn = this.add.image(600, 300, 'NextTurn')
         .setInteractive();
@@ -264,6 +274,11 @@ export default class Level3 extends Phaser.Scene {
         //this.player2 = new Mage(this, 72, 176);
         this.orc = new Orc(this, 240, 190).setDepth(1);
 
+        this.trampas = this.physics.add.group();
+
+        this.crearObjetosDesdeTiled(this.doors_layer);
+        this.crearObjetosDesdeTiled(this.objects_layer);
+
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
         this.showTurnMsg();
@@ -271,9 +286,13 @@ export default class Level3 extends Phaser.Scene {
         cam.setBounds(0,0);
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer);
-        //this.physics.add.collider(this.player2.body, this.wall_layer);
-        this.physics.add.collider(this.player, objectsGroup);
-        this.physics.add.collider(this.player.body, doorsGroup);
+        this.physics.add.collider(this.player.body, this.objetosConColision);
+        this.physics.add.collider(this.orc.body, this.objetosConColision);
+
+        this.physics.add.collider(this.player.body, this.trampas, () => {
+            this.player.onHit(2);
+            this.player.x -= 16;
+        });
 
         this.physics.add.collider(this.orc.body, this.wall_layer);
         this.physics.add.collider(this.orc.body, this.wall_layer);
@@ -418,6 +437,14 @@ export default class Level3 extends Phaser.Scene {
         this.statsUI.hpDisplay.setText("HP: "+currentHP+"/"+maxHP);
         this.statsUI.portrait.setTexture(portrait+'Portrait');
     }
+
+    deshabilitarTrampas() {
+        this.trampas.getChildren().forEach(trampa => {
+            trampa.setTexture("trampa_txt"); // Cambia el sprite de la trampa
+            trampa.body.enable = false; // Desactiva la colisión
+        });
+    }
+
     setLights(){
         this.wall_layer.setPipeline("Light2D")
         this.floor_layer.setPipeline("Light2D")
@@ -442,6 +469,57 @@ export default class Level3 extends Phaser.Scene {
             ease:'expo.inout',
             duration: 1000
         })
+    }
+
+    crearObjetosDesdeTiled(layer) {
+        
+        if (!layer) {
+            console.warn(`No se encontró la capa ${layer}`);
+            return;
+        }
+
+        layer.objects.forEach(obj => {
+            const { x, y, name, width, height } = obj;
+            const adjustedX = x + width / 2;
+            const adjustedY = y + height / 2;
+
+            let nuevoObjeto = null;
+
+            switch (name) {
+                case "Llave":
+                    nuevoObjeto = new Llave(this, adjustedX, adjustedY);
+                    //this.physics.add.overlap(this.jugador, nuevoObjeto, () => nuevoObjeto.interactuar(), null, this);
+                    break;
+                case "Puerta":
+                    nuevoObjeto = new Puerta(this, adjustedX, adjustedY);
+                    break;
+                case "Caja":
+                    nuevoObjeto = new Caja(this, adjustedX, adjustedY);
+                    break;
+                case "Porton":
+                    nuevoObjeto = new Porton(this, adjustedX, adjustedY);
+                    break;
+                case "Cofre":
+                    nuevoObjeto = new Cofre(this, adjustedX, adjustedY);
+                    break;
+                case "Palanca":
+                    nuevoObjeto = new Palanca(this, adjustedX, adjustedY);
+                    break;
+                case "Cerradura":
+                    nuevoObjeto = new Cerradura(this, adjustedX, adjustedY);
+                    break;
+                case "Trampa":
+                    nuevoObjeto = new Trampa(this, adjustedX, adjustedY);
+                    this.trampas.add(nuevoObjeto);
+                    break;
+                default:
+                    console.warn(`Objeto desconocido en Tiled: ${name}`);
+
+            }
+            nuevoObjeto.setImm
+            if(nuevoObjeto.colision)
+                this.objetosConColision.add(nuevoObjeto)
+        });
     }
 
 
