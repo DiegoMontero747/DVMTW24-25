@@ -45,6 +45,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('trampaOn_txt', 'trampaOntxt.png');
     this.load.image('llave_txt', 'llavetxt.png');
     this.load.image('cerradura_txt', 'cerraduratxt.png');
+    this.load.image('cerraduraConLlave_txt', 'cerraduraConLlavetxt.png');
     this.load.image('cofre_txt', 'chesstxt.png');
     this.load.image('openCofre_txt', 'Openchesstxt.png');
     this.load.image('puerta_txt', 'puertatxt.png');
@@ -76,6 +77,7 @@ export default class Boot extends Phaser.Scene {
 
     //Carga .JSON (formato mas comodo en codigo)
     this.load.tilemapTiledJSON("map","sinNombre2.json");
+    this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
 
     this.load.image('TilesDungeon', 'Tiles.png');
     this.load.image('PropsA', 'PropsF.png');

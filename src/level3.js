@@ -55,6 +55,7 @@ export default class Level3 extends Phaser.Scene {
 
         */
         /*Crear layers json*/
+        this.keyFound = false;
 
         this.map= this.make.tilemap({key:'map'});  
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
@@ -275,6 +276,7 @@ export default class Level3 extends Phaser.Scene {
         this.orc = new Orc(this, 240, 190).setDepth(1);
 
         this.trampas = this.physics.add.group();
+        this.puertas = this.physics.add.group()
 
         this.crearObjetosDesdeTiled(this.doors_layer);
         this.crearObjetosDesdeTiled(this.objects_layer);
@@ -445,6 +447,22 @@ export default class Level3 extends Phaser.Scene {
         });
     }
 
+    abrirPuertas() {
+        this.puertas.getChildren().forEach(puerta => {
+            this.tweens.add({
+                targets: puerta,
+                y: puerta.y - puerta.height,
+                alpha: 0, // Hace que la puerta desaparezca gradualmente
+                duration: 1000,
+                ease: "Power2",
+                onComplete: () => {
+                    puerta.body.enable = false;
+                    puerta.setVisible(false); // Oculta la puerta completamente
+                }
+            });
+        });
+    }
+
     setLights(){
         this.wall_layer.setPipeline("Light2D")
         this.floor_layer.setPipeline("Light2D")
@@ -492,12 +510,14 @@ export default class Level3 extends Phaser.Scene {
                     break;
                 case "Puerta":
                     nuevoObjeto = new Puerta(this, adjustedX, adjustedY);
+                    this.puertas.add(nuevoObjeto);
                     break;
                 case "Caja":
                     nuevoObjeto = new Caja(this, adjustedX, adjustedY);
                     break;
                 case "Porton":
                     nuevoObjeto = new Porton(this, adjustedX, adjustedY);
+                    this.puertas.add(nuevoObjeto);
                     break;
                 case "Cofre":
                     nuevoObjeto = new Cofre(this, adjustedX, adjustedY);

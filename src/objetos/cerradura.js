@@ -7,9 +7,16 @@ export default class Cerradura extends Objeto {
         this.colision = false;
         this.isParen = false;
         this.setInteractive(this.scene.input.makePixelPerfect());
+        this.activo = false;
     }
 
-    /*interactuar() {
-        console.log("Intentando abrir la cerradura...");
-    }*/
+    interactuar() {
+        if(!this.activo && this.scene.keyFound){
+            console.log("abriendo puertas");
+            this.setTexture("cerraduraConLlave_txt");
+            this.scene.abrirPuertas();
+        } else {
+            console.log("El jugador no ha conseguido la llave");
+        }
+    }
 }

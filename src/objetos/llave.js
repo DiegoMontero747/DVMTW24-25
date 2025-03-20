@@ -11,7 +11,7 @@ export default class Llave extends Objeto {
 
     interactuar() {
         console.log("Has recogido una llave");
-        this.scene.tieneLLave = true;
+        this.scene.keyFound = true;
         this.destruir();
     }
 }

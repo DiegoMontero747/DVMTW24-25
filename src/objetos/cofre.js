@@ -10,7 +10,18 @@ export default class Cofre extends Objeto {
         this.setInteractive(this.scene.input.makePixelPerfect());
     }
 
-    /*interactuar() {
+    interactuar() {
         console.log("Has abierto un cofre");
-    }*/
+        this.setTexture("openCofre_txt");
+        this.scene.tweens.add({
+            targets: this,
+            alpha: 0, // Hace que la puerta desaparezca gradualmente
+            duration: 1500,
+            ease: "Power2",
+            onComplete: () => {
+                this.body.enable = false;
+                this.setVisible(false); // Oculta la puerta completamente
+            }
+        });
+    }
 }
