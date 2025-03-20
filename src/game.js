@@ -9,6 +9,7 @@ import GameShaderRetro from "./shaders/retroShader.js";
 import GameShaderGBA from "./shaders/gbaShader.js"; 
 import GameShaderPixel from "./shaders/pixelShader.js"; 
 import LevelDebug from './levelDebug.js';
+import world from './world.js';
 
 
 /**
@@ -25,7 +26,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, Level,Level2,Level3,LevelDebug, End],
+    scene: [Boot,world, Level,Level2,Level3,LevelDebug, End],
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
     physics: {
         default: 'arcade',
