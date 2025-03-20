@@ -54,17 +54,17 @@ export default class Level3 extends Phaser.Scene {
         //const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
         //this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
         //this.wall_layer.setCollisionByProperty({collides:true});
-        this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
+        //this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
-        this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
-        this.objects_layer = this.map.getObjectLayer("Objetos", tileset)
-
+        //this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
+        //this.objects_layer = this.map.getObjectLayer("Objetos", tileset)
+        /*
         if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
         }
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
-
+        
         this.objects_layer.objects.forEach(obj => {
             // Crear el sprite con la textura especificada en Tiled
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
@@ -95,7 +95,7 @@ export default class Level3 extends Phaser.Scene {
         });
 
         const doorsGroup = this.physics.add.staticGroup(doors);
-
+        */
         let botonNextTurn = this.add.image(600, 300, 'NextTurn')
         .setInteractive();
         botonNextTurn.setScrollFactor(0);
@@ -270,20 +270,20 @@ export default class Level3 extends Phaser.Scene {
         cam.startFollow(this.player);
         cam.setBounds(0,0);
         cam.setZoom(3);
-        this.physics.add.collider(this.player.body, this.wall_layer);
+        //this.physics.add.collider(this.player.body, this.wall_layer);
         //this.physics.add.collider(this.player2.body, this.wall_layer);
-        this.physics.add.collider(this.player, objectsGroup);
-        this.physics.add.collider(this.player.body, doorsGroup);
+        //this.physics.add.collider(this.player, objectsGroup);
+        //this.physics.add.collider(this.player.body, doorsGroup);
 
-        this.physics.add.collider(this.orc.body, this.wall_layer);
-        this.physics.add.collider(this.orc.body, this.wall_layer);
+        //this.physics.add.collider(this.orc.body, this.wall_layer);
+        //this.physics.add.collider(this.orc.body, this.wall_layer);
 
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
         */
 
 
-        this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
+        //this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
         //this.physics.world.enable(this.player.attackArea);
         //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
         /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
@@ -382,7 +382,7 @@ export default class Level3 extends Phaser.Scene {
                 this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
             } 
         });
-        let mask=this.wall_layer.createBitmapMask();
+        /*let mask=this.wall_layer.createBitmapMask();
         mask.invertAlpha=true;
         this.player.moveAreaGraphics.setMask(mask);
         let mask2=this.player.attackArea.createGeometryMask();
@@ -390,6 +390,7 @@ export default class Level3 extends Phaser.Scene {
         console.log(mask)
         console.log(mask2)
         //this.player.moveAreaGraphics.setMask(mask2);
+        */
     }
 
     initShaders(){
@@ -460,8 +461,8 @@ export default class Level3 extends Phaser.Scene {
         */  
         // Movimiento del cuadro marcador siguiendo la coordenada por grid del ratón
             const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
-            const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
-            const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
+            //const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
+            //const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
             //Mueve a cordenada
             /*
             this.pointerGridX= this.map.tileToWorldX(pointerTileX);
