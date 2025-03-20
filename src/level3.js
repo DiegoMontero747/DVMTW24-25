@@ -336,7 +336,12 @@ export default class Level3 extends Phaser.Scene {
                 else
                 this.player.attackArea.setVisible(!this.player.attackArea.visible)
             } 
-            else if(this.turn=="enemy"){this.orc.attackArea.setVisible(!this.orc.attackArea.visible)} 
+            else if(this.turn=="enemy"){/*this.orc.attackArea.setVisible(!this.orc.attackArea.visible) */
+                if(this.orc.attackAreaType=="directional")
+                    this.orc.showAttackControls();
+                else
+                this.orc.attackArea.setVisible(!this.orc.attackArea.visible)
+            } 
         });
         botonAttack.on('pointerover', () => {
             this.sound.play("touchUISound");
@@ -445,7 +450,8 @@ export default class Level3 extends Phaser.Scene {
     }
 
     async checkHits(){
-        this.orc.checkHit();     
+        this.orc.checkHit();
+        this.player.checkHit();          
     }
 
 

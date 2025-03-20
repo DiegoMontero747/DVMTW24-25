@@ -38,7 +38,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.attackAreaType="directional";
         this.addAttackArea(this.attackAreaType);
 
-        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100)
+        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100);
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 0.50);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.20);
@@ -399,7 +399,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     }
     onTurnEnd(){
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
-        this.attackArea.setVisible(false);
+        //this.attackArea.setVisible(false);
         this.setDepth(this.depth-1);
     }
 
@@ -448,6 +448,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         });
                         dirSelector.setTint(0xcccccc);
                     });
+                    dirSelector.animationPlaying=false;
                     dirSelector.on('showSelector', () => {
                         if(!dirSelector.animationPlaying){
                             if(dirSelector.visible){
@@ -537,6 +538,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
     showAttackControls(){
         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
+    }
+
+    checkHit(){
+        if(this.scene.enemyAttackArea){
+            if(this.scene.physics.overlap(this.scene.enemyAttackArea, this.body))this.onHit(this.scene.attackEffect.dmg)
+        }
     }
 
     /**
