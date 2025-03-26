@@ -10,7 +10,6 @@ export default class Objeto extends Phaser.Physics.Arcade.Sprite {
         this.hp = 100; // Salud por defecto
         this.interactuable = false;
         this.empujable = false;
-        this.atacable = false;
         this.colision = true;
         this.danoAlJugador = 0; // Daño que causa al jugador (si aplica)
         this.setImmovable(true);
@@ -19,6 +18,9 @@ export default class Objeto extends Phaser.Physics.Arcade.Sprite {
 
         //this.setInteractive();
         this.on("pointerdown", () => this.interactuar());
+        if(this.atacable){
+
+        }
     }
 
     interactuar() {

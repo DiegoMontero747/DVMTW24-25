@@ -10,6 +10,8 @@ import Llave from './objetos/llave.js';
 import Palanca from './objetos/palanca.js';
 import Puerta from './objetos/puerta.js';
 import Trampa from './objetos/trampa.js';
+import Caja from './objetos/caja.js';
+import TNT from './objetos/tnt.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -515,6 +517,9 @@ export default class Level3 extends Phaser.Scene {
                 case "Caja":
                     nuevoObjeto = new Caja(this, adjustedX, adjustedY);
                     break;
+                case "TNT":
+                    nuevoObjeto = new TNT(this, adjustedX, adjustedY);
+                    break;
                 case "Porton":
                     nuevoObjeto = new Porton(this, adjustedX, adjustedY);
                     this.puertas.add(nuevoObjeto);
@@ -536,8 +541,7 @@ export default class Level3 extends Phaser.Scene {
                     console.warn(`Objeto desconocido en Tiled: ${name}`);
 
             }
-            nuevoObjeto.setImm
-            if(nuevoObjeto.colision)
+            if(nuevoObjeto != null && nuevoObjeto.colision)
                 this.objetosConColision.add(nuevoObjeto)
         });
     }
