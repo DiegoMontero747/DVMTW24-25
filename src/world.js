@@ -53,14 +53,40 @@ export default class World extends Phaser.Scene {
         /* Detectar superposición entre el jugador y las cuevas */
         this.physics.add.overlap(this.player, this.CuevasGroup, this.entrarCueva, null, this);
     }
-
     ponerCueva() {
-        const position = this.getRandomAccessiblePosition();
+        let position;
+        let attempts = 0;
+        const maxAttempts = 100; // Número máximo de intentos para encontrar una posición válida
+        const minDistance = 50; // Distancia mínima permitida entre la cueva y el jugador o entre cuevas
+    
+        do {
+            position = this.getRandomAccessiblePosition();
+            attempts++;
+        } while ((this.isPositionOccupied(position, minDistance) || this.isNearPlayer(position, minDistance)) && attempts < maxAttempts);
+    
+        if (attempts === maxAttempts) {
+            console.warn('No se encontró una posición adecuada para la cueva después de varios intentos.');
+            return;
+        }
+    
         const cueva = this.CuevasGroup.create(position.x, position.y, 'cueva');
         cueva.setOrigin(0.5, 0.5);
         cueva.setDepth(1);
         cueva.setScale(1);
     }
+    
+    isPositionOccupied(position, minDistance) {
+        return this.CuevasGroup.getChildren().some(cueva => {
+            const distance = Phaser.Math.Distance.Between(position.x, position.y, cueva.x, cueva.y);
+            return distance < minDistance;
+        });
+    }
+    
+    isNearPlayer(position, minDistance) {
+        const distance = Phaser.Math.Distance.Between(position.x, position.y, this.player.x, this.player.y);
+        return distance < minDistance;
+    }
+    
 
     getRandomAccessiblePosition() {
         let tileX, tileY, worldX, worldY, tile;
