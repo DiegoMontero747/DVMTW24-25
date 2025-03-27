@@ -31,12 +31,16 @@ export default class TNT extends Objeto {
     explotar() {
         const radioExplosion = 50;
         this.scene.cameras.main.shake(300, 0.02);
-        this.explosionArea=new Phaser.Geom.Circle(0,0, radioExplosion)
-        this.scene.physics.overlap(this.explosionArea, this.y, radioExplosion, objeto => {
-            if (objeto !== this && objeto.onHit) {
+        this.explosionArea=this.scene.add.circle(this.x,this.y, radioExplosion, 0xff0000).setVisible(true)
+        this.scene.physics.add.existing(this.explosionArea);
+        this.scene.physics.overlap(this.explosionArea, this.scene.orc.body,()=>{
+            /*if (objeto !== this && objeto.onHit) {
                 objeto.setVelocity((objeto.x - this.x) * 2, (objeto.y - this.y) * 2);
                 objeto.onHit(20);
-            }
+            }*/
+           console.log("KABOOOOOOM")
+           console.log(this.scene.orc)
+                this.scene.orc.onHit(5);
         });
         let kaboom=this.scene.add.sprite(this.x, this.y, "KABOOM")
         kaboom.anims.createFromAseprite('KABOOM');
