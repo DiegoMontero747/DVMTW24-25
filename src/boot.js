@@ -24,7 +24,7 @@ export default class Boot extends Phaser.Scene {
     this.load.setPath('/assets/sprites/');
     this.load.image('platform', 'platform.png');
     this.load.image('base', 'base.png');
-    this.load.image('star', 'star.png');
+  
     this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json');
     this.load.aseprite('player_warrior','warrior.png','warrior.json');
     this.load.aseprite('player_mage','mage.png','mage.json');
@@ -80,6 +80,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('TilesDungeon', 'Tiles.png');
     this.load.image('PropsA', 'PropsF.png');
     this.load.image('Props', 'Props.png');
+
+    this.load.image('cueva', 'cueva.png');
   }
 
   /**
