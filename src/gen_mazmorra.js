@@ -36,7 +36,9 @@ class Coordenada {
 }
 
 class Sala {
-    constructor(tamx, tamy, puerta = [], obstaculo = [], pared = [], enemigo_melee = [], enemigo_ranged = [], explosivo = [], trampa = [], cura = [], recompensa = [], salida = []) {
+    constructor(tamx, tamy, puerta, obstaculo , pared , enemigo_melee , enemigo_ranged , explosivo , trampa , cura , recompensa , salida ) {
+        
+        //console.log(tamx, tamy, puerta, obstaculo , pared , enemigo_melee , enemigo_ranged , explosivo , trampa , cura , recompensa , salida);
         this.tamx = tamx;
         this.tamy = tamy;
         this.puerta = puerta;
@@ -52,50 +54,73 @@ class Sala {
     }
 }
 
-const salaPPal = new Sala(
-    5,
-    5,
-    [new Coordenada(0, 2), new Coordenada(2, 0), new Coordenada(2, 4), new Coordenada(4, 2)],
-    [],
-    [new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(0, 1), new Coordenada(4, 1), new Coordenada(0, 2), new Coordenada(4, 2), new Coordenada(0, 3), new Coordenada(4, 3), new Coordenada(0, 4), new Coordenada(1, 4), new Coordenada(3, 4), new Coordenada(4, 4)],
-    [],
-    [],
-    [],
-    [],
-  [],
-    [],
-    [new Coordenada(2, 2)]
-);
+const salaPPal = {
+    x:5,
+    y:5,
+    puerta:[
+        new Coordenada(0, 2),
+        new Coordenada(2, 0), 
+        new Coordenada(2, 4), 
+        new Coordenada(4, 2)
+    ],
+    obstaculo:[],
+    pared:[
+        new Coordenada(0, 0),
+        new Coordenada(1, 0), 
+        new Coordenada(2, 0), 
+        new Coordenada(3, 0), 
+        new Coordenada(4, 0), 
+        new Coordenada(0, 1), 
+        new Coordenada(4, 1), 
+        new Coordenada(0, 2),
+        new Coordenada(4, 2),
+        new Coordenada(0, 3), 
+        new Coordenada(4, 3), 
+        new Coordenada(0, 4), 
+        new Coordenada(1, 4), 
+        new Coordenada(3, 4), 
+        new Coordenada(4, 4)
+    ],
+    enemigo_melee:[],
+    enemigo_ranged:[],
+    explosivo:[],
+    trampa:[],
+    cura:[],
+    recompensa:[],
+    salida:[
+        new Coordenada(2, 2)
+    ]
+};
 
 const sala_11x11 = [
-    new Sala(
-        11,
-        11,
-        [new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
-        [new Coordenada(4, 2), new Coordenada(5, 2), new Coordenada(6, 2), new Coordenada(2, 4), new Coordenada(8, 4), new Coordenada(2, 5), new Coordenada(8, 5), new Coordenada(2, 6), new Coordenada(8, 6), new Coordenada(4, ), new Coordenada(5, 8), new Coordenada(6, 8)],
-        [new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(1, 1), new Coordenada(2, 1), new Coordenada(8, 1), new Coordenada(9, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(1, 2), new Coordenada(9, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(10, 4), new Coordenada(0, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(1, 8), new Coordenada(9, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(1, 9), new Coordenada(2, 9), new Coordenada(8, 9), new Coordenada(9, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 10)],
-        [],
-        [new Coordenada(5, 5)],
-        [new Coordenada(3, 3), new Coordenada(7, 3), new Coordenada(3, 7), new Coordenada(7, 7)],
-        [],
-        [],
-        [],
-        []
-    ),
-    new Sala(
-        11,
-        11,
-        [new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
-        [new Coordenada(7, 1), new Coordenada(3, 2), new Coordenada(7, 2), new Coordenada(2, 3), new Coordenada(7, 3), new Coordenada(8, 3), new Coordenada(9, 3), new Coordenada(1, 7), new Coordenada(2, 7), new Coordenada(3, 7), new Coordenada(8, 7), new Coordenada(3, 8), new Coordenada(7, 8), new Coordenada(3, 9), new Coordenada(7, 9)],
-        [new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(2, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(3, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(4, 4), new Coordenada(10, 4), new Coordenada(0, 5), new Coordenada(10, 5), new Coordenada(0, 6), new Coordenada(6, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(7, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(8, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 1)],
-        [],
-        [],
-        [new Coordenada(3, 1), new Coordenada(9, 1), new Coordenada(1, 3), new Coordenada(9,7), new Coordenada(1, 9), new Coordenada(7, 9)],
-        [new Coordenada(8, 1), new Coordenada(4, 3), new Coordenada(6, 3), new Coordenada(3, 6), new Coordenada(7, 6), new Coordenada(4, 7), new Coordenada(6, 7), new Coordenada(2, 9)],
-        [],
-        [],
-        []
-    ),
+    {
+        x:11,
+        y:11,
+        puerta:[new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
+        obstaculo:[new Coordenada(4, 2), new Coordenada(5, 2), new Coordenada(6, 2), new Coordenada(2, 4), new Coordenada(8, 4), new Coordenada(2, 5), new Coordenada(8, 5), new Coordenada(2, 6), new Coordenada(8, 6), new Coordenada(4, ), new Coordenada(5, 8), new Coordenada(6, 8)],
+        pared:[new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(1, 1), new Coordenada(2, 1), new Coordenada(8, 1), new Coordenada(9, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(1, 2), new Coordenada(9, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(10, 4), new Coordenada(0, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(1, 8), new Coordenada(9, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(1, 9), new Coordenada(2, 9), new Coordenada(8, 9), new Coordenada(9, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 10)],
+        enemigo_melee:[],
+        enemigo_ranged:[new Coordenada(5, 5)],
+        explosivo:[new Coordenada(3, 3), new Coordenada(7, 3), new Coordenada(3, 7), new Coordenada(7, 7)],
+        trampa:[],
+        cura:[],
+        recompensa:[],
+        salida:[]
+    },
+    {
+        x:11,
+        y:11,
+        puerta:[new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
+        obstaculo:[new Coordenada(7, 1), new Coordenada(3, 2), new Coordenada(7, 2), new Coordenada(2, 3), new Coordenada(7, 3), new Coordenada(8, 3), new Coordenada(9, 3), new Coordenada(1, 7), new Coordenada(2, 7), new Coordenada(3, 7), new Coordenada(8, 7), new Coordenada(3, 8), new Coordenada(7, 8), new Coordenada(3, 9), new Coordenada(7, 9)],
+        pared:[new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(2, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(3, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(4, 4), new Coordenada(10, 4), new Coordenada(0, 5), new Coordenada(10, 5), new Coordenada(0, 6), new Coordenada(6, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(7, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(8, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 1)],
+        enemigo_melee:[],
+        enemigo_ranged:[],
+        explosivo:[new Coordenada(3, 1), new Coordenada(9, 1), new Coordenada(1, 3), new Coordenada(9,7), new Coordenada(1, 9), new Coordenada(7, 9)],
+        trampa:[new Coordenada(8, 1), new Coordenada(4, 3), new Coordenada(6, 3), new Coordenada(3, 6), new Coordenada(7, 6), new Coordenada(4, 7), new Coordenada(6, 7), new Coordenada(2, 9)],
+        cura:[],
+        recompensa:[],
+        salida:[]
+    }
 ];
 
 const sala_15x15 = [
@@ -323,13 +348,14 @@ function cabeLaSala(m, posy, posx, s, dir) {
 }
 //pinta el caracter designado (c) teniendo en cuenta el offset (mitad del tamaño de la sala) 
 function pintaSalaOffset(m, ofy, ofx, v, c) {
-    while (v.length > 0) {
-        const cx = v[v.length - 1].x + ofx;
-        const cy = v[v.length - 1].y + ofy;
-        if (v[v.length - 1].x !== -1 && v[v.length - 1].y !== -1) {
+    let vaux = v.slice();
+    while (vaux.length > 0) {
+        const cx = vaux[vaux.length - 1].x + ofx;
+        const cy = vaux[vaux.length - 1].y + ofy;
+        if (vaux[vaux.length - 1].x !== -1 && vaux[vaux.length - 1].y !== -1) {
             m[cy][cx] = c;
         }
-        v.pop();
+        vaux.pop();
     }
 }
 //pinta la sala completa en la posy, posy
@@ -361,7 +387,10 @@ function ponerSala(m, posy, posx, s, dir, puertas) {
     pintaSalaOffset(m, cy, cx, s.enemigo_ranged, c_ene_ran);
     pintaSalaOffset(m, cy, cx, s.explosivo, c_explosivo);
     pintaSalaOffset(m, cy, cx, s.obstaculo, c_obstaculo);
+    console.log(s.pared);
     pintaSalaOffset(m, cy, cx, s.pared, c_pared);
+    console.log(s.pared);
+   
 
     if (dir !== -1) {
         m[posy][posx] = c_vacio;
@@ -370,7 +399,6 @@ function ponerSala(m, posy, posx, s, dir, puertas) {
     }
     pintaSalaOffset(m, cy, cx, s.puerta, c_puerta);
     //agregamos las nuevas puertas (de la nueva sala) menos la que conecta con la sala de referencia  
-    
     if (s.puerta[0].x !== -1 && s.puerta[0].y !== -1 && dir !== 3) {
         puertas[0].push({ y: cy + s.puerta[0].y, x: cx + s.puerta[0].x });
     } else if (dir === 3) {
@@ -411,10 +439,12 @@ function generaMazmorra() {
     let puertas = [[], [], [], []];
 
     //ponemos sala de inicio
-    ponerSala(m, Math.floor(tamy / 2 - salaPPal.tamy / 2), Math.floor(tamx / 2 - salaPPal.tamx / 2), salaPPal, -1, puertas);
 
+    console.log(salaPPal);
+    ponerSala(m, Math.floor(tamy / 2 - salaPPal.y / 2), Math.floor(tamx / 2 - salaPPal.x / 2), salaPPal, -1, puertas);
     let salas_puestas = 1;
     let errores_consecutivos = 0;
+    console.log("mapa hecho:",m);
 
     while (salas_puestas !== num_salas && errores_consecutivos <= max_errores) {
         let direccion_expansion = Math.floor(Math.random() * 4);
