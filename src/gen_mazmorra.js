@@ -110,73 +110,11 @@ const sala_19x19 = [
 
 ];
 
-const salas_vector = [sala_11x11, sala_15x15, sala_17x17, sala_19x19];
+const salas_vector = [sala_11x11
+    //, sala_15x15, sala_17x17, sala_19x19
+];
 
-function rellenaSala(m, v, c) {
-    if (v.length !== 0) {
-        for (let i = 0; i < v.length; i++) {
-            m[v[i].y][v[i].x] = c;
-        }
-    }
-}
-
-function pintaSala(s) {
-    const mapa = [];
-
-    for (let i = 0; i < s.tamy; i++) {
-        mapa.push([]);
-        for (let j = 0; j < s.tamx; j++) {
-            if (i > 0 && j > 0 && i < s.tamy - 1 && j < s.tamx - 1) {
-                mapa[i].push('.');
-            } else {
-                mapa[i].push(c_pared);
-            }
-        }
-    }
-
-    rellenaSala(mapa, s.cura, c_cura);
-    rellenaSala(mapa, s.enemigo_melee, c_ene_melee);
-    rellenaSala(mapa, s.enemigo_ranged, c_ene_ran);
-    rellenaSala(mapa, s.explosivo, c_explosivo);
-    rellenaSala(mapa, s.obstaculo, c_obstaculo);
-    rellenaSala(mapa, s.pared, c_pared);
-    rellenaSala(mapa, s.puerta, c_puerta);
-    rellenaSala(mapa, s.recompensa, c_recompensa);
-    rellenaSala(mapa, s.trampa, c_trampa);
-    rellenaSala(mapa, s.salida, c_salida);
-
-    for (let i = 0; i < s.tamy; i++) {
-        console.log(mapa[i].join(' '));
-    }
-}
-
-function imprimeVector(c) {
-    let str = "\t{";
-    for (let i = 0; i < c.length; i++) {
-        str += `{ ${c[i].y},${c[i].x}}`;
-        if (i < c.length - 1) {
-            str += ",";
-        }
-    }
-    str += "}";
-    return str;
-}
-
-function imprimeJSON(sala_aux) {
-    console.log(`{\n\t${sala_aux.tamy},\n\t${sala_aux.tamx},\n`);
-    console.log(imprimeVector(sala_aux.puerta) + ",//puertas\n");
-    console.log(imprimeVector(sala_aux.obstaculo) + ",//obstaculos\n");
-    console.log(imprimeVector(sala_aux.pared) + ",//paredes\n");
-    console.log(imprimeVector(sala_aux.enemigo_melee) + ",//enemigos melee\n");
-    console.log(imprimeVector(sala_aux.enemigo_ranged) + ",//enemigos ranged\n");
-    console.log(imprimeVector(sala_aux.explosivo) + ",//explosivos\n");
-    console.log(imprimeVector(sala_aux.trampa) + ",//trampas\n");
-    console.log(imprimeVector(sala_aux.cura) + ",//curas\n");
-    console.log(imprimeVector(sala_aux.recompensa) + ",//recompensas\n");
-    console.log(imprimeVector(sala_aux.salida) + "//salidas mazmorra\n");
-    console.log("\n},\n");
-}
-
+//pasa de sala a sala x2 y le pone las paredes 
 function imprimeVectorJSON(s) {
     const mapaParedes = Array.from({ length: s.tamy * 2 }, () => Array(s.tamx * 2).fill(0));
 
@@ -234,33 +172,40 @@ function imprimeVectorJSON(s) {
         }
     }
 
+    let output = '';
     for (let fila = 0; fila < s.tamy * 2; fila++) {
-        let output = '';
         for (let col = 0; col < s.tamx * 2; col++) {
             output += (mapaParedes[fila][col] === 0 ? '0' : mapaParedes[fila][col]).toString();
             if (fila !== (s.tamy * 2) - 1 || col !== (s.tamx * 2) - 1) {
                 output += ',';
             }
         }
-        console.log(output + '\n');
     }
+    return output;
 }
-
+//crea el texto que se parseará a JSON
 function CREARJSON(s) {
     const tamTile = 16;
-    console.log(`{
+
+    let json_text=`{
         "compressionlevel": -1,
         "height": ${s.tamy * 2},
         "infinite": false,
         "layers": [{
             "data": [
-    `);
-    imprimeVectorJSON(s);
-    console.log(`],
+    `+
+    imprimeVectorJSON(s)+
+    `],
             "height": ${s.tamy * 2},
             "id": 1,
             "name": "Paredes",
             "opacity": 1,
+            "properties":[
+                {
+                 "name":"Collide",
+                 "type":"bool",
+                 "value":true
+                }],
             "type": "tilelayer",
             "visible": true,
             "width": ${s.tamx * 2},
@@ -282,16 +227,62 @@ function CREARJSON(s) {
             "name": "TilesDungeon",
             "spacing": 0,
             "tilecount": 625,
-            "tileheight": 16,
-            "tilewidth": 16
+            "tileheight": ${tamTile},
+            "tilewidth": ${tamTile}
         }],
         "tilewidth": ${tamTile},
         "type": "map",
         "version": "1.10",
         "width": ${s.tamx * 2}
-    }`);
-}
+    }`;
 
+    return json_text;
+    /*
+    console.log(`{
+        "compressionlevel": -1,
+        "height": ${s.tamy * 2},
+        "infinite": false,
+        "layers": [{
+            "data": [
+                `);
+    imprimeVectorJSON(s);
+    console.log(`],
+    "height": ${s.tamy * 2},
+    "id": 1,
+    "name": "Paredes",
+    "opacity": 1,
+    "type": "tilelayer",
+    "visible": true,
+    "width": ${s.tamx * 2},
+    "x": 0,
+    "y": 0}],
+    "nextlayerid": 5,
+    "nextobjectid": 1,
+    "orientation": "orthogonal",
+    "renderorder": "right-down",
+    "tiledversion": "1.11.2",
+    "tileheight": ${tamTile},
+    "tilesets": [{
+        "columns": 25,
+        "firstgid": 1,
+        "image": "../sprites/Pixel Crawler - FREE - 1.8/Environment/Dungeon Prison/Assets/Tiles.png",
+        "imageheight": 400,
+        "imagewidth": 400,
+        "margin": 0,
+        "name": "TilesDungeon",
+        "spacing": 0,
+        "tilecount": 625,
+        "tileheight": 16,
+        "tilewidth": 16
+    }],
+    "tilewidth": ${tamTile},
+    "type": "map",
+    "version": "1.10",
+    "width": ${s.tamx * 2}
+}`);
+*/
+}
+// determina si la sala cabe o no en la posición insertada
 function cabeLaSala(m, posy, posx, s, dir) {
     let cx = -1, cy = -1, fx = -1, fy = -1;
     if (dir === 0) {
@@ -330,7 +321,7 @@ function cabeLaSala(m, posy, posx, s, dir) {
     }
     return true;
 }
-
+//pinta el caracter designado (c) teniendo en cuenta el offset (mitad del tamaño de la sala) 
 function pintaSalaOffset(m, ofy, ofx, v, c) {
     while (v.length > 0) {
         const cx = v[v.length - 1].x + ofx;
@@ -341,7 +332,7 @@ function pintaSalaOffset(m, ofy, ofx, v, c) {
         v.pop();
     }
 }
-
+//pinta la sala completa en la posy, posy
 function ponerSala(m, posy, posx, s, dir, puertas) {
     let cx = -1, cy = -1;
     if (dir === 0) {
@@ -374,10 +365,12 @@ function ponerSala(m, posy, posx, s, dir, puertas) {
 
     if (dir !== -1) {
         m[posy][posx] = c_vacio;
+        //Quitamos la puerta usada (en la sala de referencia)
         puertas[dir].pop();
     }
 
     pintaSalaOffset(m, cy, cx, s.puerta, c_puerta);
+    //agregamos las nuevas puertas (de la nueva sala) menos la que conecta con la sala de referencia  
     if (s.puerta[0].x !== -1 && s.puerta[0].y !== -1 && dir !== 3) {
         puertas[0].push({ y: cy + s.puerta[0].y, x: cx + s.puerta[0].x });
     } else if (dir === 3) {
@@ -398,11 +391,12 @@ function ponerSala(m, posy, posx, s, dir, puertas) {
     } else if (dir === 0) {
         m[cy + s.puerta[3].y][cx + s.puerta[3].x] = c_vacio;
     }
+
     pintaSalaOffset(m, cy, cx, s.recompensa, c_recompensa);
     pintaSalaOffset(m, cy, cx, s.trampa, c_trampa);
     pintaSalaOffset(m, cy, cx, s.salida, c_salida);
 }
-
+//va poniendo las salas de manera aleatoria desde la sala central conectandolas por las puertas
 function generamazmorra() {
     //creamos mapa
     let m = [];
@@ -449,68 +443,7 @@ function generamazmorra() {
     return m;
 }
 
-function traduceSala() {
-    
-
-    console.log("introduce el numero de filas del mapa:");
-    const y = 50
-    let salaAux = { tamx: x, tamy:y, pared: [], puerta: [], obstaculo: [], explosivo: [], trampa: [], enemigo_ranged: [], enemigo_melee: [], cura: [], recompensa: [], salida: [] };
-    
-    console.log("introduce el mapa con caracteres");
-    for (let i = 0; i < y; i++) {
-        for (let j = 0; j < x; j++) {
-            const c = prompt().charAt(0);
-            /*
-            c_pared = '#',
-            c_puerta = 'P',
-            c_obstaculo = 'O',
-            c_explosivo = 'X',
-            c_trampa = 'T',
-            c_ene_ran = 'e',
-            c_ene_melee = 'E',
-            c_cura = 'C',
-            c_recompensa = 'R';
-            c_salida = 'S'
-            */
-            switch (c) {
-                case '#':
-                    salaAux.pared.push([i, j]);
-                    break;
-                case 'P':
-                    salaAux.puerta.push([i, j]);
-                    break;
-                case 'O':
-                    salaAux.obstaculo.push([i, j]);
-                    break;
-                case 'X':
-                    salaAux.explosivo.push([i, j]);
-                    break;
-                case 'T':
-                    salaAux.trampa.push([i, j]);
-                    break;
-                case 'e':
-                    salaAux.enemigo_ranged.push([i, j]);
-                    break;
-                case 'E':
-                    salaAux.enemigo_melee.push([i, j]);
-                    break;
-                case 'C':
-                    salaAux.cura.push([i, j]);
-                    break;
-                case 'R':
-                    salaAux.recompensa.push([i, j]);
-                    break;
-                case 'S':
-                    salaAux.salida.push([i, j]);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-    return salaAux;
-}
-
+//traduce una mazmorra (caracteres) a sala (estructura de array) para poder usarla
 function traduceMazmorraASala(m) {
     const y = m.length, x = m[0].length;
     let salaAux = { tamx: x, tamy: y, pared: [], puerta: [], obstaculo: [], explosivo: [], trampa: [], enemigo_ranged: [], enemigo_melee: [], cura: [], recompensa: [], salida: [] };
@@ -556,37 +489,18 @@ function traduceMazmorraASala(m) {
     return salaAux;
 }
 
-function main() {
-    let prueba = 1;
+function gen_mazmorra() {
+    
+    const mapa = generaMazmorra();
 
-    if (prueba === 0) {
-        salasVector.forEach((fila) => {
-            fila.forEach((sala) => {
-                pintaSala(sala);
-                imprimeVectorJSON(sala);
-            });
-        });
-    }
+    /*mapa.forEach((fila) => {
+        console.log(fila.join(''));
+    });
+    
+    console.log("\n\n");
+    
+    */
+    const mazmorraSala = traduceMazmorraASala(mapa);
 
-    if (prueba === 1) {
-        let c = '0';
-
-        do {
-            const mapa = generaMazmorra();
-
-            mapa.forEach((fila) => {
-                console.log(fila.join(''));
-            });
-
-            console.log("\n\n");
-
-            const mazmorraSala = traduceMazmorraASala(mapa);
-
-            CREARJSON(mazmorraSala);
-
-            c = prompt().charAt(0);
-        } while (c !== '0');
-    }
-
-    return 0;
+    return CREARJSON(mazmorraSala);
 }
