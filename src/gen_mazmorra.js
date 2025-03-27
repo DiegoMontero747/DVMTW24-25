@@ -72,7 +72,7 @@ const sala_11x11 = [
         11,
         11,
         [new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
-        [new Coordenada(4, 2), new Coordenada(5, 2), new Coordenada(6, 2), new Coordenada(2, 4), new Coordenada(8, 4), newada(2, 5), new Coordenada(8, 5), new Coordenada(2, 6), new Coordenada(8, 6), new Coordenada(4, ), new Coordenada(5, 8), new Coordenada(6, 8)],
+        [new Coordenada(4, 2), new Coordenada(5, 2), new Coordenada(6, 2), new Coordenada(2, 4), new Coordenada(8, 4), new Coordenada(2, 5), new Coordenada(8, 5), new Coordenada(2, 6), new Coordenada(8, 6), new Coordenada(4, ), new Coordenada(5, 8), new Coordenada(6, 8)],
         [new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(1, 1), new Coordenada(2, 1), new Coordenada(8, 1), new Coordenada(9, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(1, 2), new Coordenada(9, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(10, 4), new Coordenada(0, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(1, 8), new Coordenada(9, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(1, 9), new Coordenada(2, 9), new Coordenada(8, 9), new Coordenada(9, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 10)],
         [],
         [new Coordenada(5, 5)],
@@ -87,7 +87,7 @@ const sala_11x11 = [
         11,
         [new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
         [new Coordenada(7, 1), new Coordenada(3, 2), new Coordenada(7, 2), new Coordenada(2, 3), new Coordenada(7, 3), new Coordenada(8, 3), new Coordenada(9, 3), new Coordenada(1, 7), new Coordenada(2, 7), new Coordenada(3, 7), new Coordenada(8, 7), new Coordenada(3, 8), new Coordenada(7, 8), new Coordenada(3, 9), new Coordenada(7, 9)],
-        [new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(2, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(3, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(4, 4), new Coordenada(10, 4), new Coordenada(0, 5), new Coordenada(10, 5), new Coordenada(0, 6), new Coordenada(6, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(7, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(8, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 1)],
+        [new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(2, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(3, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(4, 4), new Coordenada(10, 4), new Coordenada(0, 5), new Coordenada(10, 5), new Coordenada(0, 6), new Coordenada(6, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(7, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(8, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 1)],
         [],
         [],
         [new Coordenada(3, 1), new Coordenada(9, 1), new Coordenada(1, 3), new Coordenada(9,7), new Coordenada(1, 9), new Coordenada(7, 9)],
@@ -368,9 +368,9 @@ function ponerSala(m, posy, posx, s, dir, puertas) {
         //Quitamos la puerta usada (en la sala de referencia)
         puertas[dir].pop();
     }
-
     pintaSalaOffset(m, cy, cx, s.puerta, c_puerta);
     //agregamos las nuevas puertas (de la nueva sala) menos la que conecta con la sala de referencia  
+    
     if (s.puerta[0].x !== -1 && s.puerta[0].y !== -1 && dir !== 3) {
         puertas[0].push({ y: cy + s.puerta[0].y, x: cx + s.puerta[0].x });
     } else if (dir === 3) {
@@ -397,7 +397,7 @@ function ponerSala(m, posy, posx, s, dir, puertas) {
     pintaSalaOffset(m, cy, cx, s.salida, c_salida);
 }
 //va poniendo las salas de manera aleatoria desde la sala central conectandolas por las puertas
-function generamazmorra() {
+function generaMazmorra() {
     //creamos mapa
     let m = [];
     for (let fila = 0; fila < tamy; fila++) {
@@ -489,7 +489,7 @@ function traduceMazmorraASala(m) {
     return salaAux;
 }
 
-function gen_mazmorra() {
+export default function gen_mazmorra() {
     
     const mapa = generaMazmorra();
 
