@@ -30,6 +30,7 @@ export default class Boot extends Phaser.Scene {
     this.load.aseprite('player_mage','mage.png','mage.json');
     this.load.aseprite('orc2','orc2.png','orc2.json');
     this.load.aseprite('blood','splatter.png','splatter.json');
+    this.load.aseprite('KABOOM', 'explosion-sheet.png', 'explosion.json');
 
     this.load.setPath('/assets/misc/');
     this.load.image('NextTurn', 'NextTurn.png');
@@ -52,6 +53,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('palanca_txt', 'palancaOff.png');
     this.load.image('palancaOn_txt', 'palancaOn.png');
     this.load.image('tnt_txt', 'TNT.png');
+    this.load.image('caja_txt', 'obstaculotxt.png');
 
     //this.load.image('player', player);
 
