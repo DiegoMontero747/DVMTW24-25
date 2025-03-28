@@ -23,7 +23,7 @@ const suelo=false;
 const puerta=false;
 const objeto=false;
 const decorado=false;
-const colision=false;
+const colision=true;
 
 
 
@@ -41,6 +41,9 @@ export default class LevelDebug extends Phaser.Scene {
      * Creación de los elementos de la escena principal de juego
      */
     create() {
+
+        //this.physics.world.setBounds(0, 0, 100, 100, true, true, true, true);
+
         var scene=this;
         
         /*Crear layers json*/
