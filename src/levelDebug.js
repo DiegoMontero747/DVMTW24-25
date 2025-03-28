@@ -19,11 +19,11 @@ import GameShaderPixel from "./shaders/pixelShader.js";
 */
 
 const pared=true;
-const suelo=true;
-const puerta=true;
-const objeto=true;
-const decorado=true;
-const colision=true;
+const suelo=false;
+const puerta=false;
+const objeto=false;
+const decorado=false;
+const colision=false;
 
 
 
@@ -248,7 +248,7 @@ export default class LevelDebug extends Phaser.Scene {
         cam.startFollow(this.player);
         cam.setBounds(0,0);
         cam.setZoom(3);
-        
+      
         let mask=this.wall_layer.createBitmapMask();
         mask.invertAlpha=true;
         this.player.moveAreaGraphics.setMask(mask);

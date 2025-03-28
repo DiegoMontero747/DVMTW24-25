@@ -124,32 +124,81 @@ const sala_11x11 = [
 ];
 
 const sala_15x15 = [
-
+    {
+        x:11,
+        y:11,
+        puerta:[new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
+        obstaculo:[new Coordenada(7, 1), new Coordenada(3, 2), new Coordenada(7, 2), new Coordenada(2, 3), new Coordenada(7, 3), new Coordenada(8, 3), new Coordenada(9, 3), new Coordenada(1, 7), new Coordenada(2, 7), new Coordenada(3, 7), new Coordenada(8, 7), new Coordenada(3, 8), new Coordenada(7, 8), new Coordenada(3, 9), new Coordenada(7, 9)],
+        pared:[new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(2, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(3, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(4, 4), new Coordenada(10, 4), new Coordenada(0, 5), new Coordenada(10, 5), new Coordenada(0, 6), new Coordenada(6, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(7, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(8, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 1)],
+        enemigo_melee:[],
+        enemigo_ranged:[],
+        explosivo:[new Coordenada(3, 1), new Coordenada(9, 1), new Coordenada(1, 3), new Coordenada(9,7), new Coordenada(1, 9), new Coordenada(7, 9)],
+        trampa:[new Coordenada(8, 1), new Coordenada(4, 3), new Coordenada(6, 3), new Coordenada(3, 6), new Coordenada(7, 6), new Coordenada(4, 7), new Coordenada(6, 7), new Coordenada(2, 9)],
+        cura:[],
+        recompensa:[],
+        salida:[]
+    }
 ];
 
 const sala_17x17 = [
-
+    {
+        x:11,
+        y:11,
+        puerta:[new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
+        obstaculo:[new Coordenada(7, 1), new Coordenada(3, 2), new Coordenada(7, 2), new Coordenada(2, 3), new Coordenada(7, 3), new Coordenada(8, 3), new Coordenada(9, 3), new Coordenada(1, 7), new Coordenada(2, 7), new Coordenada(3, 7), new Coordenada(8, 7), new Coordenada(3, 8), new Coordenada(7, 8), new Coordenada(3, 9), new Coordenada(7, 9)],
+        pared:[new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(2, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(3, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(4, 4), new Coordenada(10, 4), new Coordenada(0, 5), new Coordenada(10, 5), new Coordenada(0, 6), new Coordenada(6, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(7, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(8, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 1)],
+        enemigo_melee:[],
+        enemigo_ranged:[],
+        explosivo:[new Coordenada(3, 1), new Coordenada(9, 1), new Coordenada(1, 3), new Coordenada(9,7), new Coordenada(1, 9), new Coordenada(7, 9)],
+        trampa:[new Coordenada(8, 1), new Coordenada(4, 3), new Coordenada(6, 3), new Coordenada(3, 6), new Coordenada(7, 6), new Coordenada(4, 7), new Coordenada(6, 7), new Coordenada(2, 9)],
+        cura:[],
+        recompensa:[],
+        salida:[]
+    }
 ];
 
 const sala_19x19 = [
-
+    {
+        x:11,
+        y:11,
+        puerta:[new Coordenada(0, 5), new Coordenada(5, 0), new Coordenada(5, 10), new Coordenada(10, 5)],
+        obstaculo:[new Coordenada(7, 1), new Coordenada(3, 2), new Coordenada(7, 2), new Coordenada(2, 3), new Coordenada(7, 3), new Coordenada(8, 3), new Coordenada(9, 3), new Coordenada(1, 7), new Coordenada(2, 7), new Coordenada(3, 7), new Coordenada(8, 7), new Coordenada(3, 8), new Coordenada(7, 8), new Coordenada(3, 9), new Coordenada(7, 9)],
+        pared:[new Coordenada(0, 0), new Coordenada(1, 0), new Coordenada(2, 0), new Coordenada(3, 0), new Coordenada(4, 0), new Coordenada(6, 0), new Coordenada(7, 0), new Coordenada(8, 0), new Coordenada(9, 0), new Coordenada(10, 0), new Coordenada(0, 1), new Coordenada(10, 1), new Coordenada(0, 2), new Coordenada(2, 2), new Coordenada(10, 2), new Coordenada(0, 3), new Coordenada(3, 3), new Coordenada(10, 3), new Coordenada(0, 4), new Coordenada(4, 4), new Coordenada(10, 4), new Coordenada(0, 5), new Coordenada(10, 5), new Coordenada(0, 6), new Coordenada(6, 6), new Coordenada(10, 6), new Coordenada(0, 7), new Coordenada(7, 7), new Coordenada(10, 7), new Coordenada(0, 8), new Coordenada(8, 8), new Coordenada(10, 8), new Coordenada(0, 9), new Coordenada(10, 9), new Coordenada(0, 10), new Coordenada(1, 10), new Coordenada(2, 10), new Coordenada(3, 10), new Coordenada(4, 10), new Coordenada(6, 10), new Coordenada(7, 10), new Coordenada(8, 10), new Coordenada(9, 10), new Coordenada(10, 1)],
+        enemigo_melee:[],
+        enemigo_ranged:[],
+        explosivo:[new Coordenada(3, 1), new Coordenada(9, 1), new Coordenada(1, 3), new Coordenada(9,7), new Coordenada(1, 9), new Coordenada(7, 9)],
+        trampa:[new Coordenada(8, 1), new Coordenada(4, 3), new Coordenada(6, 3), new Coordenada(3, 6), new Coordenada(7, 6), new Coordenada(4, 7), new Coordenada(6, 7), new Coordenada(2, 9)],
+        cura:[],
+        recompensa:[],
+        salida:[]
+    }
 ];
 
 const salas_vector = [sala_11x11
-    //, sala_15x15, sala_17x17, sala_19x19
+    , sala_15x15, sala_17x17, sala_19x19
 ];
 
 //pasa de sala a sala x2 y le pone las paredes 
 function imprimeVectorJSON(s) {
-    const mapaParedes = Array.from({ length: s.tamy * 2 }, () => Array(s.tamx * 2).fill(0));
+    let mapaParedes =[];
 
+    for(let i=0;i<tamy*2;i++){
+        mapaParedes.push([]);
+        for (let j=0;j<tamx*2;j++){
+            mapaParedes[i].push(0);
+        }
+    }
+
+    console.log(mapaParedes);
+
+    console.log("mazmorra en sala",s);
+    
     for (let i = 0; i < s.pared.length; i++) {
         mapaParedes[s.pared[i].y * 2][s.pared[i].x * 2] = i_pared_negro;
         mapaParedes[s.pared[i].y * 2 + 1][s.pared[i].x * 2] = i_pared_negro;
         mapaParedes[s.pared[i].y * 2][s.pared[i].x * 2 + 1] = i_pared_negro;
         mapaParedes[s.pared[i].y * 2 + 1][s.pared[i].x * 2 + 1] = i_pared_negro;
     }
-
     for (let fila = 0; fila < s.tamy * 2; fila++) {
         for (let col = 0; col < s.tamx * 2; col++) {
             if (mapaParedes[fila][col] !== 0) {
@@ -199,6 +248,7 @@ function imprimeVectorJSON(s) {
 
     let output = '';
     for (let fila = 0; fila < s.tamy * 2; fila++) {
+        output+="\n";
         for (let col = 0; col < s.tamx * 2; col++) {
             output += (mapaParedes[fila][col] === 0 ? '0' : mapaParedes[fila][col]).toString();
             if (fila !== (s.tamy * 2) - 1 || col !== (s.tamx * 2) - 1) {
@@ -206,22 +256,22 @@ function imprimeVectorJSON(s) {
             }
         }
     }
-    return output;
+    return mapaParedes;
 }
 //crea el texto que se parseará a JSON
 function CREARJSON(s) {
     const tamTile = 16;
-
+    
     let json_text=`{
         "compressionlevel": -1,
-        "height": ${s.tamy * 2},
+        "height": ${s.y*2},
         "infinite": false,
         "layers": [{
             "data": [
     `+
     imprimeVectorJSON(s)+
     `],
-            "height": ${s.tamy * 2},
+            "height": ${s.y*2},
             "id": 1,
             "name": "Paredes",
             "opacity": 1,
@@ -233,7 +283,7 @@ function CREARJSON(s) {
                 }],
             "type": "tilelayer",
             "visible": true,
-            "width": ${s.tamx * 2},
+            "width": ${s.x*2},
             "x": 0,
             "y": 0}],
         "nextlayerid": 5,
@@ -258,7 +308,7 @@ function CREARJSON(s) {
         "tilewidth": ${tamTile},
         "type": "map",
         "version": "1.10",
-        "width": ${s.tamx * 2}
+        "width": ${s.x*2}
     }`;
 
     return json_text;
@@ -352,7 +402,7 @@ function pintaSalaOffset(m, ofy, ofx, v, c) {
     while (vaux.length > 0) {
         const cx = vaux[vaux.length - 1].x + ofx;
         const cy = vaux[vaux.length - 1].y + ofy;
-        if (vaux[vaux.length - 1].x !== -1 && vaux[vaux.length - 1].y !== -1) {
+        if (vaux[vaux.length - 1].x != -1 && vaux[vaux.length - 1].y != -1) {
             m[cy][cx] = c;
         }
         vaux.pop();
@@ -361,62 +411,62 @@ function pintaSalaOffset(m, ofy, ofx, v, c) {
 //pinta la sala completa en la posy, posy
 function ponerSala(m, posy, posx, s, dir, puertas) {
     let cx = -1, cy = -1;
-    if (dir === 0) {
-        cy = posy - s.tamy;
-        cx = posx - (s.tamx / 2);
+    if (dir == 0) {
+        cy = posy - s.y;
+        cx = posx - Math.floor(s.x / 2);
     }
-    if (dir === 1) {
-        cy = posy - (s.tamy / 2);
-        cx = posx - s.tamx;
+    if (dir == 1) {
+        cy = posy - Math.floor(s.y / 2);
+        cx = posx - s.x;
     }
-    if (dir === 2) {
-        cy = posy - (s.tamy / 2);
+    if (dir == 2) {
+        cy = posy - Math.floor(s.y / 2);
         cx = posx + 1;
     }
-    if (dir === 3) {
+    if (dir == 3) {
         cy = posy + 1;
-        cx = posx - (s.tamx / 2);
+        cx = posx - Math.floor(s.x / 2);
     }
-    if (dir === -1) {
+    if (dir == -1) {
         cy = posy;
         cx = posx;
     }
+
+    console.log(cy,cx);
 
     pintaSalaOffset(m, cy, cx, s.cura, c_cura);
     pintaSalaOffset(m, cy, cx, s.enemigo_melee, c_ene_melee);
     pintaSalaOffset(m, cy, cx, s.enemigo_ranged, c_ene_ran);
     pintaSalaOffset(m, cy, cx, s.explosivo, c_explosivo);
     pintaSalaOffset(m, cy, cx, s.obstaculo, c_obstaculo);
-    console.log(s.pared);
     pintaSalaOffset(m, cy, cx, s.pared, c_pared);
-    console.log(s.pared);
    
 
-    if (dir !== -1) {
+    if (dir != -1) {
         m[posy][posx] = c_vacio;
         //Quitamos la puerta usada (en la sala de referencia)
         puertas[dir].pop();
     }
     pintaSalaOffset(m, cy, cx, s.puerta, c_puerta);
     //agregamos las nuevas puertas (de la nueva sala) menos la que conecta con la sala de referencia  
-    if (s.puerta[0].x !== -1 && s.puerta[0].y !== -1 && dir !== 3) {
+    if (s.puerta[0].x != -1 && s.puerta[0].y != -1 && dir != 3) {
         puertas[0].push({ y: cy + s.puerta[0].y, x: cx + s.puerta[0].x });
-    } else if (dir === 3) {
+    } else if (dir == 3) {
         m[cy + s.puerta[0].y][cx + s.puerta[0].x] = c_vacio;
     }
-    if (s.puerta[1].x !== -1 && s.puerta[1].y !== -1 && dir !== 2) {
+    if (s.puerta[1].x != -1 && s.puerta[1].y != -1 && dir != 2) {
         puertas[1].push({ y: cy + s.puerta[1].y, x: cx + s.puerta[1].x });
-    } else if (dir === 2) {
+    } else if (dir == 2) {
         m[cy + s.puerta[1].y][cx + s.puerta[1].x] = c_vacio;
     }
-    if (s.puerta[2].x !== -1 && s.puerta[2].y !== -1 && dir !== 1) {
+    if (s.puerta[2].x != -1 && s.puerta[2].y != -1 && dir != 1) {
         puertas[2].push({ y: cy + s.puerta[2].y, x: cx + s.puerta[2].x });
-    } else if (dir === 1) {
+    } else if (dir == 1) {
         m[cy + s.puerta[2].y][cx + s.puerta[2].x] = c_vacio;
     }
-    if (s.puerta[3].x !== -1 && s.puerta[3].y !== -1 && dir !== 0) {
+    if (s.puerta[3].x != -1 && s.puerta[3].y != -1 && dir != 0) {
         puertas[3].push({ y: cy + s.puerta[3].y, x: cx + s.puerta[3].x });
-    } else if (dir === 0) {
+    } else if (dir == 0) {
         m[cy + s.puerta[3].y][cx + s.puerta[3].x] = c_vacio;
     }
 
@@ -444,9 +494,8 @@ function generaMazmorra() {
     ponerSala(m, Math.floor(tamy / 2 - salaPPal.y / 2), Math.floor(tamx / 2 - salaPPal.x / 2), salaPPal, -1, puertas);
     let salas_puestas = 1;
     let errores_consecutivos = 0;
-    console.log("mapa hecho:",m);
 
-    while (salas_puestas !== num_salas && errores_consecutivos <= max_errores) {
+    while (salas_puestas != num_salas && errores_consecutivos <= max_errores) {
         let direccion_expansion = Math.floor(Math.random() * 4);
         let tam_sala = Math.floor(Math.random() * 4);
         let sala_concreta = Math.floor(Math.random() * salas_vector[tam_sala].length);
@@ -456,7 +505,8 @@ function generaMazmorra() {
 
             if (cabeLaSala(m, puertas[direccion_expansion][ul_elem].y, puertas[direccion_expansion][ul_elem].x, salas_vector[tam_sala][sala_concreta], direccion_expansion)) {
                 errores_consecutivos = 0;
-                ponerSala(m, puertas[direccion_expansion][ul_elem].y, puertas[direccion_expansion][ul_elem].x, sal_vector[tam_sala][sala_concreta], direccion_expansion, puertas);
+                ponerSala(m, puertas[direccion_expansion][ul_elem].y, puertas[direccion_expansion][ul_elem].x, salas_vector[tam_sala][sala_concreta], direccion_expansion, puertas);
+
                 salas_puestas++;
             } else {
                 errores_consecutivos++;
@@ -467,7 +517,7 @@ function generaMazmorra() {
     //limpiamos las paredes que sobran
     for (let i = 0; i < puertas.length; i++) {
         for (let j = 0; j < puertas[i].length; j++) {
-            m[puertas[i][j].y][puertas[i][j].x] = c;
+            m[puertas[i][j].y][puertas[i][j].x] = c_vacio;
         }
     }
     return m;
@@ -476,40 +526,40 @@ function generaMazmorra() {
 //traduce una mazmorra (caracteres) a sala (estructura de array) para poder usarla
 function traduceMazmorraASala(m) {
     const y = m.length, x = m[0].length;
-    let salaAux = { tamx: x, tamy: y, pared: [], puerta: [], obstaculo: [], explosivo: [], trampa: [], enemigo_ranged: [], enemigo_melee: [], cura: [], recompensa: [], salida: [] };
+    let salaAux = { x: tamx, y: tamy, pared: [], puerta: [], obstaculo: [], explosivo: [], trampa: [], enemigo_ranged: [], enemigo_melee: [], cura: [], recompensa: [], salida: [] };
     for (let i = 0; i < y; i++) {
         for (let j = 0; j < x; j++) {
             const c = m[i][j];
             switch (c) {
                 case '#':
-                    salaAux.pared.push([i, j]);
+                    salaAux.pared.push({y:i, x:j});
                     break;
                 case 'P':
-                    salaAux.puerta.push([i, j]);
+                    salaAux.puerta.push({y:i, x:j});
                     break;
                 case 'O':
-                    salaAux.obstaculo.push([i, j]);
+                    salaAux.obstaculo.push({y:i, x:j});
                     break;
                 case 'X':
-                    salaAux.explosivo.push([i, j]);
+                    salaAux.explosivo.push({y:i, x:j});
                     break;
                 case 'T':
-                    salaAux.trampa.push([i, j]);
+                    salaAux.trampa.push({y:i, x:j});
                     break;
                 case 'e':
-                    salaAux.enemigo_ranged.push([i, j]);
+                    salaAux.enemigo_ranged.push({y:i, x:j});
                     break;
                 case 'E':
-                    salaAux.enemigo_melee.push([i, j]);
+                    salaAux.enemigo_melee.push({y:i, x:j});
                     break;
                 case 'C':
-                    salaAux.cura.push([i, j]);
+                    salaAux.cura.push({y:i, x:j});
                     break;
                 case 'R':
-                    salaAux.recompensa.push([i, j]);
+                    salaAux.recompensa.push({y:i, x:j});
                     break;
                 case 'S':
-                    salaAux.salida.push([i, j]);
+                    salaAux.salida.push({y:i, x:j});
                     break;
                 default:
                     break;
@@ -531,6 +581,6 @@ export default function gen_mazmorra() {
     
     */
     const mazmorraSala = traduceMazmorraASala(mapa);
-
+    
     return CREARJSON(mazmorraSala);
 }
