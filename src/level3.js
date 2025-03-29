@@ -98,7 +98,6 @@ export default class Level3 extends Phaser.Scene {
 
         const doorsGroup = this.physics.add.staticGroup(doors);*/
 
-        this.initUI()
 
         /* this.wall_layer.renderDebug(this.add.graphics(),
         {
@@ -123,16 +122,15 @@ export default class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.player.body, this.wall_layer,()=>{this.playCollideEffect()});
         //this.physics.add.collider(this.player2.body, this.wall_layer);
         this.physics.add.collider(this.player, objectsGroup);
-        this.physics.add.collider(this.player.body, doorsGroup);
+        //this.physics.add.collider(this.player.body, doorsGroup);
 
-        this.physics.add.collider(this.orc.body, this.wall_layer);
         this.physics.add.collider(this.orc.body, this.wall_layer);
 
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
         */
 
-        this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
+        //this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
         //this.physics.world.enable(this.player.attackArea);
         //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
         /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
@@ -144,6 +142,52 @@ export default class Level3 extends Phaser.Scene {
         //this.physics.add.existing(this.orc.attackArea);
         //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
+/* this.wall_layer.renderDebug(this.add.graphics(),
+        {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
+            faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
+        }); */
+        this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
+
+        this.trampas = this.physics.add.group();
+        this.puertas = this.physics.add.group()
+
+        this.crearObjetosDesdeTiled(this.doors_layer);
+        this.crearObjetosDesdeTiled(this.objects_layer);
+
+
+        this.initUI();
+        this.activeCharacter="warrior";
+        var cam=this.cameras.main;
+        this.showTurnMsg();
+        cam.startFollow(this.player);
+        cam.setBounds(0,0);
+        cam.setZoom(3);
+        this.physics.add.collider(this.player.body, this.wall_layer);
+        this.physics.add.collider(this.player.body, this.objetosConColision);
+        this.physics.add.collider(this.orc.body, this.objetosConColision);
+
+        this.physics.add.collider(this.player.body, this.trampas, () => {
+            this.player.onHit(2);
+            this.player.x -= 16;
+        });
+
+        this.physics.add.collider(this.orc.body, this.wall_layer);
+
+        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        this.boundLimitSound= this.sound.add("boundLimits")
+        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
+        {   
+            if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
+            console.log("collide");
+            if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
+                this.cameras.main.shake(300,0.0002);
+                this.boundLimitSound.play({volume:0.7});
+                this.boundLimitSoundTimeOut=true;
+                this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
+            } 
+        });
         this.initShaders();
         this.initKeyCombos();
 
@@ -173,7 +217,7 @@ export default class Level3 extends Phaser.Scene {
         this.turn="player";
         this.player.onTurnStart();
 
-        this.initMusic()
+        this.initMusic();
     }
 
     playCollideEffect(){
@@ -189,6 +233,73 @@ export default class Level3 extends Phaser.Scene {
     initShaders(){
         let cam = this.cameras.main;
         this.setCrtShader();
+    }
+
+    initKeyCombos(){
+                //gestion de combos de teclado
+                this.input.keyboard.createCombo('crt',{resetOnMatch:true}).comboName='crt';
+                this.input.keyboard.createCombo('reset',{resetOnMatch:true}).comboName='reset';
+                this.input.keyboard.createCombo('retro',{resetOnMatch:true}).comboName='retro';
+                this.input.keyboard.createCombo('gba',{resetOnMatch:true}).comboName='gba';
+                this.input.keyboard.createCombo('pixel',{resetOnMatch:true}).comboName='pixel';
+        
+                this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
+                this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
+                this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
+                this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
+                this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
+                this.input.keyboard.createCombo('music',{resetOnMatch:true}).comboName='music';
+                this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
+        
+                this.input.keyboard.on('keycombomatch', (combo) => {
+                    switch(combo.comboName){
+                        case 'reset':
+                            this.cameras.main.resetPostPipeline();
+                        break;
+                        case 'crt':
+                            this.setCrtShader();
+                        break;
+                        case 'gba':
+                            this.setGBAShader();
+                        break;
+                        case 'retro':
+                            this.setRetroShader();
+                        break;
+                        case 'pixel':
+                            this.setPixelShader();
+                        break;
+                        case 'mute':
+                            this.sound.setMute(!scene.sound.mute);
+                        break;
+                        case 'restart':
+                            this.scene.restart();
+                        break;
+                        case 'lights':
+                            this.setLights();
+                        break;
+                    }
+        
+                });
+    }
+
+    initMusic(){
+        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        this.boundLimitSound= this.sound.add("boundLimits")
+        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
+        {   
+            this.playCollideEffect();
+        });
+    }
+
+
+    playCollideEffect(){
+        if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
+            if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
+                this.cameras.main.shake(500,0.0002);
+                this.boundLimitSound.play({volume:0.7});
+                this.boundLimitSoundTimeOut=true;
+                this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
+            } 
     }
 
     initKeyCombos(){
@@ -410,157 +521,6 @@ export default class Level3 extends Phaser.Scene {
             hpDisplay:this.add.text(390,550,"HP: ?/?",{fontSize:11,strokeThickness:4,stroke:'rgb(49, 0, 0)'}).setScrollFactor(0).setDepth(20),
             portrait:this.add.image(367, 550, 'warriorPortrait').setScrollFactor(0).setDepth(20)
         };
-
-        /* this.wall_layer.renderDebug(this.add.graphics(),
-        {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
-            faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
-        }); */
-        this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
-
-
-        //const tag=this.anims.createFromAseprite('player_warrior');
-        this.player = new Player(this, 128, 200).setDepth(1);
-        //this.player2 = new Mage(this, 72, 176);
-        this.orc = new Orc(this, 240, 190).setDepth(1);
-
-        this.trampas = this.physics.add.group();
-        this.puertas = this.physics.add.group()
-
-        this.crearObjetosDesdeTiled(this.doors_layer);
-        this.crearObjetosDesdeTiled(this.objects_layer);
-
-        this.activeCharacter="warrior";
-        var cam=this.cameras.main;
-        this.showTurnMsg();
-        cam.startFollow(this.player);
-        cam.setBounds(0,0);
-        cam.setZoom(3);
-        this.physics.add.collider(this.player.body, this.wall_layer);
-        this.physics.add.collider(this.player.body, this.objetosConColision);
-        this.physics.add.collider(this.orc.body, this.objetosConColision);
-
-        this.physics.add.collider(this.player.body, this.trampas, () => {
-            this.player.onHit(2);
-            this.player.x -= 16;
-        });
-
-        this.physics.add.collider(this.orc.body, this.wall_layer);
-        this.physics.add.collider(this.orc.body, this.wall_layer);
-
-        /* Creación de cruadicula que sigue al cursor,
-            su movimiento se gestiona en update
-        */
-
-
-        this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
-        //this.physics.world.enable(this.player.attackArea);
-        //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
-        /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
-        const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
-        graphics.strokeRectShape(this.attackArea);
-        // Util para entrar en combate */
-        this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
-
-        this.physics.add.existing(this.player.attackArea);
-        this.physics.add.existing(this.orc.attackArea);
-        //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
-
-        this.initShaders();
-
-        //gestion de combos de teclado
-        this.input.keyboard.createCombo('crt',{resetOnMatch:true}).comboName='crt';
-        this.input.keyboard.createCombo('reset',{resetOnMatch:true}).comboName='reset';
-        this.input.keyboard.createCombo('retro',{resetOnMatch:true}).comboName='retro';
-        this.input.keyboard.createCombo('gba',{resetOnMatch:true}).comboName='gba';
-        this.input.keyboard.createCombo('pixel',{resetOnMatch:true}).comboName='pixel';
-
-        this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
-        this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
-        this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
-        this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
-        this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
-        this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
-
-
-
-        this.input.keyboard.on('keycombomatch', (combo) => {
-            switch(combo.comboName){
-                case 'reset':
-                    cam.resetPostPipeline();
-                break;
-                case 'crt':
-                    this.setCrtShader();
-                break;
-                case 'gba':
-                    this.setGBAShader();
-                break;
-                case 'retro':
-                    this.setRetroShader();
-                break;
-                case 'pixel':
-                    this.setPixelShader();
-                break;
-                case 'mute':
-                    this.sound.setMute(!scene.sound.mute);
-                break;
-                case 'restart':
-                    this.scene.restart();
-                break;
-                case 'lights':
-                    this.setLights();
-                break;
-            }
-
-        });
-
-        this.player.on("player_End_Turn",function(){
-            console.log("player end turn");
-        });
-
-        this.player.on("player_attack",() =>{
-            console.log("player ataca");
-            this.orc.onHit(1);
-        });
-
-        this.orc.on("enemy_End_Turn",function(){
-            console.log("enemy end turn");
-        })
-
-        this.orc.on("enemy_hitted",()=>{
-            console.log("orc hitted");
-            this.events.emit("enemy_turn_start");            
-            this.player.playAttack();
-        })
-        this.player.on("player_hitted",()=>{
-            console.log("player hitted");
-            this.events.emit("player_turn_start");         
-            this.orc.playAttack();
-        })
-        this.turn="player";
-
-        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
-        this.boundLimitSound= this.sound.add("boundLimits")
-        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
-        {   
-            if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
-            console.log("collide");
-            if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
-                this.cameras.main.shake(300,0.0002);
-                this.boundLimitSound.play({volume:0.7});
-                this.boundLimitSoundTimeOut=true;
-                this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
-            } 
-        });
-        let mask=this.wall_layer.createBitmapMask();
-        mask.invertAlpha=true;
-        this.player.moveAreaGraphics.setMask(mask);
-        let mask2=this.player.attackArea.createGeometryMask();
-        mask2.setInvertAlpha(true);
-        console.log(mask)
-        console.log(mask2)
-        //this.player.moveAreaGraphics.setMask(mask2);
     }
 
     initShaders(){
@@ -641,7 +601,8 @@ export default class Level3 extends Phaser.Scene {
 
     async checkHits(){
         this.orc.checkHit();
-        this.player.checkHit();          
+        this.player.checkHit();
+    }         
     crearObjetosDesdeTiled(layer) {
         
         if (!layer) {
