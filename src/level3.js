@@ -2,11 +2,22 @@ import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
 import Orc from './orc.js';
+//import Caja from './objetos/caja.js';
+import Porton from './objetos/porton.js';
+import Cerradura from './objetos/cerradura.js';
+import Cofre from './objetos/cofre.js';
+import Llave from './objetos/llave.js';
+import Palanca from './objetos/palanca.js';
+import Puerta from './objetos/puerta.js';
+import Trampa from './objetos/trampa.js';
+import Caja from './objetos/caja.js';
+import TNT from './objetos/tnt.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
 import GameShaderGBA from "./shaders/gbaShader.js"; 
 import GameShaderPixel from "./shaders/pixelShader.js"; 
+
 
 
 /**
@@ -33,6 +44,7 @@ export default class Level3 extends Phaser.Scene {
     create() {
         var scene=this;
         /*Crear layers json*/
+        this.keyFound = false;
 
         this.map= this.make.tilemap({key:'map'});  
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
@@ -44,7 +56,8 @@ export default class Level3 extends Phaser.Scene {
         this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
         this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
-        this.objects_layer = this.map.getObjectLayer("Objetos", tileset)
+        this.objects_layer = this.map.getObjectLayer("Objetos", tileset);
+        this.objetosConColision = this.physics.add.group();
 
         if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
@@ -54,10 +67,10 @@ export default class Level3 extends Phaser.Scene {
 
         this.wall_layer.setDepth(1);
 
-        this.objects_layer.objects.forEach(obj => {
+        /*this.objects_layer.objects.forEach(obj => {
             // Crear el sprite con la textura especificada en Tiled
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            const sprite = this.physics.add.sprite(obj.x+7, obj.y+7, textura);
+            const sprite = this.physics.add.sprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura);
         
             // Ajustar el origen porque Tiled usa la esquina superior izquierda
             sprite.setOrigin(0.5, 0.5);
@@ -68,25 +81,22 @@ export default class Level3 extends Phaser.Scene {
                 sprite.body.setImmovable(true);
                 sprite.body.allowGravity = false;
             }
-        });
+        });*/
 
         const objectsGroup = this.physics.add.staticGroup();
 
-        
-
         //Puertas
 
-        const doors = this.doors_layer.objects
+        /*const doors = this.doors_layer.objects
         .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
         .map(obj => {
             let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            let door = this.physics.add.staticSprite(obj.x+7, obj.y+7, textura); // Crear sprite estático
-            door.setOrigin(0.5, 0.5); // Ajustar la posición si es necesario
+            let door = this.physics.add.staticSprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura); // Crear sprite estático
+            door.setOrigin(0.5,0.5); // Ajustar la posición si es necesario
             return door;
         });
 
-        const doorsGroup = this.physics.add.staticGroup(doors);
-
+        const doorsGroup = this.physics.add.staticGroup(doors);*/
 
         this.initUI()
 
@@ -400,6 +410,162 @@ export default class Level3 extends Phaser.Scene {
             hpDisplay:this.add.text(390,550,"HP: ?/?",{fontSize:11,strokeThickness:4,stroke:'rgb(49, 0, 0)'}).setScrollFactor(0).setDepth(20),
             portrait:this.add.image(367, 550, 'warriorPortrait').setScrollFactor(0).setDepth(20)
         };
+
+        /* this.wall_layer.renderDebug(this.add.graphics(),
+        {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
+            faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
+        }); */
+        this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
+
+
+        //const tag=this.anims.createFromAseprite('player_warrior');
+        this.player = new Player(this, 128, 200).setDepth(1);
+        //this.player2 = new Mage(this, 72, 176);
+        this.orc = new Orc(this, 240, 190).setDepth(1);
+
+        this.trampas = this.physics.add.group();
+        this.puertas = this.physics.add.group()
+
+        this.crearObjetosDesdeTiled(this.doors_layer);
+        this.crearObjetosDesdeTiled(this.objects_layer);
+
+        this.activeCharacter="warrior";
+        var cam=this.cameras.main;
+        this.showTurnMsg();
+        cam.startFollow(this.player);
+        cam.setBounds(0,0);
+        cam.setZoom(3);
+        this.physics.add.collider(this.player.body, this.wall_layer);
+        this.physics.add.collider(this.player.body, this.objetosConColision);
+        this.physics.add.collider(this.orc.body, this.objetosConColision);
+
+        this.physics.add.collider(this.player.body, this.trampas, () => {
+            this.player.onHit(2);
+            this.player.x -= 16;
+        });
+
+        this.physics.add.collider(this.orc.body, this.wall_layer);
+        this.physics.add.collider(this.orc.body, this.wall_layer);
+
+        /* Creación de cruadicula que sigue al cursor,
+            su movimiento se gestiona en update
+        */
+
+
+        this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
+        //this.physics.world.enable(this.player.attackArea);
+        //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
+        /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
+        const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
+        graphics.strokeRectShape(this.attackArea);
+        // Util para entrar en combate */
+        this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
+
+        this.physics.add.existing(this.player.attackArea);
+        this.physics.add.existing(this.orc.attackArea);
+        //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
+
+        this.initShaders();
+
+        //gestion de combos de teclado
+        this.input.keyboard.createCombo('crt',{resetOnMatch:true}).comboName='crt';
+        this.input.keyboard.createCombo('reset',{resetOnMatch:true}).comboName='reset';
+        this.input.keyboard.createCombo('retro',{resetOnMatch:true}).comboName='retro';
+        this.input.keyboard.createCombo('gba',{resetOnMatch:true}).comboName='gba';
+        this.input.keyboard.createCombo('pixel',{resetOnMatch:true}).comboName='pixel';
+
+        this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
+        this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
+        this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
+        this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
+        this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
+        this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
+
+
+
+        this.input.keyboard.on('keycombomatch', (combo) => {
+            switch(combo.comboName){
+                case 'reset':
+                    cam.resetPostPipeline();
+                break;
+                case 'crt':
+                    this.setCrtShader();
+                break;
+                case 'gba':
+                    this.setGBAShader();
+                break;
+                case 'retro':
+                    this.setRetroShader();
+                break;
+                case 'pixel':
+                    this.setPixelShader();
+                break;
+                case 'mute':
+                    this.sound.setMute(!scene.sound.mute);
+                break;
+                case 'restart':
+                    this.scene.restart();
+                break;
+                case 'lights':
+                    this.setLights();
+                break;
+            }
+
+        });
+
+        this.player.on("player_End_Turn",function(){
+            console.log("player end turn");
+        });
+
+        this.player.on("player_attack",() =>{
+            console.log("player ataca");
+            this.orc.onHit(1);
+        });
+
+        this.orc.on("enemy_End_Turn",function(){
+            console.log("enemy end turn");
+        })
+
+        this.orc.on("enemy_hitted",()=>{
+            console.log("orc hitted");
+            this.events.emit("enemy_turn_start");            
+            this.player.playAttack();
+        })
+        this.player.on("player_hitted",()=>{
+            console.log("player hitted");
+            this.events.emit("player_turn_start");         
+            this.orc.playAttack();
+        })
+        this.turn="player";
+
+        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        this.boundLimitSound= this.sound.add("boundLimits")
+        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
+        {   
+            if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
+            console.log("collide");
+            if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
+                this.cameras.main.shake(300,0.0002);
+                this.boundLimitSound.play({volume:0.7});
+                this.boundLimitSoundTimeOut=true;
+                this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
+            } 
+        });
+        let mask=this.wall_layer.createBitmapMask();
+        mask.invertAlpha=true;
+        this.player.moveAreaGraphics.setMask(mask);
+        let mask2=this.player.attackArea.createGeometryMask();
+        mask2.setInvertAlpha(true);
+        console.log(mask)
+        console.log(mask2)
+        //this.player.moveAreaGraphics.setMask(mask2);
+    }
+
+    initShaders(){
+        let cam = this.cameras.main;
+        this.setCrtShader();
     }
 
     setCrtShader(){
@@ -423,6 +589,30 @@ export default class Level3 extends Phaser.Scene {
         this.statsUI.hpDisplay.setText("HP: "+currentHP+"/"+maxHP);
         this.statsUI.portrait.setTexture(portrait+'Portrait');
     }
+
+    deshabilitarTrampas() {
+        this.trampas.getChildren().forEach(trampa => {
+            trampa.setTexture("trampa_txt"); // Cambia el sprite de la trampa
+            trampa.body.enable = false; // Desactiva la colisión
+        });
+    }
+
+    abrirPuertas() {
+        this.puertas.getChildren().forEach(puerta => {
+            this.tweens.add({
+                targets: puerta,
+                y: puerta.y - puerta.height,
+                alpha: 0, // Hace que la puerta desaparezca gradualmente
+                duration: 1000,
+                ease: "Power2",
+                onComplete: () => {
+                    puerta.body.enable = false;
+                    puerta.setVisible(false); // Oculta la puerta completamente
+                }
+            });
+        });
+    }
+
     setLights(){
         this.wall_layer.setPipeline("Light2D")
         this.floor_layer.setPipeline("Light2D")
@@ -452,6 +642,59 @@ export default class Level3 extends Phaser.Scene {
     async checkHits(){
         this.orc.checkHit();
         this.player.checkHit();          
+    crearObjetosDesdeTiled(layer) {
+        
+        if (!layer) {
+            console.warn(`No se encontró la capa ${layer}`);
+            return;
+        }
+
+        layer.objects.forEach(obj => {
+            const { x, y, name, width, height } = obj;
+            const adjustedX = x + width / 2;
+            const adjustedY = y + height / 2;
+
+            let nuevoObjeto = null;
+
+            switch (name) {
+                case "Llave":
+                    nuevoObjeto = new Llave(this, adjustedX, adjustedY);
+                    //this.physics.add.overlap(this.jugador, nuevoObjeto, () => nuevoObjeto.interactuar(), null, this);
+                    break;
+                case "Puerta":
+                    nuevoObjeto = new Puerta(this, adjustedX, adjustedY);
+                    this.puertas.add(nuevoObjeto);
+                    break;
+                case "Caja":
+                    nuevoObjeto = new Caja(this, adjustedX, adjustedY);
+                    break;
+                case "TNT":
+                    nuevoObjeto = new TNT(this, adjustedX, adjustedY);
+                    break;
+                case "Porton":
+                    nuevoObjeto = new Porton(this, adjustedX, adjustedY);
+                    this.puertas.add(nuevoObjeto);
+                    break;
+                case "Cofre":
+                    nuevoObjeto = new Cofre(this, adjustedX, adjustedY);
+                    break;
+                case "Palanca":
+                    nuevoObjeto = new Palanca(this, adjustedX, adjustedY);
+                    break;
+                case "Cerradura":
+                    nuevoObjeto = new Cerradura(this, adjustedX, adjustedY);
+                    break;
+                case "Trampa":
+                    nuevoObjeto = new Trampa(this, adjustedX, adjustedY);
+                    this.trampas.add(nuevoObjeto);
+                    break;
+                default:
+                    console.warn(`Objeto desconocido en Tiled: ${name}`);
+
+            }
+            if(nuevoObjeto != null && nuevoObjeto.colision)
+                this.objetosConColision.add(nuevoObjeto)
+        });
     }
 
 
