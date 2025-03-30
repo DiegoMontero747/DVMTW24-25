@@ -81,6 +81,7 @@ export default class Boot extends Phaser.Scene {
 
     //Carga .JSON (formato mas comodo en codigo)
     this.load.tilemapTiledJSON("map","sinNombre2.json");
+    this.load.tilemapTiledJSON("arena","Arena.json");
     this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
 
     this.load.image('TilesDungeon', 'Tiles.png');
@@ -94,6 +95,6 @@ export default class Boot extends Phaser.Scene {
    */
   create() {
     this.input.mouse.disableContextMenu();
-    this.scene.start('level3');
+    this.scene.start('combatScene');
   }
 }

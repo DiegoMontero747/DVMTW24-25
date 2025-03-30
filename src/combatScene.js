@@ -1,7 +1,7 @@
 import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
-import Orc from './orc.js';
+import Orc from './arenaOrc.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -34,7 +34,7 @@ export default class Level3 extends Phaser.Scene {
         var scene=this;
         /*Crear layers json*/
 
-        this.map= this.make.tilemap({key:'map'});  
+        this.map= this.make.tilemap({key:'arena'});  
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
         const props=this.map.addTilesetImage('PropsA','PropsA');
         const propsA=this.map.addTilesetImage('Props','Objetos');
@@ -53,40 +53,6 @@ export default class Level3 extends Phaser.Scene {
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
 
         this.wall_layer.setDepth(1);
-
-        this.objects_layer.objects.forEach(obj => {
-            // Crear el sprite con la textura especificada en Tiled
-            let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            const sprite = this.physics.add.sprite(obj.x+7, obj.y+7, textura);
-        
-            // Ajustar el origen porque Tiled usa la esquina superior izquierda
-            sprite.setOrigin(0.5, 0.5);
-        
-            // Si el campo "collide" es verdadero, activamos colisión
-            if (obj.properties.Collide) {
-                this.physics.add.existing(sprite);
-                sprite.body.setImmovable(true);
-                sprite.body.allowGravity = false;
-            }
-        });
-
-        const objectsGroup = this.physics.add.staticGroup();
-
-        
-
-        //Puertas
-
-        const doors = this.doors_layer.objects
-        .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
-        .map(obj => {
-            let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            let door = this.physics.add.staticSprite(obj.x+7, obj.y+7, textura); // Crear sprite estático
-            door.setOrigin(0.5, 0.5); // Ajustar la posición si es necesario
-            return door;
-        });
-
-        const doorsGroup = this.physics.add.staticGroup(doors);
-
 
         this.initUI()
 
@@ -111,29 +77,8 @@ export default class Level3 extends Phaser.Scene {
         cam.setBounds(0,0);
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer,()=>{this.playCollideEffect()});
-        //this.physics.add.collider(this.player2.body, this.wall_layer);
-        this.physics.add.collider(this.player, objectsGroup);
-        this.physics.add.collider(this.player.body, doorsGroup);
-
         this.physics.add.collider(this.orc.body, this.wall_layer);
-        this.physics.add.collider(this.orc.body, this.wall_layer);
-
-        /* Creación de cruadicula que sigue al cursor,
-            su movimiento se gestiona en update
-        */
-
-        this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
-        //this.physics.world.enable(this.player.attackArea);
-        //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
-        /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
-        const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
-        graphics.strokeRectShape(this.attackArea);
-        // Util para entrar en combate */
-        // this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
-
-        //this.physics.add.existing(this.orc.attackArea);
-        //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
-
+        
         this.initShaders();
         this.initKeyCombos();
 

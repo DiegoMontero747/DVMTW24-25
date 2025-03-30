@@ -3,6 +3,7 @@ import End from './end.js';
 import Level from './level.js';
 import Level2 from './level2.js';
 import Level3 from './level3.js';
+import combatScene from './combatScene.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -24,7 +25,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, Level,Level2,Level3, End],
+    scene: [Boot, Level,Level2,Level3,combatScene, End],
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
     physics: {
         default: 'arcade',
