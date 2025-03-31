@@ -69,6 +69,8 @@ export default class Level3 extends Phaser.Scene {
         this.player = new Player(this, 128, 200).setDepth(3);
         //this.player2 = new Mage(this, 72, 176);
         this.orc = new Orc(this, 240, 190).setDepth(2);
+        this.enemies=[];
+        this.addEnemy(new Orc(this, 240, 230).setDepth(2));
 
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
@@ -228,6 +230,7 @@ export default class Level3 extends Phaser.Scene {
             if(displayTween.isActive)displayTween.restart();
             else displayTween.play();
             this.turn="enemy";
+            this.enemies.forEach((enemy)=>{enemy.onTurnStart()});
             this.orc.onTurnStart();
             this.player.onTurnEnd();
         });
@@ -410,6 +413,10 @@ export default class Level3 extends Phaser.Scene {
     showTurnMsg(){
         console.log(this.cameras.main);
         //a.setScrollFactor(0);
+    }
+    addEnemy(enemy){
+        this.enemies.push(enemy);
+        this.physics.add.collider(enemy.body, this.wall_layer);
     }
 
     update(time, delta)

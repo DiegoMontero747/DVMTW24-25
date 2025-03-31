@@ -372,7 +372,11 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     playAttack(){
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
-        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
+        this.scene.sound.play("swingSound");
+        this.once("animationcomplete",()=>{                        
+            this.scene.events.emit("enemy_turn_start");
+            this.isMoving=false;
+        });
         this.chain({key:'iddle_'+this.facing,repeat:-1},true);
     }
 
@@ -508,7 +512,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         this.scene.checkEnemyHit();
                         dirSelector.clearTint();
                         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
-                        this.scene.events.emit("enemy_turn_start");
                     });
                     this.attackAreaContainer.add(this.dirAttackArea[dirs[i]]);
                     this.attackCursorContainer.add(dirSelector);

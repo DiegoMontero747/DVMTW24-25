@@ -178,6 +178,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
     onDeath(){
         this.dirAttackArea[this.facing].setVisible(false);
+        this.scene.orc=new orc2(this.scene,240,190);
         this.destroy();
     }
 
@@ -503,6 +504,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.isMoving=true;
         if(this.gotTurn){
         this.play({key:'attack_'+this.facing},true);
+        this.scene.sound.play("swingSound");
         this.scene.checkPlayerHit();
         this.once("animationcomplete",()=>{
             this.moveToPlayer();
@@ -525,7 +527,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.dirAttackArea[this.facing].setVisible(false);
         this.stopped=false;
         this.hasMoved=false;
-        this.scene.physics.moveTo(this,this.scene.player.x,this.scene.player.y,100,2000);
+        this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),100,2000);
     }
 
     onTurnEnd(){
@@ -534,7 +536,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.setDepth(1);
     }
 
-    playAttack(){
+    playAttack(){ //Usando otra cosa de momento
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
         this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
@@ -560,7 +562,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         }
     }
     stopNearPlayer(){
-        const dist=40;
+        const dist=30+Math.floor(Math.random()*15);
         if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this)<dist && this.hasMoved){
             this.body.setVelocityX(0);
             this.body.setVelocityY(0);
