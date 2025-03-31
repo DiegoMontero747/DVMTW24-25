@@ -424,7 +424,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             case "directional":
                 const dirs=["up","down","left","right"];
                 const offsets=[{x:0,y:-37+this.attackAreaOffsetY},{x:0,y:37+this.attackAreaOffsetY},{x:-37,y:this.attackAreaOffsetY},{x:37,y:this.attackAreaOffsetY}];
-                const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:-64},{x:64,y:64}];
+                const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:64},{x:64,y:64}];
                 const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
                 this.dirAttackArea={};
                 this.attackAreaContainer=this.scene.add.container(this.x,this.y).setDepth(this.depth+1);
@@ -436,6 +436,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
                     let dirSelector=this.scene.add.image(offsets[i].x, offsets[i].y,"dirCursor").setScale(0.8).setRotation(rotations[i]);
+                    dirSelector.setVisible(false);
                     dirSelector.setInteractive(this.scene.input.makePixelPerfect());
                     dirSelector.on('pointerover', () => {
                         this.scene.sound.play("touchUISound");
@@ -504,8 +505,10 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         this.scene.attackArea=this.dirAttackArea[dirs[i]];
                         this.facing=dirs[i];
                         this.playAttack();
-                        this.scene.checkHits();
+                        this.scene.checkEnemyHit();
                         dirSelector.clearTint();
+                        this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
+                        this.scene.events.emit("enemy_turn_start");
                     });
                     this.attackAreaContainer.add(this.dirAttackArea[dirs[i]]);
                     this.attackCursorContainer.add(dirSelector);
@@ -570,7 +573,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.activeCharacter=="warrior")this.physics_combat_movement(t);
+        if(this.scene.turn=="player")this.physics_combat_movement(t);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
         this.centerAttackArea(this.attackAreaType);

@@ -170,13 +170,16 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 duration: 500,
                 delay: this.scene.tweens.stagger(100),
                 onComplete:(tween, targets, param)=>{
-                    this.destroy();
+                    this.onDeath();
                 }
             });
         }
     }
 
-
+    onDeath(){
+        this.dirAttackArea[this.facing].setVisible(false);
+        this.destroy();
+    }
 
     /**
      * Gestiona el movimiento grid cambiando las coordenadas 
@@ -497,9 +500,17 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.fillRectShape(this.moveArea);
         this.moveAreaGraphics.strokeRectShape(this.moveArea);
         this.setDepth(2);
-        this.dirAttackArea[this.facing].setVisible(false);
-        this.stopped=false;
-        this.scene.physics.moveTo(this,this.scene.player.x,this.scene.player.y,100,2000);
+        this.isMoving=true;
+        if(this.gotTurn){
+        this.play({key:'attack_'+this.facing},true);
+        this.scene.checkPlayerHit();
+        this.once("animationcomplete",()=>{
+            this.moveToPlayer();
+        });
+        }else{
+            this.gotTurn=true;
+            this.moveToPlayer();
+        }
         //Animacion personaje activo
         this.scene.tweens.add({
             targets: [this],
@@ -509,9 +520,17 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             yoyo:true,
         });
     }
+    moveToPlayer(){
+        this.isMoving=false;
+        this.dirAttackArea[this.facing].setVisible(false);
+        this.stopped=false;
+        this.hasMoved=false;
+        this.scene.physics.moveTo(this,this.scene.player.x,this.scene.player.y,100,2000);
+    }
+
     onTurnEnd(){
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
-        this.attackArea.setVisible(false);
+        //this.attackArea.setVisible(false);
         this.setDepth(1);
     }
 
@@ -519,36 +538,41 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
         this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
-        this.chain({key:'iddle_'+this.facing,repeat:-1},true);
+        //this.chain({key:'iddle_'+this.facing,repeat:-1},true);
     }
 
     setAnim(){
-        if(this.body.velocity.y>0 && Math.abs(this.body.velocity.y)>Math.abs(this.body.velocity.x)){
-            this.play({key:'walk_down',repeat:-1},true)
-            this.facing="down"
-        }else if(this.body.velocity.y<0 && Math.abs(this.body.velocity.y)>Math.abs(this.body.velocity.x)){
-            this.play({key:'walk_up',repeat:-1},true)
-            this.facing="up"
+        if(this.isMoving==false){
+            if(this.body.velocity.y>0 && Math.abs(this.body.velocity.y)>Math.abs(this.body.velocity.x)){
+                this.play({key:'walk_down',repeat:-1},true)
+                this.facing="down"
+            }else if(this.body.velocity.y<0 && Math.abs(this.body.velocity.y)>Math.abs(this.body.velocity.x)){
+                this.play({key:'walk_up',repeat:-1},true)
+                this.facing="up"
+            }
+            else if(this.body.velocity.x>0){
+                this.play({key:'walk_right',repeat:-1},true)
+                this.facing="right"
+            }else if(this.body.velocity.x<0){
+                this.play({key:'walk_left',repeat:-1},true)
+                this.facing="left"
+            }else this.play({key:'iddle_'+this.facing,repeat:-1},true)
         }
-        else if(this.body.velocity.x>0){
-            this.play({key:'walk_right',repeat:-1},true)
-            this.facing="right"
-        }else if(this.body.velocity.x<0){
-            this.play({key:'walk_left',repeat:-1},true)
-            this.facing="left"
-        }else this.play({key:'iddle_'+this.facing,repeat:-1},true)
     }
     stopNearPlayer(){
-        const dist=50;
-        if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this)<50){
+        const dist=40;
+        if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this)<dist && this.hasMoved){
             this.body.setVelocityX(0);
             this.body.setVelocityY(0);
+            if(!this.stopped) this.scene.events.emit("enemy_turn_end");
             this.stopped=true;
+        }else{
+            this.hasMoved=true;
         }
     }
 
     setAttackArea(){
-        if(this.facing && this.stopped){
+        if(this.facing && this.stopped && this.gotTurn){
             this.dirAttackArea[this.facing].setVisible(true);
             this.scene.enemyAttackArea=this.dirAttackArea[this.facing];
         }

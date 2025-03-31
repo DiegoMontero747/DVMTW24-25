@@ -102,8 +102,8 @@ export default class Level3 extends Phaser.Scene {
         })
         this.player.on("player_hitted",()=>{
             console.log("player hitted");
-            this.events.emit("player_turn_start");         
-            this.orc.playAttack();
+            //this.events.emit("player_turn_start");         
+           // this.orc.playAttack();
         })
         this.turn="player";
         this.player.onTurnStart();
@@ -198,8 +198,11 @@ export default class Level3 extends Phaser.Scene {
                 duration: 1000,
             });
             console.log('Botón presionado');
-            if(this.turn=="player"){this.events.emit("enemy_turn_start");} 
-            else if(this.turn=="enemy"){this.events.emit("player_turn_start");} 
+            if(this.turn=="player"){
+                this.events.emit("enemy_turn_start");
+                //this.time.delayedCall(3000,()=>{this.events.emit("player_turn_start");},[],this);
+            } 
+            //else if(this.turn=="enemy"){this.events.emit("player_turn_start");} 
         });
         botonNextTurn.on('pointerover', () => {
             this.sound.play("touchUISound");
@@ -228,6 +231,9 @@ export default class Level3 extends Phaser.Scene {
             this.orc.onTurnStart();
             this.player.onTurnEnd();
         });
+        this.events.on("enemy_turn_end",()=>{
+            this.time.delayedCall(300,()=>{this.events.emit("player_turn_start");},[],this);
+        });
         this.events.on("player_turn_start",()=>{
             this.textDisplay.setText("Player Turn");
             if(displayTween.isActive)displayTween.restart();
@@ -251,7 +257,7 @@ export default class Level3 extends Phaser.Scene {
                 duration: 1000,
             });
             if(this.turn=="player"){this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)} 
-            else if(this.turn=="enemy"){this.orc.moveAreaGraphics.setVisible(!this.orc.moveAreaGraphics.visible)} 
+            //else if(this.turn=="enemy"){this.orc.moveAreaGraphics.setVisible(!this.orc.moveAreaGraphics.visible)} 
         });
         botonMove.on('pointerover', () => {
             this.sound.play("touchUISound");
@@ -281,12 +287,12 @@ export default class Level3 extends Phaser.Scene {
                 else
                 this.player.attackArea.setVisible(!this.player.attackArea.visible)
             } 
-            else if(this.turn=="enemy"){/*this.orc.attackArea.setVisible(!this.orc.attackArea.visible) */
+            /* else if(this.turn=="enemy"){
                 if(this.orc.attackAreaType=="directional")
                     this.orc.showAttackControls();
                 else
                 this.orc.attackArea.setVisible(!this.orc.attackArea.visible)
-            } 
+            }  */
         });
         botonAttack.on('pointerover', () => {
             this.sound.play("touchUISound");
@@ -394,11 +400,12 @@ export default class Level3 extends Phaser.Scene {
         })
     }
 
-    async checkHits(){
+    async checkEnemyHit(){
         this.orc.checkHit();
-        this.player.checkHit();          
     }
-
+    async checkPlayerHit(){
+        this.player.checkHit();
+    }
 
     showTurnMsg(){
         console.log(this.cameras.main);
@@ -427,10 +434,10 @@ export default class Level3 extends Phaser.Scene {
             if(this.turn=="player"){
                 this.activeCharacter="warrior";
                 this.cameras.main.startFollow(this.player);                
-            }else if(this.turn=="enemy"){   
+            }/* else if(this.turn=="enemy"){   
                 this.activeCharacter="orc";
                 this.cameras.main.startFollow(this.orc);
-            }
+            } */
             if(this.playerLight){
                 this.playerLight.x=this.player.x;
                 this.playerLight.y=this.player.y;
