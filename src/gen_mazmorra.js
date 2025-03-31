@@ -887,6 +887,105 @@ function ponerSalaV2(m,cy,cx,s){
     rellenaDatosV2(m.m_salida,cy,cx,s.salida,c_salida);
 }
 
+function generaMapa(paredes,suelo){
+    const tamTile = 16;
+    
+    let json_text=`{
+        "compressionlevel": -1,
+        "height": ${paredes.length},
+        "infinite": false,
+        "layers": [
+            {
+            "data": [
+    `+
+    paredes+
+    `],
+            "height": ${paredes.length},
+            "id": 1,
+            "name": "Paredes",
+            "opacity": 1,
+            "properties":[
+                {
+                 "name":"Collide",
+                 "type":"bool",
+                 "value":true
+                }],
+            "type": "tilelayer",
+            "visible": true,
+            "width": ${paredes[0].length},
+            "x": 0,
+            "y": 0
+            },
+            {
+         "data":[
+         `+suelo+
+         `],
+         "height": ${suelo.length},
+         "id":2,
+         "name":"Suelo",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width": ${suelo[0].length},
+         "x":0,
+         "y":0
+        }
+            ],
+        "nextlayerid": 6,
+        "nextobjectid": 1,
+        "orientation": "orthogonal",
+        "renderorder": "right-down",
+        "tiledversion": "1.11.2",
+        "tileheight": ${tamTile},
+        "tilesets": [{
+            "columns": 25,
+            "firstgid": 1,
+            "image": "../sprites/Pixel Crawler - FREE - 1.8/Environment/Dungeon Prison/Assets/Tiles.png",
+            "imageheight": 400,
+            "imagewidth": 400,
+            "margin": 0,
+            "name": "TilesDungeon",
+            "spacing": 0,
+            "tilecount": 625,
+            "tileheight": ${tamTile},
+            "tilewidth": ${tamTile}
+            },
+            {
+            "columns":25,
+            "firstgid":626,
+            "image":"..\/sprites\/Pixel Crawler - FREE - 1.8\/Environment\/Dungeon Prison\/Assets\/Props.aseprite",
+            "imageheight":400,
+            "imagewidth":400,
+            "margin":0,
+            "name":"Objetos",
+            "spacing":0,
+            "tilecount":625,
+            "tileheight": ${tamTile},
+            "tilewidth": ${tamTile}
+            },
+            {
+            "columns":25,
+            "firstgid":1251,
+            "image":"..\/sprites\/Pixel Crawler - FREE - 1.8\/Environment\/Green Woods\/Assets\/Props.png",
+            "imageheight":400,
+            "imagewidth":400,
+            "margin":0,
+            "name":"PropsA",
+            "spacing":0,
+            "tilecount":625,
+            "tileheight": ${tamTile},
+            "tilewidth": ${tamTile}
+            }
+        ],
+        "tilewidth": ${tamTile},
+        "type": "map",
+        "version": "1.10",
+        "width": ${paredes[0].length}
+    }`;
+
+    return JSON.parse(json_text);
+}
+
 
 function generaMazmorraV2(){
 
@@ -972,6 +1071,115 @@ function generaMazmorraV2(){
 
 }
 
+function aumentaParedes(m){
+    //creamos y rellenamos el mapa reescalado
+    let m_doble=[];
+
+    for(let i=0;i<m.length*2;i++){
+        m_doble.push([]);
+        for(let j=0;j<m[0].length*2;j++){
+            m_doble[i].push(0);
+        }
+    }
+    //guardamos todas las paredes
+
+    for(let i=0;i<m.length;i++){
+        for(let j=0;j<m[i].length;j++){
+
+            if(m[i][j]==c_pared){
+                // #.
+                // ..
+                m_doble[i*2][j*2]=i_pared_negro;  
+                // ..
+                // .#  
+                m_doble[i*2+1][j*2+1]=i_pared_negro;
+                // ..
+                // #.
+                m_doble[i*2+1][j*2]=i_pared_negro;
+                // .#
+                // ..
+                m_doble[i*2][j*2+1]=i_pared_negro;
+                
+            }
+        }
+    }
+
+    
+    for(let fila=0;fila<m_doble.length;fila++){
+        for(let col=0;col<m_doble[0].length;col++){
+            //repintado de texturas 
+            if(m_doble[fila][col] !=0){
+                let u, ul, ur, l, dl, r, dr, d;
+                u = fila == 0 ? true : m_doble[fila - 1][col] > 0;
+                ul = fila == 0 || col == 0 ? true : m_doble[fila - 1][col - 1] > 0;
+                ur = fila == 0 || col == m_doble[0].length - 1 ? true : m_doble[fila - 1][col + 1] > 0;
+                d = fila == m_doble.length- 1 ? true : m_doble[fila + 1][col] > 0;
+                l = col == 0 ? true : m_doble[fila][col - 1] > 0;
+                r = col == m_doble[0].length - 1 ? true : m_doble[fila][col + 1] > 0;
+                dl = fila == m_doble.length- 1 || col == 0 ? true : m_doble[fila + 1][col - 1] > 0;
+                dr = fila == m_doble.length - 1 || col == m_doble[0].length- 1 ? true : m_doble[fila + 1][col + 1] > 0;
+
+                const adyacente = [u, ur, r, dr, d, dl, l, ul];
+
+                if (adyacente.every(val => val)) {
+                    m_doble[fila][col] = i_pared_negro;
+                } else if (adyacente[0] && adyacente[1] && adyacente[2] && !adyacente[4] && adyacente[6] && adyacente[7]) {
+                    m_doble[fila][col] = i_pared_u;
+                } else if (!adyacente[0] && adyacente[2] && adyacente[3] && adyacente[4] && adyacente[5] && adyacente[6]) {
+                    m_doble[fila][col] = i_pared_d;
+                } else if (adyacente[0] && adyacente[1] && adyacente[2] && adyacente[3] && adyacente[4] && !adyacente[6]) {
+                    m_doble[fila][col] = i_pared_r;
+                } else if (adyacente[0] && !adyacente[2] && adyacente[4] && adyacente[5] && adyacente[6] && adyacente[7]) {
+                    m_doble[fila][col] = i_pared_l;
+                } else if (adyacente[0] && adyacente[1] && adyacente[2] && !adyacente[3] && adyacente[4] && adyacente[5] && adyacente[6] && adyacente[7]) {
+                    m_doble[fila][col] = i_pared_esquina_pequeña_ul;
+                } else if (adyacente[0] && adyacente[1] && adyacente[2] && adyacente[3] && adyacente[4] && !adyacente[5] && adyacente[6] && adyacente[7]) {
+                    m_doble[fila][col] = i_pared_esquina_pequeña_ur;
+                } else if (adyacente[0] && adyacente[1] && adyacente[2] && adyacente[3] && adyacente[4] && adyacente[5] && adyacente[6] && !adyacente[7]) {
+                    m_doble[fila][col] = i_pared_esquina_pequeña_dr;
+                } else if (adyacente[0] && !adyacente[1] && adyacente[2] && adyacente[3] && adyacente[4] && adyacente[5] && adyacente[6] && adyacente[7]) {
+                    m_doble[fila][col] = i_pared_esquina_pequeña_dl;
+                } else if (adyacente[0] && adyacente[2] && !adyacente[3] && !adyacente[4] && !adyacente[6] && !adyacente[7]) {
+                    m_doble[fila][col] = i_pared_esquina_grande_dl;
+                } else if (adyacente[0] && !adyacente[1] && !adyacente[2] && !adyacente[4] && !adyacente[5] && adyacente[6]) {
+                    m_doble[fila][col] = i_pared_esquina_grande_dr;
+                } else if (!adyacente[0] && adyacente[2] && adyacente[4] && !adyacente[5] && !adyacente[6]) {
+                    m_doble[fila][col] = i_pared_esquina_grande_ul;
+                } else if (!adyacente[0] && !adyacente[2] && adyacente[4] && adyacente[6] && !adyacente[7]) {
+                    m_doble[fila][col] = i_pared_esquina_grande_ur;
+                }
+            }
+        }
+    }
+
+
+    return m_doble;
+}
+
+function aumentaSuelo(m){
+    let m_doble=[];
+
+    for(let i=0;i<m.length*2;i++){
+        m_doble.push([]);
+        for(let j=0;j<m[0].length*2;j++){
+            m_doble[i].push(0);
+        }
+    }
+
+    for(let i=0;i<m.length;i++){
+        for(let j=0;j<m[0].length;j++){
+            if(m[i][j]==c_suelo){
+                m_doble[i*2][j*2]=i_suelo;
+                m_doble[i*2+1][j*2]=i_suelo;
+                m_doble[i*2][j*2+1]=i_suelo;
+                m_doble[i*2+1][j*2+1]=i_suelo;
+            
+            }
+        }
+    }
+
+    return m_doble;
+}
 
 //va poniendo las salas de manera aleatoria desde la sala central conectandolas por las puertas
 function generaMazmorra() {
@@ -1080,6 +1288,8 @@ export default function gen_mazmorra() {
 
     if(deb==1){
         const mapa=generaMazmorraV2();
-        return true;
+        const paredes=aumentaParedes(mapa.m_pared);
+        const suelo=aumentaSuelo(mapa.m_suelo);
+        return generaMapa(paredes,suelo);
     }
 }

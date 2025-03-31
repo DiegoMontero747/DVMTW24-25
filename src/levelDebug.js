@@ -19,7 +19,7 @@ import GameShaderPixel from "./shaders/pixelShader.js";
 */
 
 const pared=true;
-const suelo=false;
+const suelo=true;
 const puerta=false;
 const objeto=false;
 const decorado=false;
