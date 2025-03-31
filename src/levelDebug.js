@@ -250,7 +250,8 @@ export default class LevelDebug extends Phaser.Scene {
         this.showTurnMsg();
         cam.startFollow(this.player);
         cam.setBounds(0,0);
-        cam.setZoom(3);
+        let zoom_cam=3;
+        cam.setZoom(zoom_cam);
       
         let mask=this.wall_layer.createBitmapMask();
         mask.invertAlpha=true;
@@ -332,7 +333,8 @@ export default class LevelDebug extends Phaser.Scene {
         this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
         this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
         
-        
+        this.input.keyboard.createCombo('zom',{resetOnMatch:true}).comboName='zom';
+        this.input.keyboard.createCombo('moz',{resetOnMatch:true}).comboName='moz';
         
         this.input.keyboard.on('keycombomatch', (combo) => {
             switch(combo.comboName){
@@ -359,6 +361,14 @@ export default class LevelDebug extends Phaser.Scene {
                 break;
                 case 'lights':
                     this.setLights();
+                break;
+                case 'zom':
+                    zoom_cam*=1.5;
+                    cam.setZoom(zoom_cam);
+                break;
+                case 'moz':
+                    zoom_cam/=1.5;
+                    cam.setZoom(zoom_cam);
                 break;
             }
 
