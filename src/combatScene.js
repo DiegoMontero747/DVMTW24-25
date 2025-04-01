@@ -68,8 +68,9 @@ export default class Level3 extends Phaser.Scene {
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, 128, 200).setDepth(3);
         //this.player2 = new Mage(this, 72, 176);
-        this.orc = new Orc(this, 240, 190).setDepth(2);
+        //this.orc = new Orc(this, 240, 190).setDepth(2);
         this.enemies=[];
+        this.addEnemy(new Orc(this, 240, 190).setDepth(2));
         this.addEnemy(new Orc(this, 240, 230).setDepth(2));
 
         this.activeCharacter="warrior";
@@ -79,7 +80,7 @@ export default class Level3 extends Phaser.Scene {
         cam.setBounds(0,0);
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer,()=>{this.playCollideEffect()});
-        this.physics.add.collider(this.orc.body, this.wall_layer);
+        //this.physics.add.collider(this.orc.body, this.wall_layer);
         
         this.initShaders();
         this.initKeyCombos();
@@ -93,7 +94,7 @@ export default class Level3 extends Phaser.Scene {
             this.orc.onHit(1);
         });
 
-        this.orc.on("enemy_End_Turn",function(){
+       /*  this.orc.on("enemy_End_Turn",function(){
             console.log("enemy end turn");
         })
 
@@ -101,7 +102,7 @@ export default class Level3 extends Phaser.Scene {
             console.log("orc hitted");
             this.events.emit("enemy_turn_start");            
             this.player.playAttack();
-        })
+        }) */
         this.player.on("player_hitted",()=>{
             console.log("player hitted");
             //this.events.emit("player_turn_start");         
@@ -138,7 +139,7 @@ export default class Level3 extends Phaser.Scene {
         
                 this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
                 this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
-                this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
+                //this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
                 this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
                 this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
                 this.input.keyboard.createCombo('music',{resetOnMatch:true}).comboName='music';
@@ -231,7 +232,7 @@ export default class Level3 extends Phaser.Scene {
             else displayTween.play();
             this.turn="enemy";
             this.enemies.forEach((enemy)=>{enemy.onTurnStart()});
-            this.orc.onTurnStart();
+            //this.orc.onTurnStart();
             this.player.onTurnEnd();
         });
         this.events.on("enemy_turn_end",()=>{
@@ -243,7 +244,8 @@ export default class Level3 extends Phaser.Scene {
             else displayTween.play();            
             this.turn="player"; 
             this.player.onTurnStart();
-            this.orc.onTurnEnd();
+            this.enemies.forEach((enemy)=>{enemy.onTurnEnd()});
+            //this.orc.onTurnEnd();
         });
         //BOTON MOVE
         let botonMove = this.add.image(500, 500, 'Move')
@@ -380,7 +382,8 @@ export default class Level3 extends Phaser.Scene {
     setLights(){
         this.wall_layer.setPipeline("Light2D")
         this.floor_layer.setPipeline("Light2D")
-        this.orc.setPipeline("Light2D")
+        //this.orc.setPipeline("Light2D")
+        
         this.player.setPipeline("Light2D")
         this.lights.enable().setAmbientColor(0x000000);
         this.playerLight = this.lights.addLight(240, 190, 200).setColor(0xffffff).setIntensity(1.2);
@@ -404,10 +407,11 @@ export default class Level3 extends Phaser.Scene {
     }
 
     async checkEnemyHit(){
-        this.orc.checkHit();
+        //this.orc.checkHit();
+        this.enemies.forEach((enemy)=>{enemy.checkHit()});
     }
-    async checkPlayerHit(){
-        this.player.checkHit();
+    async checkPlayerHit(area){
+        this.player.checkHit(area);
     }
 
     showTurnMsg(){

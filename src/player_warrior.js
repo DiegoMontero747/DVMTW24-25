@@ -400,6 +400,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             duration: 220,
             yoyo:true,
         });
+        this.checkedHit=false;
     }
     onTurnEnd(){
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
@@ -546,9 +547,14 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
     }
 
-    checkHit(){
-        if(this.scene.enemyAttackArea){
+    checkHit(area){
+       /*  if(this.scene.enemyAttackArea && !this.checkedHit){
             if(this.scene.physics.overlap(this.scene.enemyAttackArea, this.body))this.onHit(this.scene.attackEffect.dmg)
+            this.checkedHit=true;
+        } */
+        if(area){
+            if(this.scene.physics.overlap(area, this.body))this.onHit(this.scene.attackEffect.dmg)
+            //this.checkedHit=true;
         }
     }
 

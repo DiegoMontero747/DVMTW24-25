@@ -435,7 +435,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                             ease:'power1',
                             duration: 200,
                         });
-                        this.scene.enemyAttackArea=this.dirAttackArea[dirs[i]];
+                        this.selectedAttackArea=this.dirAttackArea[dirs[i]];
                         this.facing=dirs[i];
                         //this.playAttack();
                         //this.scene.checkHits();
@@ -505,7 +505,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         if(this.gotTurn){
         this.play({key:'attack_'+this.facing},true);
         this.scene.sound.play("swingSound");
-        this.scene.checkPlayerHit();
+        this.scene.checkPlayerHit(this.selectedAttackArea);
         this.once("animationcomplete",()=>{
             this.moveToPlayer();
         });
@@ -576,7 +576,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
     setAttackArea(){
         if(this.facing && this.stopped && this.gotTurn){
             this.dirAttackArea[this.facing].setVisible(true);
-            this.scene.enemyAttackArea=this.dirAttackArea[this.facing];
+            this.selectedAttackArea=this.dirAttackArea[this.facing];
         }
     }
     /**
