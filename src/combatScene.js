@@ -422,6 +422,10 @@ export default class Level3 extends Phaser.Scene {
         this.enemies.push(enemy);
         this.physics.add.collider(enemy.body, this.wall_layer);
     }
+    deleteEnemy(enemy){
+        //this.physics.add.collider(enemy.body, this.wall_layer);
+        this.enemies.splice(this.enemies.findIndex(index => index === enemy) , 1)
+    }
 
     update(time, delta)
     {
@@ -452,6 +456,10 @@ export default class Level3 extends Phaser.Scene {
             if(this.playerLight){
                 this.playerLight.x=this.player.x;
                 this.playerLight.y=this.player.y;
+            }
+
+            if(this.enemies.length==0 && this.turn=="enemy"){
+                this.events.emit("player_turn_start");            
             }
     }
 }

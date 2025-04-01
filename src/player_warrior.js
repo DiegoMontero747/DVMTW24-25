@@ -403,6 +403,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.checkedHit=false;
     }
     onTurnEnd(){
+        this.stopMoving();
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         //this.attackArea.setVisible(false);
         this.setDepth(this.depth-1);
@@ -546,7 +547,11 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     showAttackControls(){
         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
     }
-
+    stopMoving(){
+        this.body.setVelocityX(0);
+        this.body.setVelocityY(0);
+        if(this.isMoving==false) this.play({key:'iddle_'+this.facing,repeat:-1},true);
+    }
     checkHit(area){
        /*  if(this.scene.enemyAttackArea && !this.checkedHit){
             if(this.scene.physics.overlap(this.scene.enemyAttackArea, this.body))this.onHit(this.scene.attackEffect.dmg)

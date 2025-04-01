@@ -178,7 +178,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
     onDeath(){
         this.dirAttackArea[this.facing].setVisible(false);
-        this.scene.orc=new orc2(this.scene,240,190);
+        //this.scene.orc=new orc2(this.scene,240,190);
+        this.scene.deleteEnemy(this);
         this.destroy();
     }
 
