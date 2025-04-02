@@ -889,6 +889,7 @@ function ponerSalaV2(m,cy,cx,s){
 
 function generaMapa(paredes,suelo,enemigos){
     const tamTile = 16;
+    let id=0;
     
     let json_text=`{
         "compressionlevel": -1,
@@ -901,7 +902,7 @@ function generaMapa(paredes,suelo,enemigos){
     paredes+
     `],
             "height": ${paredes.length},
-            "id": 1,
+            "id": ${++id},
             "name": "Paredes",
             "opacity": 1,
             "properties":[
@@ -923,7 +924,7 @@ function generaMapa(paredes,suelo,enemigos){
          +
          `],
          "height": ${suelo.length},
-         "id":2,
+         "id":${++id},
          "name":"Suelo",
          "opacity":1,
          "type":"tilelayer",
@@ -934,11 +935,11 @@ function generaMapa(paredes,suelo,enemigos){
         },
         {
          "draworder":"topdown",
-         "id":3,
+         "id":${++id},
          "name":"Objetos",
          "objects":[
                 `
-                +generaEnemigos(enemigos,3,tamTile)+
+                +generaEnemigos(enemigos,id,tamTile)+
                 `
             ],
             "opacity":1,
@@ -948,7 +949,7 @@ function generaMapa(paredes,suelo,enemigos){
             "y":0
         }
         ],
-        "nextlayerid": 6,
+        "nextlayerid": ${++id},
         "nextobjectid": 100,
         "orientation": "orthogonal",
         "renderorder": "right-down",
@@ -1208,7 +1209,29 @@ function ponEnemigos(m){
             if(m.m_enemigo_ranged[i][j]==c_ene_ran){
                 lista.push({type:"ghostslime",y:i*2,x:j*2});
             }
-
+            if(m.m_trampa[i][j]==c_trampa){
+                lista.push({type:"tramp",y:i*2,x:j*2});
+                lista.push({type:"tramp",y:i*2+1,x:j*2});
+                lista.push({type:"tramp",y:i*2,x:j*2+1});
+                lista.push({type:"tramp",y:i*2+1,x:j*2+1});
+            }
+            if(m.m_obstaculo[i][j]==c_obstaculo){
+                lista.push({type:"obstaculo",y:i*2,x:j*2});
+            }
+            if(m.m_explosivo[i][j]==c_explosivo){
+                lista.push({type:"tnt",y:i*2,x:j*2});
+            }
+            if(m.m_cura[i][j]==c_cura){
+                if(Math.random()<0.5){
+                    lista.push({type:"cure",y:i*2,x:j*2});
+                }
+            }
+            if(m.m_recompensa[i][j]==c_recompensa){
+                lista.push({type:"reward",y:i*2,x:j*2});
+            }
+            if(m.m_salida[i][j]==c_salida){
+                lista.push({type:"exit",y:i*2,x:j*2});
+            }
         }
     }
     return lista;
@@ -1217,16 +1240,24 @@ function generaEnemigos(e,id,tamTile){
 
     let out=``;
     for(let i=0;i<e.length;i++){
+        let height=32;
+        let width=32;
+
+        if(e[i].type=="tramp" || e[i].type=="cure"){
+            height=16;
+            width=16;
+        }
+
         out+= 
         `{
-            "height":32,
+            "height":${height},
             "id":${++id},
             "name":"${e[i].type}",
             "properties":[],
             "rotation":0,
             "type":"",
             "visible":true,
-            "width":32,
+            "width":${width},
             "x":${e[i].x*tamTile},
             "y":${e[i].y*tamTile}
         }`
@@ -1238,23 +1269,6 @@ function generaEnemigos(e,id,tamTile){
 
     }
     return out;
-    //{
-    //   "height":32,
-    //   "id":4,
-    //   "name":"Cerradura",
-    //   "properties":[
-    //          {
-    //           "name":"Texture",
-    //           "type":"string",
-    //           "value":"cerraduratxt"
-    //          }],
-    //   "rotation":0,
-    //   "type":"",
-    //   "visible":true,
-    //   "width":16,
-    //   "x":432.5,
-    //   "y":110.5
-    //  },
 
 
 }
