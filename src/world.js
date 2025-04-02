@@ -5,16 +5,15 @@ export default class World extends Phaser.Scene {
     map;
     CuevasGroup;
     player;
+    Castillo;
+    CasaBoss;
 
-    /**
-     * Constructor de la escena
-     */
     constructor() {
         super({ key: 'world' });
     }
 
     create() {
-        /* Crear layers json */
+        // Crear layers del mapa
         this.map = this.make.tilemap({ key: 'mapMundial' });
         const tileset = this.map.addTilesetImage('mapaPeninsula', 'mapaPeninsula');
 
@@ -26,67 +25,103 @@ export default class World extends Phaser.Scene {
         const floor_layer = this.map.createLayer("Fondo", tileset, 0, 0);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        /* Crear grupo de cuevas */
+        // Grupo de cuevas
         this.CuevasGroup = this.physics.add.group();
 
-        /* Crear jugador */
+        // Crear jugador
         this.player = new Player(this, 500, 500);
         this.physics.add.collider(this.player, this.wall_layer);
 
-        /* Configurar cámara */
+        // Cámara
         const cam = this.cameras.main;
         cam.startFollow(this.player);
         cam.setBounds(0, 0);
-        cam.setZoom(2);
+        cam.setZoom(1.5);
 
-        /* Crear marcador */
+        // Marcador del cursor
         const tileSize = 48;
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);
         this.marker.strokeRect(0, 0, tileSize, tileSize);
 
-        /* Colocar cuevas */
+        // Crear castillo
+        this.Castillo = this.physics.add.sprite(500, 375, 'castillo');
+        this.Castillo.setOrigin(0.5, 0.5);
+        this.Castillo.setScale(1);
+
+        this.Castillo.setImmovable(true);
+        this.Castillo.setPushable(false);
+
+        this.physics.add.collider(this.player, this.Castillo, () => {
+            console.log('Entrando al castillo...');
+            this.Castillo.setVelocity(0,0);
+            // this.scene.start('levelCastillo');
+        });
+
+        // Crear casaBoss
+        this.CasaBoss = this.physics.add.sprite(200, 200, 'casaBoss');
+        this.CasaBoss.setOrigin(0.5, 0.5);
+        this.CasaBoss.setScale(1);
+
+        this.CasaBoss.setImmovable(true);
+        this.CasaBoss.setPushable(false);
+
+        this.physics.add.collider(this.player, this.CasaBoss, () => {
+            console.log('Entrando a la casa del Boss...');
+            this.CasaBoss.setVelocity(0, 0);
+            // this.scene.start('levelBoss');
+        });
+
+        // Crear cuevas
         for (let i = 0; i < 3; i++) {
             this.ponerCueva();
         }
 
-        /* Detectar superposición entre el jugador y las cuevas */
+
+        // Sombra oscura sobre el mapa
+        const darkOverlay = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.6 } });
+        darkOverlay.fillRect(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+
+        // Superposición jugador - cuevas
         this.physics.add.overlap(this.player, this.CuevasGroup, this.entrarCueva, null, this);
     }
+
     ponerCueva() {
         let position;
         let attempts = 0;
-        const maxAttempts = 100; // Número máximo de intentos para encontrar una posición válida
-        const minDistance = 50; // Distancia mínima permitida entre la cueva y el jugador o entre cuevas
-    
+        const maxAttempts = 100;
+        const minDistance = 100;
+
         do {
             position = this.getRandomAccessiblePosition();
             attempts++;
-        } while ((this.isPositionOccupied(position, minDistance) || this.isNearPlayer(position, minDistance)) && attempts < maxAttempts);
-    
+        } while (
+            (this.isPositionOccupied(position, minDistance) &&
+             this.isNear(position, this.player, minDistance) &&
+             this.isNear(position, this.Castillo, minDistance) &&
+             this.isNear(position, this.CasaBoss, minDistance))
+            && attempts < maxAttempts
+        );
+
         if (attempts === maxAttempts) {
             console.warn('No se encontró una posición adecuada para la cueva después de varios intentos.');
             return;
         }
-    
+
         const cueva = this.CuevasGroup.create(position.x, position.y, 'cueva');
         cueva.setOrigin(0.5, 0.5);
-        cueva.setDepth(1);
-        cueva.setScale(1);
+        cueva.setScale(0.75);
     }
-    
+
     isPositionOccupied(position, minDistance) {
         return this.CuevasGroup.getChildren().some(cueva => {
-            const distance = Phaser.Math.Distance.Between(position.x, position.y, cueva.x, cueva.y);
-            return distance < minDistance;
+            return Phaser.Math.Distance.Between(position.x, position.y, cueva.x, cueva.y) < minDistance;
         });
     }
-    
-    isNearPlayer(position, minDistance) {
-        const distance = Phaser.Math.Distance.Between(position.x, position.y, this.player.x, this.player.y);
-        return distance < minDistance;
+
+    isNear(position, object, minDistance) {
+        return Phaser.Math.Distance.Between(position.x, position.y, object.x, object.y) < minDistance;
     }
-    
 
     getRandomAccessiblePosition() {
         let tileX, tileY, worldX, worldY, tile;
@@ -102,6 +137,7 @@ export default class World extends Phaser.Scene {
 
     entrarCueva(player, cueva) {
         console.log('Entrando a la cueva...');
+        cueva.setImmovable(true);
         this.scene.start('level3');
     }
 
