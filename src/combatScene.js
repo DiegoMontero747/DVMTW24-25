@@ -2,6 +2,7 @@ import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
 import Orc from './arenaOrc.js';
+import GhostSlime from './ghostSlime.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -72,6 +73,7 @@ export default class Level3 extends Phaser.Scene {
         this.enemies=[];
         this.addEnemy(new Orc(this, 240, 190).setDepth(2));
         this.addEnemy(new Orc(this, 240, 230).setDepth(2));
+        //this.addEnemy(new GhostSlime(this, 300, 160).setDepth(2));
 
         this.activeCharacter="warrior";
         var cam=this.cameras.main;

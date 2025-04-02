@@ -29,6 +29,7 @@ export default class Boot extends Phaser.Scene {
     this.load.aseprite('player_warrior','warrior.png','warrior.json');
     this.load.aseprite('player_mage','mage.png','mage.json');
     this.load.aseprite('orc2','orc2.png','orc2.json');
+    this.load.aseprite('slime2','slime2.png','slime2.json');
     this.load.aseprite('blood','splatter.png','splatter.json');
     this.load.aseprite('KABOOM', 'explosion-sheet.png', 'explosion.json');
 
