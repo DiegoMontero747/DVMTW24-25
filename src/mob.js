@@ -11,42 +11,26 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      * @param {Phaser.Scene} scene Escena a la que pertenece el jugador
      * @param {number} x Coordenada X
      * @param {number} y Coordenada Y
+     * @param {string} spriteKey Clave correspondiente al sprite
      */
-    constructor(scene, x, y) {
-        super(scene, x, y, 'player_warrior');	
-        this.score = 0;
-        console.log("a");
+    constructor(scene, x, y, spriteKey,baseHP=10,maxHP=10,facing="right",attackAreaType="directional",scale=1) {
+        super(scene, x, y, spriteKey);	
         //Auxiliares para animaciones
-        this.facing="right";
-        this.anims.createFromAseprite('player_warrior');
-        this.scale=2/3;
-        var tileSize=48;
-        this.marker = this.scene.add.graphics();
-        this.marker.lineStyle(2, 0xFFFFFF, 1);  
-        this.marker.strokeRect(0, 0, tileSize, tileSize);
-        this.container= this.scene.add.container(0,0)
-        this.container.add(this.marker);
-        this.playerPreview= this.scene.add.sprite(24,0,"player_warrior");
-        this.playerPreview.anims.createFromAseprite('player_warrior');
-        this.playerPreview.setAlpha(0.6);
-        this.container.add(this.playerPreview);
-        this.container.setVisible(false);
-        this.container.setScale(this.scale);
-        this.hp=10;
-        this.maxHp=10;
+        this.facing=facing;
+        this.anims.createFromAseprite(spriteKey);
+        this.scale=scale;
+        this.hp=baseHP;
+        this.maxHp=maxHP;
 
-        this.attackAreaType="directional";
+        this.attackAreaType=attackAreaType;
         this.addAttackArea(this.attackAreaType);
 
-        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100000);
+        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100);
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 0.50);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.20);
         this.moveAreaGraphics.fillCircleShape(this.moveArea);
         this.moveAreaGraphics.strokeCircleShape(this.moveArea);
-
-        console.log()
-        //this.scene.physics.add(this.attackArea);
 
         //Auxiliares de movimiento grid con fisicas
         this.isMoving=false;
@@ -59,18 +43,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds(true,false,false,true);
-        //console.log(this.body);
         //this.body.setBoundsRectangle(this.moveArea);
 
-
-        // Esta label es la UI en la que pondremos la puntuación del jugador
-        //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
         this.cursors = this.scene.input.keyboard.createCursorKeys();
 
         this.play({key:'iddle_right',repeat:-1});
         
-        //pixeles que se mueve
-        this.moveDist=tileSize;
         
         //re-ajuste de collision box 
         //const cbWidth=32,cbHeight=32,cbOffsetX=16,cbOffsetY=40; //Colision parcial (64x64)
@@ -85,31 +63,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.on('pointerover',function (event)
         {
             this.scene.sound.play("touchUISound");
-            this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
-            this.scene.showStatsUI();
-            if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
-            else this.effect=this.postFX.addGlow();
+            this.effect=this.postFX.addGlow();
         });
         this.on('pointerout', function (event)
         {
-            this.scene.hideStatsUI();
             this.postFX.remove(this.effect);
         });
-        this.on('pointerup', function (event)
-        {   
-            /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
-            this.scene.container.add(this); */
-            if(this.scene.turn=="player"){
-                this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
-                this.container.setVisible(!this.container.visible);
-            }
-            if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)){ 
-                this.onHit(1);
-                this.emit("player_hitted");
-            };
-        });
-
-        this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
     }
 
     createBlood(){
@@ -170,31 +129,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             });
         }
     }
-    /**
-     * Gestiona el movimiento grid cambiando las coordenadas 
-     * del jugador a la posicion correspondiente directamente
-    */
-    teleport_grid_movement(){
-        if (this.scene.input.keyboard.checkDown(this.cursors.up,100)) {
-            this.y-=this.moveDist;
-            this.play({key:'iddle_up',repeat:-1});
-        } 
-        else if (this.scene.input.keyboard.checkDown(this.cursors.down,100)) {
-            this.y+=this.moveDist;
-            this.play({key:'iddle_down',repeat:-1});
-
-        } 
-        else if (this.scene.input.keyboard.checkDown(this.cursors.left,100)) {
-            this.x-=this.moveDist;
-            this.play({key:'iddle_left',repeat:-1});
-        }
-        else if (this.scene.input.keyboard.checkDown(this.cursors.right,100)) {
-            this.x+=this.moveDist;
-            this.play({key:'iddle_right',repeat:-1});
-        }
-    }
-
-
 
     physics_combat_movement(){
         const velocity=200;
@@ -244,139 +178,11 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         }
 
     }
-    /**
-     *Gestiona movimiento 4-direccional mediante fisica
-     */
-    physics_4way_movement(){
-        const velocity=200;
-        if (this.cursors.up.isDown) {
-            this.body.setVelocityY(-velocity);
-            this.body.setVelocityX(0);
-            this.play({key:'walk_up'},true);
-            this.facing="up";
-        }
-        else if (this.cursors.down.isDown) {
-            this.body.setVelocityY(velocity);
-            this.body.setVelocityX(0);
-            this.play({key:'walk_down'},true);
-            this.facing="down";
-        } 
-        else if (this.cursors.right.isDown) {
-            this.body.setVelocityX(velocity);
-            this.body.setVelocityY(0);
-            this.play({key:'walk_right'},true);
-            this.facing="right";
-        }
-        else if (this.cursors.left.isDown) {
-            this.body.setVelocityX(-velocity);
-            this.body.setVelocityY(0);
-            this.play({key:'walk_left'},true);
-            this.facing="left";
-        }
-        else if (this.isMoving==false){
-            this.play({key:'iddle_'+this.facing,repeat:-1},true);
-            this.body.setVelocityX(0);
-            this.body.setVelocityY(0);
-        }
-    }
-
-    /**
-     * Gestiona movimiento grid mediante fisica
-     */
-    physics_grid_movement(dt){
-        const velocity=200;
-        if(this.isMoving==false){
-            if (this.cursors.up.isDown ) {
-                this.body.setVelocityY(-velocity);
-                this.goal_y=this.lastGridY-this.moveDist;
-                this.play({key:'walk_up'},true);
-                this.facing="up";
-                this.isMoving=true;
-                this.lastMoveDt=dt;
-            }
-            else if (this.cursors.down.isDown) {
-                this.body.setVelocityY(velocity);
-                this.goal_y=this.lastGridY+this.moveDist;
-                this.play({key:'walk_down'},true);
-                this.facing="down";
-                this.isMoving=true;
-                this.lastMoveDt=dt;
-            } 
-            else if (this.cursors.right.isDown) {
-                this.body.setVelocityX(velocity);
-                this.goal_x=this.lastGridX+this.moveDist;
-                this.play({key:'walk_right'},true);
-                this.facing="right";
-                this.isMoving=true;
-                this.lastMoveDt=dt;
-            }
-            else if (this.cursors.left.isDown) {
-                this.body.setVelocityX(-velocity);
-                this.goal_x=this.lastGridX-this.moveDist;
-                this.play({key:'walk_left'},true);
-                this.facing="left";
-                this.isMoving=true;
-                this.lastMoveDt=dt;
-            }
-            else if (this.cursors.space.isDown) {
-                this.play({key:'attack_'+this.facing},true);
-                this.isMoving=true;
-                this.lastMoveDt=dt;
-            }
-            else {
-                this.isMoving==false;
-                this.play({key:'iddle_'+this.facing,repeat:-1},true);
-                this.body.setVelocityX(0);
-                this.body.setVelocityY(0);
-            }
-        }
-        else if(this.checkMoveTimeLimit(dt)){
-            /*this.x=this.lastGridX;
-            this.y=this.lastGridY;*/
-            this.goal_x=this.lastGridX;
-            this.goal_y=this.lastGridY;
-            this.body.setVelocityX(0);
-            this.body.setVelocityY(0);
-            this.isMoving=false;
-        }else if(this.checkInGoalPositionProximity()){
-            this.lastGridX=this.goal_x;
-            this.lastGridY=this.goal_y;
-            /*this.x=this.goal_x;
-            this.y=this.goal_y;*/
-            this.body.setVelocityX(0);
-            this.body.setVelocityY(0);
-            this.isMoving=false;
-        }
-        //console.log(this.goal_x +" "+this.goal_y);
-    }
-
-    /**
-     * Comprueba si ha pasado mas tiempo del permitido para un movimiento
-     */
-    checkMoveTimeLimit(dt){
-        const timeLimit=360,delta_ellapsed=dt-this.lastMoveDt;
-        //console.log(delta_ellapsed);
-        return delta_ellapsed> timeLimit;
-    }
-    /**
-     * Comprueba si estamos proximos a la posicion objetivo del movimiento
-     *  en el eje de coordenadas significativo para este.
-     */
-    checkInGoalPositionProximity(){
-        const error=2, deltaX=Math.abs(this.x-this.goal_x) ,deltaY=Math.abs(this.y-this.goal_y);
-        if(this.facing=="up" || this.facing=="down") return deltaY<error;
-        else if(this.facing=="right" || this.facing=="left")return deltaX<error;
-        else return false;
-    }
-
+ 
     playAttack(){
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
-        this.scene.sound.play("swingSound");
-        this.once("animationcomplete",()=>{                        
-            this.scene.events.emit("enemy_turn_start");
-            this.isMoving=false;
-        });
+        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
         this.chain({key:'iddle_'+this.facing,repeat:-1},true);
     }
 
@@ -400,10 +206,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             duration: 220,
             yoyo:true,
         });
-        this.checkedHit=false;
     }
+
     onTurnEnd(){
-        this.stopMoving();
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         //this.attackArea.setVisible(false);
         this.setDepth(this.depth-1);
@@ -430,7 +235,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             case "directional":
                 const dirs=["up","down","left","right"];
                 const offsets=[{x:0,y:-37+this.attackAreaOffsetY},{x:0,y:37+this.attackAreaOffsetY},{x:-37,y:this.attackAreaOffsetY},{x:37,y:this.attackAreaOffsetY}];
-                const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:64},{x:64,y:64}];
+                const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:-64},{x:64,y:64}];
                 const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
                 this.dirAttackArea={};
                 this.attackAreaContainer=this.scene.add.container(this.x,this.y).setDepth(this.depth+1);
@@ -442,7 +247,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
                     let dirSelector=this.scene.add.image(offsets[i].x, offsets[i].y,"dirCursor").setScale(0.8).setRotation(rotations[i]);
-                    dirSelector.setVisible(false);
                     dirSelector.setInteractive(this.scene.input.makePixelPerfect());
                     dirSelector.on('pointerover', () => {
                         this.scene.sound.play("touchUISound");
@@ -511,9 +315,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         this.scene.attackArea=this.dirAttackArea[dirs[i]];
                         this.facing=dirs[i];
                         this.playAttack();
-                        this.scene.checkEnemyHit();
+                        this.scene.checkHits();
                         dirSelector.clearTint();
-                        this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
                     });
                     this.attackAreaContainer.add(this.dirAttackArea[dirs[i]]);
                     this.attackCursorContainer.add(dirSelector);
@@ -523,6 +326,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             break;
         }
     }
+
     centerAttackArea(type){
         switch(type){
             case "circle":
@@ -547,37 +351,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     showAttackControls(){
         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
     }
-    stopMoving(){
-        this.body.setVelocityX(0);
-        this.body.setVelocityY(0);
-        if(this.isMoving==false) this.play({key:'iddle_'+this.facing,repeat:-1},true);
-    }
-    checkHit(area){
-       /*  if(this.scene.enemyAttackArea && !this.checkedHit){
-            if(this.scene.physics.overlap(this.scene.enemyAttackArea, this.body))this.onHit(this.scene.attackEffect.dmg)
-            this.checkedHit=true;
-        } */
-        if(area){
-            if(this.scene.physics.overlap(area, this.body))this.onHit(this.scene.attackEffect.dmg)
-            //this.checkedHit=true;
-        }
-    }
 
-    /**
-     * Gestiona movimiento de teletransporte
-     */
-    player_tp(){
-        if(this.container.visible && this.scene.activeCharacter=="warrior"){
-        const x=this.container.x+24, y =this.container.y; 
-        this.container.setVisible(false);
-        this.x=x;
-        this.y=y;
-        this.goal_x=x;
-        this.lastGridX=x;
-        this.goal_y=y;
-        this.lastGridY=y;
-        this.emit("player_End_Turn");
-        }
+    checkHit(){       
     }
     /**
      * Métodos preUpdate de Phaser. En este caso solo se encarga del movimiento del jugador.
@@ -587,10 +362,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.turn=="player")this.physics_combat_movement(t);
-        this.container.x=this.scene.pointerGridX;
-        this.container.y=this.scene.pointerGridY;
-        this.centerAttackArea(this.attackAreaType);
     }
 
 }

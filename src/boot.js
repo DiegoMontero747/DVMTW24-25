@@ -29,7 +29,9 @@ export default class Boot extends Phaser.Scene {
     this.load.aseprite('player_warrior','warrior.png','warrior.json');
     this.load.aseprite('player_mage','mage.png','mage.json');
     this.load.aseprite('orc2','orc2.png','orc2.json');
+    this.load.aseprite('slime2','slime2.png','slime2.json');
     this.load.aseprite('blood','splatter.png','splatter.json');
+    this.load.aseprite('KABOOM', 'explosion-sheet.png', 'explosion.json');
 
     this.load.setPath('/assets/misc/');
     this.load.image('NextTurn', 'NextTurn.png');
@@ -40,13 +42,20 @@ export default class Boot extends Phaser.Scene {
     this.load.image('warriorPortrait', 'warriorPortrait.png');
     this.load.image('orcPortrait', 'orcPortrait.png');
     this.load.image('turnBanner', 'turnBar.png');
-    this.load.image('portontxt', 'Porton.png');
-    this.load.image('trampatxt', 'trampatxt.png');
-    this.load.image('llavetxt', 'llavetxt.png');
-    this.load.image('cerraduratxt', 'cerraduratxt.png');
-    this.load.image('chesstxt', 'chesstxt.png');
-    this.load.image('puertatxt', 'puertatxt.png');
-    this.load.image('palancaOff', 'palancaOff.png');
+    this.load.image('dirCursor', 'dir_cursor.png');
+    this.load.image('porton_txt', 'Porton.png');
+    this.load.image('trampa_txt', 'trampatxt.png');
+    this.load.image('trampaOn_txt', 'trampaOntxt.png');
+    this.load.image('llave_txt', 'llavetxt.png');
+    this.load.image('cerradura_txt', 'cerraduratxt.png');
+    this.load.image('cerraduraConLlave_txt', 'cerraduraConLlavetxt.png');
+    this.load.image('cofre_txt', 'chesstxt.png');
+    this.load.image('openCofre_txt', 'Openchesstxt.png');
+    this.load.image('puerta_txt', 'puertatxt.png');
+    this.load.image('palanca_txt', 'palancaOff.png');
+    this.load.image('palancaOn_txt', 'palancaOn.png');
+    this.load.image('tnt_txt', 'TNT.png');
+    this.load.image('caja_txt', 'obstaculotxt.png');
 
     //this.load.image('player', player);
 
@@ -59,6 +68,8 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('slideSound', 'slideSound.wav');
     this.load.audio('wilhelm', 'Wilhelm.wav');
     this.load.audio('boundLimits', 'boundLimits.wav');
+    this.load.audio('swingSound', 'swingSound.wav');
+
 
 
     this.load.setPath('/assets/audio/music/');
@@ -72,6 +83,9 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapCSV('map_walls', 'movetest_walls.csv');*/
 
     //Carga .JSON (formato mas comodo en codigo)
+    this.load.tilemapTiledJSON("map","sinNombre2.json");
+    this.load.tilemapTiledJSON("arena","Arena.json");
+    this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
 
     
     //let dato = JSON.parse(texto);
@@ -91,5 +105,8 @@ export default class Boot extends Phaser.Scene {
   */
  create() {
     this.scene.start('levelDebug');
+    /*
+    this.input.mouse.disableContextMenu();
+    this.scene.start('level3');*/
   }
 }

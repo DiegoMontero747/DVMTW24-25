@@ -100,7 +100,7 @@
                 {
                  "height":32,
                  "id":18,
-                 "name":"Puerta final",
+                 "name":"Puerta",
                  "properties":[
                         {
                          "name":"Collide",
@@ -215,28 +215,6 @@
                 }, 
                 {
                  "height":32,
-                 "id":20,
-                 "name":"Cofre",
-                 "properties":[
-                        {
-                         "name":"Collide",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"Texture",
-                         "type":"string",
-                         "value":"chesstxt"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16.5,
-                 "x":399.5,
-                 "y":57
-                }, 
-                {
-                 "height":32,
                  "id":29,
                  "name":"Palanca",
                  "properties":[
@@ -295,7 +273,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":32,
+ "nextobjectid":34,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
