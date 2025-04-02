@@ -887,7 +887,7 @@ function ponerSalaV2(m,cy,cx,s){
     rellenaDatosV2(m.m_salida,cy,cx,s.salida,c_salida);
 }
 
-function generaMapa(paredes,suelo){
+function generaMapa(paredes,suelo,enemigos){
     const tamTile = 16;
     
     let json_text=`{
@@ -918,7 +918,9 @@ function generaMapa(paredes,suelo){
             },
             {
          "data":[
-         `+suelo+
+         `
+         +suelo
+         +
          `],
          "height": ${suelo.length},
          "id":2,
@@ -929,10 +931,25 @@ function generaMapa(paredes,suelo){
          "width": ${suelo[0].length},
          "x":0,
          "y":0
-        }
+        },
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Objetos",
+         "objects":[
+                `
+                +generaEnemigos(enemigos,3,tamTile)+
+                `
             ],
+            "opacity":1,
+            "type":"objectgroup",
+            "visible":true,
+            "x":0,
+            "y":0
+        }
+        ],
         "nextlayerid": 6,
-        "nextobjectid": 1,
+        "nextobjectid": 100,
         "orientation": "orthogonal",
         "renderorder": "right-down",
         "tiledversion": "1.11.2",
@@ -983,6 +1000,7 @@ function generaMapa(paredes,suelo){
         "width": ${paredes[0].length}
     }`;
 
+    console.log(json_text);
     return JSON.parse(json_text);
 }
 
@@ -1180,7 +1198,66 @@ function aumentaSuelo(m){
 
     return m_doble;
 }
+function ponEnemigos(m){
+    let lista=[]
+    for(let i=0;i<m.m_enemigo_melee.length;i++){
+        for(let j=0; j< m.m_enemigo_melee[0].length;j++){
+            if(m.m_enemigo_melee[i][j]==c_ene_melee){
+                lista.push({type:"orc",y:i*2,x:j*2});
+            }
+            if(m.m_enemigo_ranged[i][j]==c_ene_ran){
+                lista.push({type:"ghostslime",y:i*2,x:j*2});
+            }
 
+        }
+    }
+    return lista;
+}
+function generaEnemigos(e,id,tamTile){
+
+    let out=``;
+    for(let i=0;i<e.length;i++){
+        out+= 
+        `{
+            "height":32,
+            "id":${++id},
+            "name":"${e[i].type}",
+            "properties":[],
+            "rotation":0,
+            "type":"",
+            "visible":true,
+            "width":32,
+            "x":${e[i].x*tamTile},
+            "y":${e[i].y*tamTile}
+        }`
+        if(i<e.length-1){
+            out+=`, 
+            `;
+        }
+
+
+    }
+    return out;
+    //{
+    //   "height":32,
+    //   "id":4,
+    //   "name":"Cerradura",
+    //   "properties":[
+    //          {
+    //           "name":"Texture",
+    //           "type":"string",
+    //           "value":"cerraduratxt"
+    //          }],
+    //   "rotation":0,
+    //   "type":"",
+    //   "visible":true,
+    //   "width":16,
+    //   "x":432.5,
+    //   "y":110.5
+    //  },
+
+
+}
 //va poniendo las salas de manera aleatoria desde la sala central conectandolas por las puertas
 function generaMazmorra() {
     //creamos mapa
@@ -1290,6 +1367,7 @@ export default function gen_mazmorra() {
         const mapa=generaMazmorraV2();
         const paredes=aumentaParedes(mapa.m_pared);
         const suelo=aumentaSuelo(mapa.m_suelo);
-        return generaMapa(paredes,suelo);
+        const enemigos= ponEnemigos(mapa);
+        return generaMapa(paredes,suelo,enemigos);
     }
 }

@@ -21,7 +21,7 @@ import GameShaderPixel from "./shaders/pixelShader.js";
 const pared=true;
 const suelo=true;
 const puerta=false;
-const objeto=false;
+const objeto=true;
 const decorado=false;
 const colision=true;
 
@@ -402,7 +402,7 @@ export default class LevelDebug extends Phaser.Scene {
 
     initShaders(){
         let cam = this.cameras.main;
-        this.setCrtShader();
+        //this.setCrtShader();
     }
 
     setCrtShader(){
