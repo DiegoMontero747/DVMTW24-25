@@ -1,5 +1,7 @@
 import Platform from './platform.js';
 import Player from './player_warrior.js';
+import Mage from './player_mage.js';
+import Orc from './orc.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -17,7 +19,7 @@ import GameShaderPixel from "./shaders/pixelShader.js";
  */
 export default class Level2 extends Phaser.Scene {
     marker;
-    playerPreview;
+    activeCharacter; // Para testing de personajes
     /**
      * Constructor de la escena
      */
@@ -44,10 +46,18 @@ export default class Level2 extends Phaser.Scene {
         */
         /*Crear layers json*/
         this.map= this.make.tilemap({key:'map'});  
-        const tileset = this.map.addTilesetImage('Tiles','Tiles');
-        const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
-        this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
-        this.wall_layer.setCollisionByProperty({collides:true});
+        const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
+        const props=this.map.addTilesetImage('PropsA','PropsA');
+        const propsA=this.map.addTilesetImage('Props','Props');
+        //const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
+        //this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
+        //this.wall_layer.setCollisionByProperty({collides:true});
+        const floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
+        this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
+        this.map.createLayer("Puertas", tileset, 0, 0);
+        this.map.createLayer("Decorado", [props,propsA], 0, 0);
+
+
         /*this.wall_layer.renderDebug(this.add.graphics(),
         {
             tileColor: null,
@@ -56,30 +66,24 @@ export default class Level2 extends Phaser.Scene {
         });*/
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
 
-        const tag=this.anims.createFromAseprite('player_warrior');
-        console.log(tag);
+        //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, 72, 128);
+        this.player2 = new Mage(this, 72, 176);
+        this.orc = new Orc(this, 72, 144);
+        this.activeCharacter="warrior";
         var cam=this.cameras.main;
         cam.startFollow(this.player);
         cam.setBounds(0,0);
-        cam.setZoom(2);
+        cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer);
+        this.physics.add.collider(this.player2.body, this.wall_layer);
 
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
         */
-        var tileSize=48;
-        this.marker = this.add.graphics();
-        this.marker.lineStyle(2, 0xFFFFFF, 1);  
-        this.marker.strokeRect(0, 0, tileSize, tileSize);
-        this.container= this.add.container(0,0)
-        this.container.add(this.marker);
-        this.playerPreview= this.add.sprite(24,0,"player_warrior");
-        this.playerPreview.setAlpha(0.6);
-        this.container.add(this.playerPreview);
-        this.container.setVisible(false);
+        
 
-        this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
+        //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
         this.initShaders();
 
@@ -89,6 +93,10 @@ export default class Level2 extends Phaser.Scene {
         this.input.keyboard.createCombo('retro',{resetOnMatch:true}).comboName='retro';
         this.input.keyboard.createCombo('gba',{resetOnMatch:true}).comboName='gba';
         this.input.keyboard.createCombo('pixel',{resetOnMatch:true}).comboName='pixel';
+
+        this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
+        this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
+        this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
 
         this.input.keyboard.on('keycombomatch', function (combo) {
             switch(combo.comboName){
@@ -107,18 +115,22 @@ export default class Level2 extends Phaser.Scene {
                 case 'pixel':
                     scene.setPixelShader();
                 break;
+                case 'mage':
+                    scene.activeCharacter="mage";
+                    cam.startFollow(scene.player2);
+                break;
+                case 'warrior':
+                    scene.activeCharacter="warrior";
+                    cam.startFollow(scene.player);
+                break;
+                case 'orc':
+                    scene.activeCharacter="orc";
+                    cam.startFollow(scene.orc);
+                break;
             }
 
         });
 
-    }
-
-    playerTP(){
-        if(this.container.visible){
-            const x=this.container.x+24;
-            const y=this.container.y;
-            this.player.player_tp(x,y);
-        }
     }
 
     initShaders(){
@@ -159,9 +171,7 @@ export default class Level2 extends Phaser.Scene {
             const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
             const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
             //Mueve a cordenada
-            this.container.x = this.map.tileToWorldX(pointerTileX);
-            this.container.y = this.map.tileToWorldY(pointerTileY);
-        
-
+            this.pointerGridX= this.map.tileToWorldX(pointerTileX);
+            this.pointerGridY = this.map.tileToWorldY(pointerTileY);
     }
 }

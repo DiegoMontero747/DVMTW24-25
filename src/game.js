@@ -2,6 +2,8 @@ import Boot from './boot.js';
 import End from './end.js';
 import Level from './level.js';
 import Level2 from './level2.js';
+import Level3 from './level3.js';
+import combatScene from './combatScene.js';
 import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -16,14 +18,14 @@ import GameShaderPixel from "./shaders/pixelShader.js";
 let config = {
     type: Phaser.AUTO,
     width: 1000,
-    height: 500,
+    height: 800,
     parent: 'juego',
     scale: {
-        //mode: Phaser.Scale.FIT,  
+        mode: Phaser.Scale.FIT,  
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot, Level,Level2, End],
+    scene: [Boot, Level,Level2,Level3,combatScene, End],
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
     physics: {
         default: 'arcade',
