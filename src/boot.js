@@ -107,6 +107,6 @@ export default class Boot extends Phaser.Scene {
    */
   create() {
     this.input.mouse.disableContextMenu();
-    this.scene.start('level3');
+    this.scene.start('combatScene');
   }
 }

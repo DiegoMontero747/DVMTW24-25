@@ -12,7 +12,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
      * @param {number} x Coordenada X
      * @param {number} y Coordenada Y
      */
-    constructor(scene, x, y) {
+    constructor(scene, x, y, facing="left") {
         super(scene, x, y, 'slime2');	
 
         this.hp=5;
@@ -21,7 +21,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.score = 0;
         //Auxiliares para animaciones
         let escala=1;
-        this.facing="left";
+        this.facing=facing;
         this.anims.createFromAseprite('slime2');
         this.scale=escala;
         var tileSize=48;
@@ -61,7 +61,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds(true,false,false,true);
-        this.body.setBoundsRectangle(this.moveArea);
+        //this.body.setBoundsRectangle(this.moveArea);
 
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
@@ -178,6 +178,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
 
     onDeath(){
         this.dirAttackArea[this.facing].setVisible(false);
+        //this.scene.orc=new orc2(this.scene,240,190);
         this.scene.deleteEnemy(this);
         this.destroy();
     }
@@ -355,14 +356,15 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
                 this.attackAreaType="directional"
                 const dirs=["up","down","left","right"];
                 const offsets=[{x:0,y:-37+this.attackAreaOffsetY},{x:0,y:37+this.attackAreaOffsetY},{x:-37,y:this.attackAreaOffsetY},{x:37,y:this.attackAreaOffsetY}];
-                const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:64},{x:64,y:64}];
+                const offsetsAttack=[{x:0,y:-128+this.attackAreaOffsetY},{x:0,y:128+this.attackAreaOffsetY},{x:-128,y:this.attackAreaOffsetY},{x:128,y:this.attackAreaOffsetY}];
+                const sizes=[{x:32,y:256},{x:32,y:256},{x:256,y:32},{x:256,y:32}];
                 const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
                 this.dirAttackArea={};
                 this.attackAreaContainer=this.scene.add.container(this.x,this.y).setDepth(this.depth+1);
                 this.attackCursorContainer=this.scene.add.container(this.x,this.y).setDepth(20);
 
                 for(let i=0;i<dirs.length;i++){
-                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsets[i].x, offsets[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.25).setVisible(false);
+                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsetsAttack[i].x, offsetsAttack[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.25).setVisible(false);
                     this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xff0000, 1);
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
@@ -527,7 +529,30 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.dirAttackArea[this.facing].setVisible(false);
         this.stopped=false;
         this.hasMoved=false;
-        this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),100,2000);
+        //this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),100,2000);
+        if(this.facing=="left" || this.facing=="right"){
+            this.objectiveX=this.x;
+            this.objectiveY=this.scene.player.y;
+        }else if(this.facing=="up" || this.facing=="down"){
+            this.objectiveX=this.scene.player.x;
+            this.objectiveY=this.y;
+        }
+        this.scene.physics.moveTo(this,this.objectiveX,this.objectiveY,100,2000);
+    }
+    stopNearObjective(){
+        if(this.objectiveX && this.objectiveY){
+            const dist=10;
+            if(Phaser.Math.Distance.BetweenPoints(new Phaser.Math.Vector2(this.objectiveX,this.objectiveY), this)<dist && this.hasMoved){
+                this.body.setVelocityX(0);
+                this.body.setVelocityY(0);
+                if(this.stopped==false){
+                    this.stopped=true;
+                    this.scene.events.emit("enemy_turn_end");
+                } 
+            }else{
+                this.hasMoved=true;
+            }
+        }
     }
 
     onTurnEnd(){
@@ -547,17 +572,17 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         if(this.isMoving==false){
             if(this.body.velocity.y>0 && Math.abs(this.body.velocity.y)>Math.abs(this.body.velocity.x)){
                 this.play({key:'walk_down',repeat:-1},true)
-                this.facing="down"
+                //this.facing="down"
             }else if(this.body.velocity.y<0 && Math.abs(this.body.velocity.y)>Math.abs(this.body.velocity.x)){
                 this.play({key:'walk_up',repeat:-1},true)
-                this.facing="up"
+                //this.facing="up"
             }
             else if(this.body.velocity.x>0){
                 this.play({key:'walk_right',repeat:-1},true)
-                this.facing="right"
+                //this.facing="right"
             }else if(this.body.velocity.x<0){
                 this.play({key:'walk_left',repeat:-1},true)
-                this.facing="left"
+                //this.facing="left"
             }else this.play({key:'iddle_'+this.facing,repeat:-1},true)
         }
     }
@@ -566,8 +591,10 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this)<dist && this.hasMoved){
             this.body.setVelocityX(0);
             this.body.setVelocityY(0);
-            if(!this.stopped) this.scene.events.emit("enemy_turn_end");
-            this.stopped=true;
+            if(this.stopped==false){
+                this.stopped=true;
+                this.scene.events.emit("enemy_turn_end");
+            } 
         }else{
             this.hasMoved=true;
         }
@@ -589,7 +616,8 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         super.preUpdate(t, dt);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
-        this.stopNearPlayer();
+        //this.stopNearPlayer();
+        this.stopNearObjective();
         this.setAnim();
         this.setAttackArea();
         /* this.attackArea.x= this.x;

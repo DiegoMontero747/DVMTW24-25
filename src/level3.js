@@ -110,9 +110,10 @@ export default class Level3 extends Phaser.Scene {
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, 40, 64).setDepth(3);
         //this.player2 = new Mage(this, 72, 176);  "x":399.5,"y":57
-        this.orc = new Orc(this, 399.5, 57).setDepth(2);
+        this.orc = new Orc(this, 410, 60).setDepth(2);
 
         this.activeCharacter="warrior";
+        this.player.setFreeMovement(true);
         var cam=this.cameras.main;
         this.showTurnMsg();
         cam.startFollow(this.player);
@@ -136,7 +137,10 @@ export default class Level3 extends Phaser.Scene {
         const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
         graphics.strokeRectShape(this.attackArea);
         // Util para entrar en combate */
-        // this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
+         this.physics.add.overlap(this.player.body, this.orc.body,()=>{
+            //this.sound.get('combatMusic').stop();    
+            this.scene.start('combatScene');
+         });
 
         //this.physics.add.existing(this.orc.attackArea);
         //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
@@ -282,7 +286,9 @@ export default class Level3 extends Phaser.Scene {
     }
 
     initMusic(){
-        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        //if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        let combatMusic=this.sound.add("combatMusic",{loop:true,volume:0.5});
+        if(!combatMusic.isPlaying)combatMusic.play();
         this.boundLimitSound= this.sound.add("boundLimits")
         this.physics.world.on('worldbounds', (body, up, down, left, right) =>
         {   
@@ -358,7 +364,7 @@ export default class Level3 extends Phaser.Scene {
     }
 
     initUI(){
-        let botonNextTurn = this.add.image(600, 500, 'NextTurn')
+        /* let botonNextTurn = this.add.image(600, 500, 'NextTurn')
         .setInteractive();
         botonNextTurn.setScrollFactor(0);
         botonNextTurn.setScale(0.8);
@@ -456,7 +462,7 @@ export default class Level3 extends Phaser.Scene {
                 else
                 this.player.attackArea.setVisible(!this.player.attackArea.visible)
             } 
-            else if(this.turn=="enemy"){/*this.orc.attackArea.setVisible(!this.orc.attackArea.visible) */
+            else if(this.turn=="enemy"){
                 if(this.orc.attackAreaType=="directional")
                     this.orc.showAttackControls();
                 else
@@ -513,7 +519,7 @@ export default class Level3 extends Phaser.Scene {
         });
         botonMenu.on('pointerout', () => {
             botonMenu.clearTint();
-        });
+        }); */
 
         this.statsUI={
             UIbg:this.add.image(410, 550, 'StatsBar').setScrollFactor(0).setDepth(20),

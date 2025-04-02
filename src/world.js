@@ -1,4 +1,4 @@
-import Player from './player.js';
+import Player from './player_warrior.js';
 import Phaser from 'phaser';
 
 export default class World extends Phaser.Scene {
@@ -30,6 +30,8 @@ export default class World extends Phaser.Scene {
 
         // Crear jugador
         this.player = new Player(this, 500, 500);
+        this.player.setFreeMovement(true);
+        this.turn="player";
         this.physics.add.collider(this.player, this.wall_layer);
 
         // Cámara
