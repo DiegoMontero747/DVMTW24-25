@@ -38,7 +38,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.attackAreaType="directional";
         this.addAttackArea(this.attackAreaType);
 
-        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100);
+        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100000);
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 0.50);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.20);

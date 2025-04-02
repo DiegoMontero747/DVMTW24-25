@@ -64,7 +64,7 @@ export default class Level3 extends Phaser.Scene {
         this.map.createLayer("Puertas", tileset, 0, 0);
         this.map.createLayer("Decorado", [props,propsA], 0, 0);
 
-        this.wall_layer.setDepth(1);
+        this.wall_layer.setDepth(0);
 
         /*this.objects_layer.objects.forEach(obj => {
             // Crear el sprite con la textura especificada en Tiled
@@ -82,7 +82,7 @@ export default class Level3 extends Phaser.Scene {
             }
         });*/
 
-        const objectsGroup = this.physics.add.staticGroup();
+        //const objectsGroup = this.physics.add.staticGroup();
 
         //Puertas
 
@@ -108,9 +108,9 @@ export default class Level3 extends Phaser.Scene {
 
 
         //const tag=this.anims.createFromAseprite('player_warrior');
-        this.player = new Player(this, 128, 200).setDepth(3);
-        //this.player2 = new Mage(this, 72, 176);
-        this.orc = new Orc(this, 240, 190).setDepth(2);
+        this.player = new Player(this, 40, 64).setDepth(3);
+        //this.player2 = new Mage(this, 72, 176);  "x":399.5,"y":57
+        this.orc = new Orc(this, 399.5, 57).setDepth(2);
 
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
@@ -120,7 +120,7 @@ export default class Level3 extends Phaser.Scene {
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer,()=>{this.playCollideEffect()});
         //this.physics.add.collider(this.player2.body, this.wall_layer);
-        this.physics.add.collider(this.player, objectsGroup);
+        //this.physics.add.collider(this.player, objectsGroup);
         //this.physics.add.collider(this.player.body, doorsGroup);
 
         this.physics.add.collider(this.orc.body, this.wall_layer);
