@@ -32,6 +32,8 @@ export default class Boot extends Phaser.Scene {
     this.load.aseprite('slime2','slime2.png','slime2.json');
     this.load.aseprite('blood','splatter.png','splatter.json');
     this.load.aseprite('KABOOM', 'explosion-sheet.png', 'explosion.json');
+    this.load.aseprite('flamethrower', 'flamethrower.png', 'flamethrower.json');
+
 
     this.load.setPath('/assets/misc/');
     this.load.image('NextTurn', 'NextTurn.png');

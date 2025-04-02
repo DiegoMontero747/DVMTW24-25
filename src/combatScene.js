@@ -438,8 +438,8 @@ export default class Level3 extends Phaser.Scene {
         if(this.phase==undefined)this.phase=1;
         switch(this.phase){
             case 1:
-                this.addEnemy(new Orc(this, 260, 160).setDepth(2));
-                this.addEnemy(new Orc(this, 125, 160).setDepth(2));
+                this.addEnemy(new GhostSlime(this, 320, 160,"left").setDepth(2));
+                this.addEnemy(new GhostSlime(this, 195, 32,"down").setDepth(2));
             break;
             case 2:
                 this.addEnemy(new GhostSlime(this, 320, 160,"left").setDepth(2));

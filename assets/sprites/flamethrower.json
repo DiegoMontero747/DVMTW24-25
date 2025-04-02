@@ -1,0 +1,116 @@
+{ "frames": {
+   "0": {
+    "frame": { "x": 297, "y": 49, "w": 24, "h": 14 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 56, "y": 18, "w": 22, "h": 12 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "1": {
+    "frame": { "x": 239, "y": 24, "w": 66, "h": 24 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 28, "y": 9, "w": 64, "h": 22 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "2": {
+    "frame": { "x": 157, "y": 1, "w": 81, "h": 23 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 9, "w": 79, "h": 21 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "3": {
+    "frame": { "x": 81, "y": 1, "w": 75, "h": 26 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 14, "y": 7, "w": 73, "h": 24 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "4": {
+    "frame": { "x": 1, "y": 1, "w": 79, "h": 28 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 4, "w": 77, "h": 26 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "5": {
+    "frame": { "x": 154, "y": 46, "w": 70, "h": 19 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 14, "w": 68, "h": 17 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "6": {
+    "frame": { "x": 1, "y": 49, "w": 69, "h": 16 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 14, "y": 18, "w": 67, "h": 14 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "7": {
+    "frame": { "x": 225, "y": 49, "w": 71, "h": 15 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 14, "y": 17, "w": 69, "h": 13 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "8": {
+    "frame": { "x": 1, "y": 30, "w": 74, "h": 18 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 14, "w": 72, "h": 16 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "9": {
+    "frame": { "x": 81, "y": 28, "w": 72, "h": 21 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 11, "w": 70, "h": 19 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "10": {
+    "frame": { "x": 157, "y": 25, "w": 77, "h": 20 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 11, "w": 75, "h": 18 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   },
+   "11": {
+    "frame": { "x": 239, "y": 1, "w": 78, "h": 22 },
+    "rotated": false,
+    "trimmed": true,
+    "spriteSourceSize": { "x": 13, "y": 9, "w": 76, "h": 20 },
+    "sourceSize": { "w": 96, "h": 48 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3.5-dev",
+  "image": "Flamethrower.png",
+  "format": "RGBA8888",
+  "size": { "w": 322, "h": 66 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "start", "from": 0, "to": 2, "direction": "forward", "color": "#000000ff" },
+   { "name": "flame", "from": 3, "to": 11, "direction": "forward", "color": "#000000ff" }
+  ],
+  "layers": [
+   { "name": "Sprite Sheet", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

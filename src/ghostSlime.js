@@ -506,8 +506,11 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.isMoving=true;
         if(this.gotTurn){
         this.play({key:'attack_'+this.facing},true);
+        this.scene.time.delayedCall(500,()=>{
+        this.createFlame();
         this.scene.sound.play("swingSound");
         this.scene.checkPlayerHit(this.selectedAttackArea);
+        });
         this.once("animationcomplete",()=>{
             this.moveToPlayer();
         });
@@ -566,6 +569,48 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.play({key:'attack_'+this.facing},true);
         this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
         //this.chain({key:'iddle_'+this.facing,repeat:-1},true);
+    }
+
+    createFlame(){
+        let flame= this.scene.add.sprite(this.x,this.y+5,"flamethrower").setDepth(this.depth+1).setScale(1);
+        flame.anims.createFromAseprite("flamethrower");
+        let endX=flame.x,endY=flame.y;
+        const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
+        if(this.facing=="left"){
+            endX=flame.x-256;
+        }
+        else if(this.facing=="right"){
+            endX=flame.x+256;
+            flame.setRotation(rotations[1]);
+        }
+        else if(this.facing=="up"){
+            endY=flame.y-256;
+            flame.setRotation(rotations[3]);
+        }
+        else if(this.facing=="down"){
+            endY=flame.y+256;
+            flame.setRotation(rotations[2]);
+        }
+        let flameMove=this.scene.tweens.add({
+            targets: [flame],
+            x:{from:flame.x,to:endX},
+            y:{from:flame.y,to:endY},
+            ease: 'quad.out',
+            duration: 500,
+            onComplete:(tween, targets, param)=>{
+                //flame.destroy();
+            }
+        })
+         let splatterFade=this.scene.tweens.add({
+            targets: [flame],
+            alpha: 0,
+            ease: 'linear',
+            duration: 700,
+            onComplete:(tween, targets, param)=>{
+                flame.destroy();
+            }
+        });
+        flame.play("flame");
     }
 
     setAnim(){
