@@ -900,7 +900,8 @@ function generaMapa(paredes,suelo,enemigos){
             "data": [
     `+
     paredes+
-    `],
+    `
+    ],
             "height": ${paredes.length},
             "id": ${++id},
             "name": "Paredes",
@@ -922,7 +923,8 @@ function generaMapa(paredes,suelo,enemigos){
          `
          +suelo
          +
-         `],
+         `
+         ],
          "height": ${suelo.length},
          "id":${++id},
          "name":"Suelo",
@@ -950,7 +952,7 @@ function generaMapa(paredes,suelo,enemigos){
         }
         ],
         "nextlayerid": ${++id},
-        "nextobjectid": 100,
+        "nextobjectid": ${++id},
         "orientation": "orthogonal",
         "renderorder": "right-down",
         "tiledversion": "1.11.2",
@@ -1210,10 +1212,10 @@ function ponEnemigos(m){
                 lista.push({type:"ghostslime",y:i*2,x:j*2});
             }
             if(m.m_trampa[i][j]==c_trampa){
-                lista.push({type:"tramp",y:i*2,x:j*2});
-                lista.push({type:"tramp",y:i*2+1,x:j*2});
-                lista.push({type:"tramp",y:i*2,x:j*2+1});
-                lista.push({type:"tramp",y:i*2+1,x:j*2+1});
+                lista.push({type:"trap",y:i*2,x:j*2});
+                lista.push({type:"trap",y:i*2+1,x:j*2});
+                lista.push({type:"trap",y:i*2,x:j*2+1});
+                lista.push({type:"trap",y:i*2+1,x:j*2+1});
             }
             if(m.m_obstaculo[i][j]==c_obstaculo){
                 lista.push({type:"obstaculo",y:i*2,x:j*2});
