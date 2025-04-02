@@ -1,4 +1,3 @@
-
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
 import Orc from './orc.js';
@@ -53,7 +52,7 @@ export default class Level3 extends Phaser.Scene {
         //const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
         //this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
         //this.wall_layer.setCollisionByProperty({collides:true});
-        //this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
+        this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
         this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
         this.objects_layer = this.map.getObjectLayer("Objetos", tileset);
@@ -674,8 +673,8 @@ export default class Level3 extends Phaser.Scene {
         */  
         // Movimiento del cuadro marcador siguiendo la coordenada por grid del ratón
             const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
-            //const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
-            //const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
+            const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x)+mouseOffsetX, snapInterval)+gridOffsetX;
+            const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y)+mouseOffsetY, snapInterval)+gridOffsetY;
             //Mueve a cordenada
             /*
             this.pointerGridX= this.map.tileToWorldX(pointerTileX);

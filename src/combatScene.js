@@ -1,4 +1,3 @@
-import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
 import Orc from './arenaOrc.js';
