@@ -83,7 +83,7 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapCSV('map_walls', 'movetest_walls.csv');*/
 
     //Carga .JSON (formato mas comodo en codigo)
-    this.load.tilemapTiledJSON("map","sinNombre2.json");
+    this.load.tilemapTiledJSON("mapOriginal","sinNombre2.json");
     this.load.tilemapTiledJSON("arena","Arena.json");
     this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
 
@@ -104,9 +104,9 @@ export default class Boot extends Phaser.Scene {
    * nivel del juego
   */
  create() {
-    this.scene.start('levelDebug');
-    /*
+    //this.scene.start('levelDebug');
+    
     this.input.mouse.disableContextMenu();
-    this.scene.start('level3');*/
+    this.scene.start('level3');
   }
 }

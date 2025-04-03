@@ -178,7 +178,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
 
     onDeath(){
         this.dirAttackArea[this.facing].setVisible(false);
-        this.scene.deleteEnemy(this);
+        //this.scene.deleteEnemy(this);
         this.destroy();
     }
 

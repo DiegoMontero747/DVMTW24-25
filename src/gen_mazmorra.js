@@ -1212,16 +1212,13 @@ function ponEnemigos(m){
                 lista.push({type:"ghostslime",y:i*2,x:j*2});
             }
             if(m.m_trampa[i][j]==c_trampa){
-                lista.push({type:"trap",y:i*2,x:j*2});
-                lista.push({type:"trap",y:i*2+1,x:j*2});
-                lista.push({type:"trap",y:i*2,x:j*2+1});
-                lista.push({type:"trap",y:i*2+1,x:j*2+1});
+                lista.push({type:"Trampa",y:i*2,x:j*2});
             }
             if(m.m_obstaculo[i][j]==c_obstaculo){
-                lista.push({type:"obstaculo",y:i*2,x:j*2});
+                lista.push({type:"Caja",y:i*2,x:j*2});
             }
             if(m.m_explosivo[i][j]==c_explosivo){
-                lista.push({type:"tnt",y:i*2,x:j*2});
+                lista.push({type:"TNT",y:i*2,x:j*2});
             }
             if(m.m_cura[i][j]==c_cura){
                 if(Math.random()<0.5){
@@ -1229,10 +1226,10 @@ function ponEnemigos(m){
                 }
             }
             if(m.m_recompensa[i][j]==c_recompensa){
-                lista.push({type:"reward",y:i*2,x:j*2});
+                lista.push({type:"Cofre",y:i*2,x:j*2});
             }
             if(m.m_salida[i][j]==c_salida){
-                lista.push({type:"exit",y:i*2,x:j*2});
+                lista.push({type:"Llave",y:i*2,x:j*2});
             }
         }
     }

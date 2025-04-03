@@ -33,7 +33,7 @@ let config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
         }
     },
     pipeline: [GameShaderCRT,GameShaderRetro,GameShaderGBA,GameShaderPixel]
