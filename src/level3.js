@@ -138,8 +138,16 @@ export default class Level3 extends Phaser.Scene {
         graphics.strokeRectShape(this.attackArea);
         // Util para entrar en combate */
          this.physics.add.overlap(this.player.body, this.orc.body,()=>{
-            //this.sound.get('combatMusic').stop();    
-            this.scene.start('combatScene');
+            //this.sound.get('combatMusic').stop();
+            this.add.tween({
+                targets: this.cameras.main.postFX.addPixelate(0),
+                duration: 500,
+                amount: 40,
+                onComplete: () => {
+                    this.cameras.main.fadeOut(200);
+                    this.scene.start('combatScene');
+                }
+            })    
          });
 
         //this.physics.add.existing(this.orc.attackArea);
@@ -286,8 +294,9 @@ export default class Level3 extends Phaser.Scene {
     }
 
     initMusic(){
-        //if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
-        let combatMusic=this.sound.add("combatMusic",{loop:true,volume:0.5});
+        let combatMusic=this.sound.get('combatMusic');
+        if(!combatMusic)
+            combatMusic=this.sound.add("combatMusic",{loop:true,volume:0.5});
         if(!combatMusic.isPlaying)combatMusic.play();
         this.boundLimitSound= this.sound.add("boundLimits")
         this.physics.world.on('worldbounds', (body, up, down, left, right) =>

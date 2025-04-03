@@ -167,10 +167,15 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                 duration: 500,
                 delay: this.scene.tweens.stagger(100),
                 onComplete:(tween, targets, param)=>{
-                    this.destroy();
+                    this.onDeath();
+                    //this.destroy();
                 }
             });
         }
+    }
+
+    onDeath(){
+        this.scene.events.emit("gameOver");
     }
     /**
      * Gestiona el movimiento grid cambiando las coordenadas 

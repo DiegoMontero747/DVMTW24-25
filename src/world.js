@@ -140,7 +140,14 @@ export default class World extends Phaser.Scene {
     entrarCueva(player, cueva) {
         console.log('Entrando a la cueva...');
         cueva.setImmovable(true);
-        this.scene.start('level3');
+        this.add.tween({
+            targets: this.cameras.main.postFX.addPixelate(0),
+            duration: 800,
+            amount: 50,
+            onComplete: () => {
+                this.scene.start('level3');
+            }
+        })  
     }
 
     update(time, delta) {

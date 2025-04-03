@@ -88,7 +88,7 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapTiledJSON("map","sinNombre2.json");
     this.load.tilemapTiledJSON("arena","Arena.json");
     this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
-    this.load.tilemapTiledJSON("map","Prueba_001.json");
+    //this.load.tilemapTiledJSON("map","Prueba_001.json");
     this.load.tilemapTiledJSON("mapMundial","mapamundi.json");
 
 

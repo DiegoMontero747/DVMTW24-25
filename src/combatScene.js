@@ -32,6 +32,7 @@ export default class Level3 extends Phaser.Scene {
      */
     create() {
         var scene=this;
+        this.phase=1;
         /*Crear layers json*/
 
         this.map= this.make.tilemap({key:'arena'});  
@@ -254,6 +255,9 @@ export default class Level3 extends Phaser.Scene {
             this.enemies.forEach((enemy)=>{enemy.onTurnEnd()});
             //this.orc.onTurnEnd();
         });
+        this.events.on("gameOver",()=>{
+            this.scene.start("end");
+        });
         //BOTON MOVE
         let botonMove = this.add.image(500, 500, 'Move')
         .setInteractive();
@@ -438,8 +442,8 @@ export default class Level3 extends Phaser.Scene {
         if(this.phase==undefined)this.phase=1;
         switch(this.phase){
             case 1:
-                this.addEnemy(new GhostSlime(this, 320, 160,"left").setDepth(2));
-                this.addEnemy(new GhostSlime(this, 195, 32,"down").setDepth(2));
+                this.addEnemy(new Orc(this, 260, 160).setDepth(2));
+                this.addEnemy(new Orc(this, 125, 160).setDepth(2));
             break;
             case 2:
                 this.addEnemy(new GhostSlime(this, 320, 160,"left").setDepth(2));

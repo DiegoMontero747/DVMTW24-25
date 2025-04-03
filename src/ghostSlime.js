@@ -117,6 +117,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
     createBlood(){
         let blood= this.scene.add.sprite(this.x,this.y-22,"blood").setDepth(this.depth+1).setScale(0.5);
         blood.anims.createFromAseprite("blood");
+        blood.setTintFill(0x4a6eff);
         let splatterFade=this.scene.tweens.add({
             targets: [blood],
             alpha: 0,
