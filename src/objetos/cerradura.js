@@ -17,6 +17,18 @@ export default class Cerradura extends Objeto {
             this.scene.abrirPuertas();
         } else {
             console.log("El jugador no ha conseguido la llave");
+            let hitText=this.scene.add.text(this.x,this.y,"Necesitas una llave").setDepth(this.depth+1);
+            const hitTextAnim=this.scene.tweens.add({
+                targets: [hitText],
+                scale: {from:0.5,to:0.3},
+                x:this.x,
+                ease: 'linear',
+                duration: 1000,
+                delay: this.scene.tweens.stagger(100),
+                onComplete:(tween, targets, param)=>{
+                    hitText.destroy();
+                }
+            });
         }
     }
 }

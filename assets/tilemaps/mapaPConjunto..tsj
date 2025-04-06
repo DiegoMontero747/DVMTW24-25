@@ -1,0 +1,14 @@
+{ "columns":75,
+ "image":"..\/..\/..\/..\/Desktop\/mapaPeninsula.jpg",
+ "imageheight":923,
+ "imagewidth":1202,
+ "margin":0,
+ "name":"mapaPeninsula",
+ "spacing":0,
+ "tilecount":4275,
+ "tiledversion":"1.11.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}

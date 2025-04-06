@@ -1,4 +1,3 @@
-import Platform from './platform.js';
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
 import Orc from './arenaOrc.js';
@@ -33,6 +32,7 @@ export default class Level3 extends Phaser.Scene {
      */
     create() {
         var scene=this;
+        this.phase=1;
         /*Crear layers json*/
 
         this.map= this.make.tilemap({key:'arena'});  
@@ -67,13 +67,12 @@ export default class Level3 extends Phaser.Scene {
 
 
         //const tag=this.anims.createFromAseprite('player_warrior');
-        this.player = new Player(this, 128, 200).setDepth(3);
+        this.player = new Player(this, 195, 160).setDepth(3);
         //this.player2 = new Mage(this, 72, 176);
         //this.orc = new Orc(this, 240, 190).setDepth(2);
         this.enemies=[];
-        this.addEnemy(new Orc(this, 240, 190).setDepth(2));
-        this.addEnemy(new Orc(this, 240, 230).setDepth(2));
-        //this.addEnemy(new GhostSlime(this, 300, 160).setDepth(2));
+        this.spawnNextPhase();
+
 
         this.activeCharacter="warrior";
         var cam=this.cameras.main;
@@ -179,7 +178,10 @@ export default class Level3 extends Phaser.Scene {
     }
 
     initMusic(){
-        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        let combatMusic=this.sound.get('combatMusic')
+        if(!combatMusic)
+            combatMusic=this.sound.add("combatMusic",{loop:true,volume:0.5});
+        if(!combatMusic.isPlaying)combatMusic.play();
         this.boundLimitSound= this.sound.add("boundLimits")
         this.physics.world.on('worldbounds', (body, up, down, left, right) =>
         {   
@@ -238,7 +240,11 @@ export default class Level3 extends Phaser.Scene {
             this.player.onTurnEnd();
         });
         this.events.on("enemy_turn_end",()=>{
-            this.time.delayedCall(300,()=>{this.events.emit("player_turn_start");},[],this);
+            let areTurnsFinished=true;
+            this.enemies.forEach((enemy)=>{if(enemy.stopped==false)areTurnsFinished=false});
+            if(areTurnsFinished){
+                this.time.delayedCall(300,()=>{this.events.emit("player_turn_start");},[],this);
+            }
         });
         this.events.on("player_turn_start",()=>{
             this.textDisplay.setText("Player Turn");
@@ -248,6 +254,9 @@ export default class Level3 extends Phaser.Scene {
             this.player.onTurnStart();
             this.enemies.forEach((enemy)=>{enemy.onTurnEnd()});
             //this.orc.onTurnEnd();
+        });
+        this.events.on("gameOver",()=>{
+            this.scene.start("end");
         });
         //BOTON MOVE
         let botonMove = this.add.image(500, 500, 'Move')
@@ -405,7 +414,7 @@ export default class Level3 extends Phaser.Scene {
             y:550,
             ease:'expo.inout',
             duration: 1000
-        })
+        }) 
     }
 
     async checkEnemyHit(){
@@ -427,6 +436,27 @@ export default class Level3 extends Phaser.Scene {
     deleteEnemy(enemy){
         //this.physics.add.collider(enemy.body, this.wall_layer);
         this.enemies.splice(this.enemies.findIndex(index => index === enemy) , 1)
+    }
+
+    spawnNextPhase(){
+        if(this.phase==undefined)this.phase=1;
+        switch(this.phase){
+            case 1:
+                this.addEnemy(new Orc(this, 260, 160).setDepth(2));
+                this.addEnemy(new Orc(this, 125, 160).setDepth(2));
+            break;
+            case 2:
+                this.addEnemy(new GhostSlime(this, 320, 160,"left").setDepth(2));
+                this.addEnemy(new GhostSlime(this, 195, 32,"down").setDepth(2));
+            break;
+            case 3:
+                this.addEnemy(new Orc(this, 260, 160).setDepth(2));
+                this.addEnemy(new Orc(this, 125, 160).setDepth(2));
+                this.addEnemy(new GhostSlime(this, 320, 160,"left").setDepth(2));
+                this.addEnemy(new GhostSlime(this, 195, 32,"down").setDepth(2));
+            break;
+        }
+        this.phase++;
     }
 
     update(time, delta)
@@ -461,7 +491,8 @@ export default class Level3 extends Phaser.Scene {
             }
 
             if(this.enemies.length==0 && this.turn=="enemy"){
-                this.events.emit("player_turn_start");            
+                this.events.emit("player_turn_start");
+                this.spawnNextPhase();
             }
     }
 }

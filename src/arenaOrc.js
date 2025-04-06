@@ -21,7 +21,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.score = 0;
         //Auxiliares para animaciones
         let escala=1;
-        this.facing="left";
+        this.facing="down";
         this.anims.createFromAseprite('orc2');
         this.scale=escala;
         var tileSize=48;
@@ -61,7 +61,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         // Queremos que el jugador no se salga de los límites del mundo
         this.scene.physics.add.existing(this);
         this.body.setCollideWorldBounds(true,false,false,true);
-        this.body.setBoundsRectangle(this.moveArea);
+        //this.body.setBoundsRectangle(this.moveArea);
 
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
@@ -567,8 +567,10 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this)<dist && this.hasMoved){
             this.body.setVelocityX(0);
             this.body.setVelocityY(0);
-            if(!this.stopped) this.scene.events.emit("enemy_turn_end");
-            this.stopped=true;
+            if(this.stopped==false){
+                this.stopped=true;
+                this.scene.events.emit("enemy_turn_end");
+            } 
         }else{
             this.hasMoved=true;
         }

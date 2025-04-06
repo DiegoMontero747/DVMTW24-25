@@ -24,7 +24,7 @@ export default class Boot extends Phaser.Scene {
     this.load.setPath('/assets/sprites/');
     this.load.image('platform', 'platform.png');
     this.load.image('base', 'base.png');
-    this.load.image('star', 'star.png');
+  
     this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json');
     this.load.aseprite('player_warrior','warrior.png','warrior.json');
     this.load.aseprite('player_mage','mage.png','mage.json');
@@ -32,6 +32,8 @@ export default class Boot extends Phaser.Scene {
     this.load.aseprite('slime2','slime2.png','slime2.json');
     this.load.aseprite('blood','splatter.png','splatter.json');
     this.load.aseprite('KABOOM', 'explosion-sheet.png', 'explosion.json');
+    this.load.aseprite('flamethrower', 'flamethrower.png', 'flamethrower.json');
+
 
     this.load.setPath('/assets/misc/');
     this.load.image('NextTurn', 'NextTurn.png');
@@ -86,10 +88,19 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapTiledJSON("map","sinNombre2.json");
     this.load.tilemapTiledJSON("arena","Arena.json");
     this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
+    //this.load.tilemapTiledJSON("map","Prueba_001.json");
+    this.load.tilemapTiledJSON("mapMundial","mapamundi.json");
 
+
+    this.load.image('mapaPeninsula', 'mapaPeninsula.jpg');
     this.load.image('TilesDungeon', 'Tiles.png');
     this.load.image('PropsA', 'PropsF.png');
     this.load.image('Props', 'Props.png');
+
+
+    this.load.image('casaBoss', 'casaBoss.png');
+    this.load.image('castillo', 'castillo.png');
+    this.load.image('cueva', 'cueva.png');
   }
 
   /**
@@ -98,6 +109,6 @@ export default class Boot extends Phaser.Scene {
    */
   create() {
     this.input.mouse.disableContextMenu();
-    this.scene.start('combatScene');
+    this.scene.start('world');
   }
 }
