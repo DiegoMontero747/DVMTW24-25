@@ -21,9 +21,9 @@ import GameShaderPixel from "./shaders/pixelShader.js";
 const pared=true;
 const suelo=true;
 const puerta=false;
-const objeto=false;
+const objeto=true;
 const decorado=false;
-const colision=false;
+const colision=true;
 
 
 
@@ -41,6 +41,9 @@ export default class LevelDebug extends Phaser.Scene {
      * Creación de los elementos de la escena principal de juego
      */
     create() {
+
+        //this.physics.world.setBounds(0, 0, 100, 100, true, true, true, true);
+
         var scene=this;
         
         /*Crear layers json*/
@@ -64,66 +67,21 @@ export default class LevelDebug extends Phaser.Scene {
                 if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
                     this.wall_layer.setCollisionByExclusion([-1]);
                 }
-                let mask=this.wall_layer.createBitmapMask();
-                mask.invertAlpha=true;
-                this.player.moveAreaGraphics.setMask(mask);
-                let mask2=this.player.attackArea.createGeometryMask();
-                mask2.setInvertAlpha(true);
-                console.log(mask)
-                console.log(mask2)
             }
         }
         
-        if(puerta){
-            this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
-            this.map.createLayer("Puertas", tileset, 0, 0);
-            const doors = this.doors_layer.objects
-            .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
-            .map(obj => {
-                let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-                let door = this.physics.add.staticSprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura); // Crear sprite estático
-                door.setOrigin(0.5,0.5); // Ajustar la posición si es necesario
-                return door;
-            });
-            if (colision){
-                const doorsGroup = this.physics.add.staticGroup(doors);
-            }
-        }
         
         if(decorado){
             this.map.createLayer("Decorado", [props,propsA], 0, 0);
         }
-
-        if(objeto){
-            this.objects_layer = this.map.getObjectLayer("Objetos", tileset)
-            
-            this.objects_layer.objects.forEach(obj => {
-                // Crear el sprite con la textura especificada en Tiled
-                let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-                const sprite = this.physics.add.sprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura);
-                
-                // Ajustar el origen porque Tiled usa la esquina superior izquierda
-                sprite.setOrigin(0.5, 0.5);
-                
-                // Si el campo "collide" es verdadero, activamos colisión
-                if(colision){
-                    if (obj.properties.Collide) {
-                        this.physics.add.existing(sprite);
-                        sprite.body.setImmovable(true);
-                        sprite.body.allowGravity = false;
-                        const objectsGroup = this.physics.add.staticGroup();
-                    }
-                }
-            });
-        }
         
         
         
+        //----Boton de paso de turno
         let botonNextTurn = this.add.image(600, 300, 'NextTurn')
         .setInteractive();
         botonNextTurn.setScrollFactor(0);
         botonNextTurn.setScale(0.8);
-        //BOTON PASO DE TURNO
         botonNextTurn.setDepth(20);
         botonNextTurn.on('pointerdown', () => {
             this.sound.play("woodButton");
@@ -144,6 +102,8 @@ export default class LevelDebug extends Phaser.Scene {
         botonNextTurn.on('pointerout', () => {
             botonNextTurn.clearTint();
         });
+        //----Boton de paso de turno
+
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
         this.turnBanner=this.add.image(screenCenterX,100,"turnBanner").setOrigin(0.5).setScrollFactor(0).setDepth(20).setScale(1.2);
         this.textDisplay=this.add.text(screenCenterX,200,"Combat Start",{strokeThickness:3,stroke:"rgb(65, 32, 5)",color:"rgb(164, 193, 212)"}).setOrigin(0.5).setScrollFactor(0).setDepth(20);
@@ -196,6 +156,8 @@ export default class LevelDebug extends Phaser.Scene {
         botonMove.on('pointerout', () => {
             botonMove.clearTint();
         });
+
+        //----Boton de ataque
         
         let botonAttack = this.add.image(550, 300, 'Attack')
         .setInteractive();
@@ -220,7 +182,10 @@ export default class LevelDebug extends Phaser.Scene {
         botonAttack.on('pointerout', () => {
             botonAttack.clearTint();
         });
+        
+        //----Boton de ataque
 
+        //----Boton de menu
         let botonMenu = this.add.image(640, 300, 'Menu')
         .setInteractive();
         botonMenu.setScrollFactor(0);
@@ -264,7 +229,7 @@ export default class LevelDebug extends Phaser.Scene {
             botonMenu.clearTint();
         });
         
-        
+        //----Boton de menu
         
         //Stats UI TODO -> pasar a container y clase propia
         this.statsUI={
@@ -273,58 +238,84 @@ export default class LevelDebug extends Phaser.Scene {
             portrait:this.add.image(367, 350, 'warriorPortrait').setScrollFactor(0).setDepth(20)
         };
         
-        /* this.wall_layer.renderDebug(this.add.graphics(),
-        {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
-            faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
-            }); */
+           
+           
+        //const tag=this.anims.createFromAseprite('player_warrior');
+        this.player = new Player(this, this.map.widthInPixels/2, this.map.heightInPixels/2).setDepth(1);
+        //this.player2 = new Mage(this, 72, 176);
+        this.orc = new Orc(this, 240, 190).setDepth(1);
+        
+        this.activeCharacter="warrior";
+        var cam=this.cameras.main;
+        this.showTurnMsg();
+        cam.startFollow(this.player);
+        cam.setBounds(0,0);
+        let zoom_cam=3;
+        cam.setZoom(zoom_cam);
+      
+        let mask=this.wall_layer.createBitmapMask();
+        mask.invertAlpha=true;
+        this.player.moveAreaGraphics.setMask(mask);
+        let mask2=this.player.attackArea.createGeometryMask();
+        mask2.setInvertAlpha(true);
+        console.log(mask)
+        console.log(mask2)
+        
+        if (colision && pared){
+            this.physics.add.collider(this.player.body, this.wall_layer);
+            this.physics.add.collider(this.orc.body, this.wall_layer);
+        }
+
+
+        if(objeto){
+            this.objects_layer = this.map.getObjectLayer("Objetos", tileset)
             
-            /* Creación de cruadicula que sigue al cursor,
-            su movimiento se gestiona en update
-            */
-           
-           
-           
-           //const tag=this.anims.createFromAseprite('player_warrior');
-           this.player = new Player(this, this.map.widthInPixels/2, this.map.heightInPixels/2).setDepth(1);
-           //this.player2 = new Mage(this, 72, 176);
-           this.orc = new Orc(this, 240, 190).setDepth(1);
-           
-           this.activeCharacter="warrior";
-           var cam=this.cameras.main;
-           this.showTurnMsg();
-           cam.startFollow(this.player);
-           cam.setBounds(0,0);
-           cam.setZoom(3);
-           
-           if (colision && pared){
-               this.physics.add.collider(this.player.body, this.wall_layer);
-               this.physics.add.collider(this.orc.body, this.wall_layer);
-            }
-            if(colision && objeto){
-                this.physics.add.collider(this.player, objectsGroup);
-            }
-            if(colision && puerta){
-                this.physics.add.collider(this.player.body, doorsGroup);
+            this.objects_layer.objects.forEach(obj => {
+                // Crear el sprite con la textura especificada en Tiled
+                let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
+                const sprite = this.physics.add.sprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura);
                 
+                // Ajustar el origen porque Tiled usa la esquina superior izquierda
+                sprite.setOrigin(0.5, 0.5);
+                
+                // Si el campo "collide" es verdadero, activamos colisión
+                if(colision){
+                    if (obj.properties.Collide) {
+                        this.physics.add.existing(sprite);
+                        sprite.body.setImmovable(true);
+                        sprite.body.allowGravity = false;
+                        const objectsGroup = this.physics.add.staticGroup();
+                        this.physics.add.collider(this.player, objectsGroup);
+                    }
+                }
+            });
+        }
+
+        if(puerta){
+            this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
+            this.map.createLayer("Puertas", tileset, 0, 0);
+            const doors = this.doors_layer.objects
+            .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
+            .map(obj => {
+                let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
+                let door = this.physics.add.staticSprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura); // Crear sprite estático
+                door.setOrigin(0.5,0.5); // Ajustar la posición si es necesario
+                return door;
+            });
+            if(colision){
+                const doorsGroup = this.physics.add.staticGroup(doors);
+                this.physics.add.collider(this.player.body, doorsGroup);
             }
+        }
             
             
-            this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
+        this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
             
-            this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
-        //this.physics.world.enable(this.player.attackArea);
-        //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
-        /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
-        const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
-        graphics.strokeRectShape(this.attackArea);
-        // Util para entrar en combate */
+        this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
         this.physics.add.overlap(this.player.attackArea, this.orc.body,()=>{});
         
         this.physics.add.existing(this.player.attackArea);
         this.physics.add.existing(this.orc.attackArea);
-        //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
         
         this.initShaders();
         
@@ -342,7 +333,8 @@ export default class LevelDebug extends Phaser.Scene {
         this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
         this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
         
-        
+        this.input.keyboard.createCombo('zom',{resetOnMatch:true}).comboName='zom';
+        this.input.keyboard.createCombo('moz',{resetOnMatch:true}).comboName='moz';
         
         this.input.keyboard.on('keycombomatch', (combo) => {
             switch(combo.comboName){
@@ -369,6 +361,14 @@ export default class LevelDebug extends Phaser.Scene {
                 break;
                 case 'lights':
                     this.setLights();
+                break;
+                case 'zom':
+                    zoom_cam*=1.5;
+                    cam.setZoom(zoom_cam);
+                break;
+                case 'moz':
+                    zoom_cam/=1.5;
+                    cam.setZoom(zoom_cam);
                 break;
             }
 
@@ -398,27 +398,11 @@ export default class LevelDebug extends Phaser.Scene {
             this.orc.playAttack();
         })
         this.turn="player";
-
-     /*   if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
-        this.boundLimitSound= this.sound.add("boundLimits")
-        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
-        {   
-            if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
-            console.log("collide");
-            if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
-                this.cameras.main.shake(300,0.0002);
-                this.boundLimitSound.play({volume:0.7});
-                this.boundLimitSoundTimeOut=true;
-                this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
-            } 
-        });
-        */
-        //this.player.moveAreaGraphics.setMask(mask2);
     }
 
     initShaders(){
         let cam = this.cameras.main;
-        this.setCrtShader();
+        //this.setCrtShader();
     }
 
     setCrtShader(){
@@ -479,18 +463,11 @@ export default class LevelDebug extends Phaser.Scene {
     update(time, delta)
     {
         const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
-        //Movimiento del cuadro marcador siguiendo al raton
-        /* condenada centrada en el raton
-        const pointerTileX = this.map.worldToTileX(worldPoint.x)-1;
-        const pointerTileY = this.map.worldToTileY(worldPoint.y)-1;
-        */  
+        
         // Movimiento del cuadro marcador siguiendo la coordenada por grid del ratón
             const gridOffsetX=0, gridOffsetY=-1, mouseOffsetX=-1,mouseOffsetY=0, snapInterval=3;
             
             //Mueve a cordenada
-            /*
-            this.pointerGridX= this.map.tileToWorldX(pointerTileX);
-            this.pointerGridY = this.map.tileToWorldY(pointerTileY);*/
             this.pointerGridX= worldPoint.x;
             this.pointerGridY = worldPoint.y;
 

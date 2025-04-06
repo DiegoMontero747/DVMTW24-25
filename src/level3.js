@@ -1,7 +1,7 @@
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
 import Orc from './orc.js';
-//import Caja from './objetos/caja.js';
+import GhostSlime from './ghostSlime.js';
 import Porton from './objetos/porton.js';
 import Cerradura from './objetos/cerradura.js';
 import Cofre from './objetos/cofre.js';
@@ -48,15 +48,17 @@ export default class Level3 extends Phaser.Scene {
         this.map= this.make.tilemap({key:'map'});  
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
         const props=this.map.addTilesetImage('PropsA','PropsA');
-        const propsA=this.map.addTilesetImage('Props','Objetos');
+        const propsA=this.map.addTilesetImage('Objetos','Props');
         //const floor_layer = this.map.createLayer("floor", tileset, 0, 0);
         //this.wall_layer = this.map.createLayer("walls", tileset, 0, 0);
         //this.wall_layer.setCollisionByProperty({collides:true});
         this.floor_layer = this.map.createLayer("Suelo", tileset, 0, 0);
         this.wall_layer = this.map.createLayer("Paredes", tileset, 0, 0);
-        this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
+
+        //this.doors_layer = this.map.getObjectLayer("Puertas", tileset);
         this.objects_layer = this.map.getObjectLayer("Objetos", tileset);
         this.objetosConColision = this.physics.add.group();
+        this.objetosDestructibles = this.physics.add.group();
 
         if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
@@ -94,7 +96,6 @@ export default class Level3 extends Phaser.Scene {
             door.setOrigin(0.5,0.5); // Ajustar la posición si es necesario
             return door;
         });
-
         const doorsGroup = this.physics.add.staticGroup(doors);*/
 
 
@@ -104,11 +105,11 @@ export default class Level3 extends Phaser.Scene {
             collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
             faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
         }); */
-        this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
+        this.physics.world.setBounds(0,0,this.map.widthInPixels, );
 
 
         //const tag=this.anims.createFromAseprite('player_warrior');
-        this.player = new Player(this, 40, 64).setDepth(3);
+        this.player = new Player(this, this.map.widthInPixels/2, this.map.heightInPixels/2).setDepth(3);
         //this.player2 = new Mage(this, 72, 176);  "x":399.5,"y":57
         this.orc = new Orc(this, 410, 60).setDepth(2);
 
@@ -164,8 +165,9 @@ export default class Level3 extends Phaser.Scene {
         this.trampas = this.physics.add.group();
         this.puertas = this.physics.add.group()
 
-        this.crearObjetosDesdeTiled(this.doors_layer);
+        //this.crearObjetosDesdeTiled(this.doors_layer);
         this.crearObjetosDesdeTiled(this.objects_layer);
+        console.log("Objetos destructibles:", this.objetosDestructibles.getChildren());
 
 
         this.initUI();
@@ -373,7 +375,7 @@ export default class Level3 extends Phaser.Scene {
     }
 
     initUI(){
-        /* let botonNextTurn = this.add.image(600, 500, 'NextTurn')
+        let botonNextTurn = this.add.image(600, 500, 'NextTurn')
         .setInteractive();
         botonNextTurn.setScrollFactor(0);
         botonNextTurn.setScale(0.8);
@@ -528,7 +530,7 @@ export default class Level3 extends Phaser.Scene {
         });
         botonMenu.on('pointerout', () => {
             botonMenu.clearTint();
-        }); */
+        });
 
         this.statsUI={
             UIbg:this.add.image(410, 550, 'StatsBar').setScrollFactor(0).setDepth(20),
@@ -630,42 +632,67 @@ export default class Level3 extends Phaser.Scene {
             const adjustedY = y + height / 2;
 
             let nuevoObjeto = null;
+            let destructible = false;
 
             switch (name) {
                 case "Llave":
                     nuevoObjeto = new Llave(this, adjustedX, adjustedY);
-                    //this.physics.add.overlap(this.jugador, nuevoObjeto, () => nuevoObjeto.interactuar(), null, this);
+                    nuevoObjeto.name="llave";
+                    break;
+                case "orc":
+                    nuevoObjeto = new Orc(this, adjustedX, adjustedY);
+                    destructible = true;
+                    nuevoObjeto.name="orco";
+                    break;
+                case "ghostslime":
+                    nuevoObjeto = new GhostSlime(this, adjustedX, adjustedY);
+                    destructible = true;
+                    nuevoObjeto.name="slime";
                     break;
                 case "Puerta":
                     nuevoObjeto = new Puerta(this, adjustedX, adjustedY);
                     this.puertas.add(nuevoObjeto);
+                    nuevoObjeto.name="puerta";
                     break;
                 case "Caja":
                     nuevoObjeto = new Caja(this, adjustedX, adjustedY);
+                    destructible = true;
+                    nuevoObjeto.name="caja";
                     break;
                 case "TNT":
                     nuevoObjeto = new TNT(this, adjustedX, adjustedY);
+                    destructible = true;
                     break;
                 case "Porton":
                     nuevoObjeto = new Porton(this, adjustedX, adjustedY);
                     this.puertas.add(nuevoObjeto);
+                    nuevoObjeto.name="porton";
                     break;
                 case "Cofre":
                     nuevoObjeto = new Cofre(this, adjustedX, adjustedY);
+                    nuevoObjeto.name="cofre";
                     break;
                 case "Palanca":
                     nuevoObjeto = new Palanca(this, adjustedX, adjustedY);
+                    nuevoObjeto.name="palanca";
                     break;
                 case "Cerradura":
                     nuevoObjeto = new Cerradura(this, adjustedX, adjustedY);
+                    nuevoObjeto.name="cerradura";
                     break;
                 case "Trampa":
                     nuevoObjeto = new Trampa(this, adjustedX, adjustedY);
                     this.trampas.add(nuevoObjeto);
+                    nuevoObjeto.name="trampa";
                     break;
                 default:
                     console.warn(`Objeto desconocido en Tiled: ${name}`);
 
+            }
+            console.log(nuevoObjeto.name)
+            if(destructible){
+                this.physics.world.enable(nuevoObjeto);
+                this.objetosDestructibles.add(nuevoObjeto)
             }
             if(nuevoObjeto != null && nuevoObjeto.colision)
                 this.objetosConColision.add(nuevoObjeto)

@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-
+import gen_mazmorra from './gen_mazmorra.js';
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
  * Esta escena se puede mejorar añadiendo una imagen del juego y una 
@@ -85,14 +85,19 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapCSV('map_walls', 'movetest_walls.csv');*/
 
     //Carga .JSON (formato mas comodo en codigo)
-    this.load.tilemapTiledJSON("map","sinNombre2.json");
-    this.load.tilemapTiledJSON("arena","Arena.json");
-    this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
-    //this.load.tilemapTiledJSON("map","Prueba_001.json");
-    this.load.tilemapTiledJSON("mapMundial","mapamundi.json");
-
 
     this.load.image('mapaPeninsula', 'mapaPeninsula.jpg');
+    this.load.tilemapTiledJSON("mapOriginal","sinNombre2.json");
+    this.load.tilemapTiledJSON("arena","Arena.json");
+    this.load.tilemapTiledJSON("mapaMundial","sinNombre2.json");
+
+    
+    //let dato = JSON.parse(texto);
+    //this.load.tilemapTiledJSON("map","Prueba_001.json");
+    let mazmorra=gen_mazmorra();
+    console.log(mazmorra);
+    this.load.tilemapTiledJSON("map",mazmorra);
+    
     this.load.image('TilesDungeon', 'Tiles.png');
     this.load.image('PropsA', 'PropsF.png');
     this.load.image('Props', 'Props.png');
@@ -102,7 +107,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('castillo', 'castillo.png');
     this.load.image('cueva', 'cueva.png');
   }
-
+  
   /**
    * Creación de la escena. En este caso, solo cambiamos a la escena que representa el
    * nivel del juego

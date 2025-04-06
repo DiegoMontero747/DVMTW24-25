@@ -29,12 +29,13 @@ let config = {
     pixelArt: true,
     scene: [Boot,world, Level,Level2,Level3,combatScene,LevelDebug, End],
 
+
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
     physics: {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
         }
     },
     pipeline: [GameShaderCRT,GameShaderRetro,GameShaderGBA,GameShaderPixel]

@@ -587,6 +587,33 @@ void imprimeVector(const vector<coordenada>& c) {
     cout << "}";
 }
 
+void imprimeVector_Json_Edition(const vector<coordenada>& c) {
+    cout << "\t[";
+    for (int i = 0; i < c.size(); i++) {
+        cout << "new Coordenada(" << c[i].y << ", " << c[i].x << ")";
+        if (i < c.size() - 1) {
+            cout << ",";
+        }
+    }
+    cout << "]";
+}
+
+
+void imprimeJSON_Json_Edition(const sala& sala_aux) {
+    cout << "{\n\ty:" << sala_aux.tamy << ",\n\tx:" << sala_aux.tamx << ",\n";
+    cout << "\tpuerta:"; imprimeVector_Json_Edition(sala_aux.puerta);cout << ",//puertas\n";
+    cout << "\tobstaculo:";imprimeVector_Json_Edition(sala_aux.obstaculo);cout << ",//obstaculos\n";
+    cout << "\tpared:";imprimeVector_Json_Edition(sala_aux.pared);cout << ",//paredes\n";
+    cout << "\tenemigo_melee:";imprimeVector_Json_Edition(sala_aux.enemigo_melee);cout << ",//enemigos melee\n";
+    cout << "\tenemigo_ranged:";imprimeVector_Json_Edition(sala_aux.enemigo_ranged);cout << ",//enemigos ranged\n";
+    cout << "\texplosivo:";imprimeVector_Json_Edition(sala_aux.explosivo);cout << ",//explosivos\n";
+    cout << "\ttrampa:";imprimeVector_Json_Edition(sala_aux.trampa);cout << ",//trampas\n";
+    cout << "\tcura:";imprimeVector_Json_Edition(sala_aux.cura);cout << ",//curas\n";
+    cout << "\trecompensa:";imprimeVector_Json_Edition(sala_aux.recompensa);cout << ",//recompensas\n";
+    cout << "\tsalida:";imprimeVector_Json_Edition(sala_aux.salida);cout << "//salidas mazmorra\n";
+    cout << "\n},\n";
+}
+
 void imprimeJSON(const sala& sala_aux) {
     cout << "{\n\t" << sala_aux.tamy << ",\n\t" << sala_aux.tamx << ",\n";
     imprimeVector(sala_aux.puerta);
@@ -1021,7 +1048,7 @@ void imprimeVectorJSON(const sala& s) {
             }
             else {
                 cout << mapa_paredes[fila][col];
-                
+
             }
             if (fila != (s.tamy * 2) - 1 || col != (s.tamx * 2) - 1) {
                 cout << ",";
@@ -1059,19 +1086,19 @@ void CREARJSON(const sala& s) {
     printf("\n\"tileheight\" : %d,", tam_tile);
     printf("\n\"tilesets\" : [{");
 
-    
-    printf("\n\"columns\": %d,",25);
-    printf("\n\"firstgid\": %d," , 1);
+
+    printf("\n\"columns\": %d,", 25);
+    printf("\n\"firstgid\": %d,", 1);
     printf("\n\"image\": \"..\/sprites\/Pixel Crawler - FREE - 1.8\/Environment\/Dungeon Prison\/Assets\/Tiles.png\",");
-    printf("\n\"imageheight\": %d," , 400);
-    printf("\n\"imagewidth\": %d," , 400);
-    printf("\n\"margin\": %d," , 0);
+    printf("\n\"imageheight\": %d,", 400);
+    printf("\n\"imagewidth\": %d,", 400);
+    printf("\n\"margin\": %d,", 0);
     printf("\n\"name\": \"TilesDungeon\",");
-    printf("\n\"spacing\": %d," , 0);
-    printf("\n\"tilecount\": %d," , 625);
-    printf("\n\"tileheight\": %d," , 16);
+    printf("\n\"spacing\": %d,", 0);
+    printf("\n\"tilecount\": %d,", 625);
+    printf("\n\"tileheight\": %d,", 16);
     printf("\n\"tilewidth\": %d", 16);
-    
+
     printf("\n}],\n\"tilewidth\" :%d,", tam_tile);
     printf("\n\"type\" : \"map\",");
     printf("\n\"version\" : \"1.10\",");
@@ -1355,14 +1382,14 @@ sala traduce_sala() {
 }
 
 sala traduce_mazmorra_a_sala(vector<vector<char>>m) {
-    
-    int x=m[0].size(), y=m.size();
+
+    int x = m[0].size(), y = m.size();
     sala sala_aux;
     sala_aux.tamx = x;
     sala_aux.tamy = y;
     for (int i = 0; i < y; i++) {
         for (int j = 0; j < x; j++) {
-            char c= m[i][j];
+            char c = m[i][j];
             /*
             c_pared = '#',
             c_puerta = 'P',
@@ -1418,7 +1445,7 @@ sala traduce_mazmorra_a_sala(vector<vector<char>>m) {
 int main() {
 
 
-    int prueba = 1;
+    int prueba = 2;
 
     if (prueba == 0) {
         for (int i = 0; i < salas_vector.size(); i++) {
@@ -1456,7 +1483,15 @@ int main() {
         } while (c != '0');
 
     }
+    if (prueba == 2) {
+        for (int i = 0;i < salas_vector.size();i++) { //iteramos entre tamaño salas
+            cout << "-------------------TAMAÑO SALA " << i << "-------------------------------------\n";
 
+            for (int j = 0;j < salas_vector[i].size();j++) {//iteramos entre salas
+                imprimeJSON_Json_Edition(salas_vector[i][j]);
+            }
+        }
+    }
 
     /*
     while (0)pintaSala(traduce_sala());
