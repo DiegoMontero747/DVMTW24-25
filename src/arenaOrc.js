@@ -36,6 +36,10 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.playerPreview.setAlpha(0.6);
         this.container.add(this.playerPreview);
         this.container.setVisible(false);
+        this.colision = true;
+        
+        this.rangoMovimiento = 6*16;
+        this.rangoDetectar = 8*16;
         //let color=this.postFX.addColorMatrix();
         //color.hue(45*5,true);
         //Auxiliares de movimiento grid con fisicas
@@ -133,8 +137,21 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         if(this.scene.physics.overlap(this.scene.attackArea, this.body))this.onHit(this.scene.attackEffect.dmg)
     }
 
+    awaitStop(){
+        this.scene.time.delayedCall(2500,()=>{
+            this.body.setVelocityX(0);
+            this.body.setVelocityY(0);
+            
+            this.stopped=true;
+            this.hasMoved=true;
+
+            this.scene.events.emit("enemy_turn_end");
+        },[],this);
+    }
+
     onHit(dmg){
-        this.scene.sound.play("hitSound");
+        if(this.hp>0){
+            this.scene.sound.play("hitSound");
         this.scene.cameras.main.shake(300,0.001);
         this.createBlood();
         this.hp-=dmg;
@@ -174,6 +191,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 }
             });
         }
+        }
+        
     }
 
     onDeath(){
@@ -528,7 +547,15 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.dirAttackArea[this.facing].setVisible(false);
         this.stopped=false;
         this.hasMoved=false;
-        this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),100,2000);
+        if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this) <= this.rangoDetectar){
+            this.awaitStop();
+            this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),100,2000);
+        } else {
+            this.stopped=true;
+            this.hasMoved=true;
+
+            this.scene.events.emit("enemy_turn_end");
+        }
     }
 
     onTurnEnd(){
@@ -592,6 +619,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         super.preUpdate(t, dt);
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
+        
         this.stopNearPlayer();
         this.setAnim();
         this.setAttackArea();

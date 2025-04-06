@@ -1,6 +1,6 @@
 import Player from './player_warrior.js';
 import Mage from './player_mage.js';
-import Orc from './orc.js';
+import Orc from './arenaOrc.js';
 import GhostSlime from './ghostSlime.js';
 import Porton from './objetos/porton.js';
 import Cerradura from './objetos/cerradura.js';
@@ -44,6 +44,8 @@ export default class Level3 extends Phaser.Scene {
         var scene=this;
         /*Crear layers json*/
         this.keyFound = false;
+
+        this.enemies=[];
 
         this.map= this.make.tilemap({key:'map'});  
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
@@ -111,7 +113,6 @@ export default class Level3 extends Phaser.Scene {
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, this.map.widthInPixels/2, this.map.heightInPixels/2).setDepth(3);
         //this.player2 = new Mage(this, 72, 176);  "x":399.5,"y":57
-        this.orc = new Orc(this, 410, 60).setDepth(2);
 
         this.activeCharacter="warrior";
         this.player.setFreeMovement(true);
@@ -125,9 +126,8 @@ export default class Level3 extends Phaser.Scene {
         //this.physics.add.collider(this.player, objectsGroup);
         //this.physics.add.collider(this.player.body, doorsGroup);
 
-        this.physics.add.collider(this.orc.body, this.wall_layer);
 
-        /* Creación de cruadicula que sigue al cursor,
+        /* Creación de cruadicula que sigue al cursor
             su movimiento se gestiona en update
         */
 
@@ -138,20 +138,8 @@ export default class Level3 extends Phaser.Scene {
         const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
         graphics.strokeRectShape(this.attackArea);
         // Util para entrar en combate */
-         this.physics.add.overlap(this.player.body, this.orc.body,()=>{
-            //this.sound.get('combatMusic').stop();
-            this.add.tween({
-                targets: this.cameras.main.postFX.addPixelate(0),
-                duration: 500,
-                amount: 40,
-                onComplete: () => {
-                    this.cameras.main.fadeOut(200);
-                    this.scene.start('combatScene');
-                }
-            })    
-         });
+         
 
-        //this.physics.add.existing(this.orc.attackArea);
         //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
 
 /* this.wall_layer.renderDebug(this.add.graphics(),
@@ -179,14 +167,12 @@ export default class Level3 extends Phaser.Scene {
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer);
         this.physics.add.collider(this.player.body, this.objetosConColision);
-        this.physics.add.collider(this.orc.body, this.objetosConColision);
 
         this.physics.add.collider(this.player.body, this.trampas, () => {
             this.player.onHit(2);
             this.player.x -= 16;
         });
 
-        this.physics.add.collider(this.orc.body, this.wall_layer);
 
         if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
         this.boundLimitSound= this.sound.add("boundLimits")
@@ -208,29 +194,15 @@ export default class Level3 extends Phaser.Scene {
             console.log("player end turn");
         });
 
-        this.player.on("player_attack",() =>{
-            console.log("player ataca");
-            this.orc.onHit(1);
-        });
-
-        this.orc.on("enemy_End_Turn",function(){
-            console.log("enemy end turn");
-        })
-
-        this.orc.on("enemy_hitted",()=>{
-            console.log("orc hitted");
-            this.events.emit("enemy_turn_start");            
-            this.player.playAttack();
-        })
-        this.player.on("player_hitted",()=>{
-            console.log("player hitted");
-            this.events.emit("player_turn_start");         
-            this.orc.playAttack();
-        })
         this.turn="player";
         this.player.onTurnStart();
 
         this.initMusic();
+    }
+
+    deleteEnemy(enemy){
+        //this.physics.add.collider(enemy.body, this.wall_layer);
+        this.enemies.splice(this.enemies.findIndex(index => index === enemy) , 1)
     }
 
     playCollideEffect(){
@@ -417,8 +389,15 @@ export default class Level3 extends Phaser.Scene {
             if(displayTween.isActive)displayTween.restart();
             else displayTween.play();
             this.turn="enemy";
-            this.orc.onTurnStart();
+            this.enemies.forEach((enemy)=>{enemy.onTurnStart()});
             this.player.onTurnEnd();
+        });
+        this.events.on("enemy_turn_end",()=>{
+            let areTurnsFinished=true;
+            this.enemies.forEach((enemy)=>{if(enemy.stopped==false)areTurnsFinished=false});
+            if(areTurnsFinished){
+                this.time.delayedCall(300,()=>{this.events.emit("player_turn_start");},[],this);
+            }
         });
         this.events.on("player_turn_start",()=>{
             this.textDisplay.setText("Player Turn");
@@ -426,7 +405,11 @@ export default class Level3 extends Phaser.Scene {
             else displayTween.play();            
             this.turn="player"; 
             this.player.onTurnStart();
-            this.orc.onTurnEnd();
+            this.enemies.forEach((enemy)=>{enemy.onTurnEnd()});
+            //this.orc.onTurnEnd();
+        });
+        this.events.on("gameOver",()=>{
+            this.scene.start("end");
         });
         //BOTON MOVE
         let botonMove = this.add.image(500, 500, 'Move')
@@ -443,7 +426,6 @@ export default class Level3 extends Phaser.Scene {
                 duration: 1000,
             });
             if(this.turn=="player"){this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)} 
-            else if(this.turn=="enemy"){this.orc.moveAreaGraphics.setVisible(!this.orc.moveAreaGraphics.visible)} 
         });
         botonMove.on('pointerover', () => {
             this.sound.play("touchUISound");
@@ -472,12 +454,6 @@ export default class Level3 extends Phaser.Scene {
                     this.player.showAttackControls();
                 else
                 this.player.attackArea.setVisible(!this.player.attackArea.visible)
-            } 
-            else if(this.turn=="enemy"){
-                if(this.orc.attackAreaType=="directional")
-                    this.orc.showAttackControls();
-                else
-                this.orc.attackArea.setVisible(!this.orc.attackArea.visible)
             } 
         });
         botonAttack.on('pointerover', () => {
@@ -544,6 +520,20 @@ export default class Level3 extends Phaser.Scene {
         this.setCrtShader();
     }
 
+    async checkEnemyHit(){
+        //this.orc.checkHit();
+        this.enemies.forEach((enemy)=>{enemy.checkHit()});
+    }
+
+    addEnemy(enemy){
+        this.enemies.push(enemy);
+        this.physics.add.collider(enemy.body, this.wall_layer);
+    }
+    
+    async checkPlayerHit(area){
+        this.player.checkHit(area);
+    }
+
     setCrtShader(){
         let cam = this.cameras.main;
         cam.setPostPipeline(GameShaderCRT);
@@ -592,7 +582,6 @@ export default class Level3 extends Phaser.Scene {
     setLights(){
         this.wall_layer.setPipeline("Light2D")
         this.floor_layer.setPipeline("Light2D")
-        this.orc.setPipeline("Light2D")
         this.player.setPipeline("Light2D")
         this.lights.enable().setAmbientColor(0x000000);
         this.playerLight = this.lights.addLight(240, 190, 200).setColor(0xffffff).setIntensity(1.2);
@@ -616,7 +605,6 @@ export default class Level3 extends Phaser.Scene {
     }
 
     async checkHits(){
-        this.orc.checkHit();
         this.player.checkHit();
     }         
     crearObjetosDesdeTiled(layer) {
@@ -643,11 +631,13 @@ export default class Level3 extends Phaser.Scene {
                     nuevoObjeto = new Orc(this, adjustedX, adjustedY);
                     destructible = true;
                     nuevoObjeto.name="orco";
+                    this.addEnemy(nuevoObjeto);
                     break;
                 case "ghostslime":
                     nuevoObjeto = new GhostSlime(this, adjustedX, adjustedY);
                     destructible = true;
                     nuevoObjeto.name="slime";
+                    this.addEnemy(nuevoObjeto);
                     break;
                 case "Puerta":
                     nuevoObjeto = new Puerta(this, adjustedX, adjustedY);
@@ -689,7 +679,7 @@ export default class Level3 extends Phaser.Scene {
                     console.warn(`Objeto desconocido en Tiled: ${name}`);
 
             }
-            console.log(nuevoObjeto.name)
+            //console.log(nuevoObjeto.name)
             if(destructible){
                 this.physics.world.enable(nuevoObjeto);
                 this.objetosDestructibles.add(nuevoObjeto)
@@ -727,9 +717,6 @@ export default class Level3 extends Phaser.Scene {
             if(this.turn=="player"){
                 this.activeCharacter="warrior";
                 this.cameras.main.startFollow(this.player);                
-            }else if(this.turn=="enemy"){   
-                this.activeCharacter="orc";
-                this.cameras.main.startFollow(this.orc);
             }
             if(this.playerLight){
                 this.playerLight.x=this.player.x;

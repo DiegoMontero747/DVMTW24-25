@@ -14,7 +14,7 @@ export default class World extends Phaser.Scene {
 
     create() {
         // Crear layers del mapa
-        this.map = this.make.tilemap({ key: 'mapMundial' });
+        this.map = this.make.tilemap({ key: 'mapaMundial' });
         const tileset = this.map.addTilesetImage('mapaPeninsula', 'mapaPeninsula');
 
         this.wall_layer = this.map.createLayer("Pared", tileset, 0, 0);

@@ -16,8 +16,8 @@ export default class Trampa extends Objeto {
         }
 
         // Calcula la dirección en la que se empujará al objeto
-        const empujeX = (objeto.x - this.x) * 4; // Lo aleja en la dirección contraria
-        const empujeY = (objeto.y - this.y) * 4;
+        const empujeX = (objeto.x - this.x) * 2; // Lo aleja en la dirección contraria
+        const empujeY = (objeto.y - this.y) * 2;
 
         // Aplica la fuerza de empuje
         objeto.setVelocity(empujeX, empujeY);

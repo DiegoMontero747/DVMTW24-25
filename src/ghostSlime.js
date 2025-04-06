@@ -36,6 +36,9 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.playerPreview.setAlpha(0.6);
         this.container.add(this.playerPreview);
         this.container.setVisible(false);
+        this.rangoMovimiento = 6*16;
+        this.rangoDetectar =8*16;
+        this.colision = true;
         //let color=this.postFX.addColorMatrix();
         //color.hue(45*5,true);
         //Auxiliares de movimiento grid con fisicas
@@ -135,45 +138,47 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
     }
 
     onHit(dmg){
-        this.scene.sound.play("hitSound");
-        this.scene.cameras.main.shake(300,0.001);
-        this.createBlood();
-        this.hp-=dmg;
-        this.scene.changeStatsUI("orc",this.hp,this.maxHp);
-        let offsetY=Math.random()*(15)+5
-        let offsetX=Math.random()*(35)-20
-        console.log("Done "+dmg+" dmg points, orc has "+this.hp+" hp left");
-        let hitText=this.scene.add.text(this.x,this.y-offsetY,"-"+dmg).setDepth(this.depth+1);
-        const hitTextAnim=this.scene.tweens.add({
-            targets: [hitText],
-            scale: 0.2,
-            x:this.x+offsetX,
-            ease: 'linear',
-            duration: 1000,
-            delay: this.scene.tweens.stagger(100),
-            onComplete:(tween, targets, param)=>{
-                hitText.destroy();
-            }
-        });
-        this.setTintFill(0xffffff);
-        this.scene.time.addEvent({
-            delay:130,
-            callbackScope:this,
-            callback:()=>{this.clearTint()}
-        })
-        if(this.hp<=0){ console.log("Ripperoni in peperonni");
-            this.scene.sound.play("wilhelm");
-            const deadAnim=this.scene.tweens.add({
-                targets: [this],
+        if(this.hp > 0){
+            this.scene.sound.play("hitSound");
+            this.scene.cameras.main.shake(300,0.001);
+            this.createBlood();
+            this.hp-=dmg;
+            this.scene.changeStatsUI("orc",this.hp,this.maxHp);
+            let offsetY=Math.random()*(15)+5
+            let offsetX=Math.random()*(35)-20
+            console.log("Done "+dmg+" dmg points, orc has "+this.hp+" hp left");
+            let hitText=this.scene.add.text(this.x,this.y-offsetY,"-"+dmg).setDepth(this.depth+1);
+            const hitTextAnim=this.scene.tweens.add({
+                targets: [hitText],
                 scale: 0.2,
-                angle:-190,
+                x:this.x+offsetX,
                 ease: 'linear',
-                duration: 500,
+                duration: 1000,
                 delay: this.scene.tweens.stagger(100),
                 onComplete:(tween, targets, param)=>{
-                    this.onDeath();
+                    hitText.destroy();
                 }
             });
+            this.setTintFill(0xffffff);
+            this.scene.time.addEvent({
+                delay:130,
+                callbackScope:this,
+                callback:()=>{this.clearTint()}
+            })
+            if(this.hp<=0){ console.log("Ripperoni in peperonni");
+                this.scene.sound.play("wilhelm");
+                const deadAnim=this.scene.tweens.add({
+                    targets: [this],
+                    scale: 0.2,
+                    angle:-190,
+                    ease: 'linear',
+                    duration: 500,
+                    delay: this.scene.tweens.stagger(100),
+                    onComplete:(tween, targets, param)=>{
+                        this.onDeath();
+                    }
+                });
+            }
         }
     }
 
@@ -478,6 +483,18 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
     }
 
+    awaitStop(){
+        this.scene.time.delayedCall(2500,()=>{
+            this.body.setVelocityX(0);
+            this.body.setVelocityY(0);
+            
+            this.stopped=true;
+            this.hasMoved=true;
+
+            this.scene.events.emit("enemy_turn_end");
+        },[],this);
+    }
+
     /**
      * Gestiona movimiento de teletransporte
      */
@@ -534,14 +551,25 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.stopped=false;
         this.hasMoved=false;
         //this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),100,2000);
-        if(this.facing=="left" || this.facing=="right"){
-            this.objectiveX=this.x;
-            this.objectiveY=this.scene.player.y;
-        }else if(this.facing=="up" || this.facing=="down"){
-            this.objectiveX=this.scene.player.x;
-            this.objectiveY=this.y;
+        if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this) <= this.rangoDetectar){
+            this.awaitStop();
+            if(this.facing=="left" || this.facing=="right"){
+                this.objectiveX=this.x;
+                this.objectiveY=this.scene.player.y;
+            }else if(this.facing=="up" || this.facing=="down"){
+                this.objectiveX=this.scene.player.x;
+                this.objectiveY=this.y;
+            }
+            this.scene.physics.moveTo(this,this.objectiveX,this.objectiveY,100,2000);
+        } else {
+            this.stopped=true;
+            this.hasMoved=true;
+
+            this.scene.events.emit("enemy_turn_end");
         }
-        this.scene.physics.moveTo(this,this.objectiveX,this.objectiveY,100,2000);
+        
+        
+        
     }
     stopNearObjective(){
         if(this.objectiveX && this.objectiveY){
