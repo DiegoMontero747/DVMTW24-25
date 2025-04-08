@@ -235,7 +235,8 @@ export default class Level3 extends Phaser.Scene {
                 this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
                 this.input.keyboard.createCombo('music',{resetOnMatch:true}).comboName='music';
                 this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
-        
+                this.input.keyboard.createCombo('arena',{resetOnMatch:true}).comboName='arena';
+
                 this.input.keyboard.on('keycombomatch', (combo) => {
                     switch(combo.comboName){
                         case 'reset':
@@ -262,11 +263,13 @@ export default class Level3 extends Phaser.Scene {
                         case 'lights':
                             this.setLights();
                         break;
+                        case 'arena':
+                            this.scene.start('combatScene');
+                        break;
                     }
         
                 });
     }
-
     initMusic(){
         let combatMusic=this.sound.get('combatMusic');
         if(!combatMusic)
@@ -288,53 +291,6 @@ export default class Level3 extends Phaser.Scene {
                 this.boundLimitSoundTimeOut=true;
                 this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
             } 
-    }
-
-    initKeyCombos(){
-                //gestion de combos de teclado
-                this.input.keyboard.createCombo('crt',{resetOnMatch:true}).comboName='crt';
-                this.input.keyboard.createCombo('reset',{resetOnMatch:true}).comboName='reset';
-                this.input.keyboard.createCombo('retro',{resetOnMatch:true}).comboName='retro';
-                this.input.keyboard.createCombo('gba',{resetOnMatch:true}).comboName='gba';
-                this.input.keyboard.createCombo('pixel',{resetOnMatch:true}).comboName='pixel';
-        
-                this.input.keyboard.createCombo('warrior',{resetOnMatch:true}).comboName='warrior';
-                this.input.keyboard.createCombo('mage',{resetOnMatch:true}).comboName='mage';
-                this.input.keyboard.createCombo('orc',{resetOnMatch:true}).comboName='orc';
-                this.input.keyboard.createCombo('mute',{resetOnMatch:true}).comboName='mute';
-                this.input.keyboard.createCombo('restart',{resetOnMatch:true}).comboName='restart';
-                this.input.keyboard.createCombo('music',{resetOnMatch:true}).comboName='music';
-                this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
-        
-                this.input.keyboard.on('keycombomatch', (combo) => {
-                    switch(combo.comboName){
-                        case 'reset':
-                            this.cameras.main.resetPostPipeline();
-                        break;
-                        case 'crt':
-                            this.setCrtShader();
-                        break;
-                        case 'gba':
-                            this.setGBAShader();
-                        break;
-                        case 'retro':
-                            this.setRetroShader();
-                        break;
-                        case 'pixel':
-                            this.setPixelShader();
-                        break;
-                        case 'mute':
-                            this.sound.setMute(!scene.sound.mute);
-                        break;
-                        case 'restart':
-                            this.scene.restart();
-                        break;
-                        case 'lights':
-                            this.setLights();
-                        break;
-                    }
-        
-                });
     }
 
     initMusic(){
