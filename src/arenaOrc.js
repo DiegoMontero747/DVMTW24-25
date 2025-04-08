@@ -139,13 +139,15 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
 
     awaitStop(){
         this.scene.time.delayedCall(2500,()=>{
-            this.body.setVelocityX(0);
-            this.body.setVelocityY(0);
-            
-            this.stopped=true;
-            this.hasMoved=true;
-
-            this.scene.events.emit("enemy_turn_end");
+            if(this.stopped==false){
+                this.body.setVelocityX(0);
+                this.body.setVelocityY(0);
+                
+                this.stopped=true;
+                this.hasMoved=true;
+    
+                this.scene.events.emit("enemy_turn_end");
+            }
         },[],this);
     }
 
@@ -553,7 +555,6 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         } else {
             this.stopped=true;
             this.hasMoved=true;
-
             this.scene.events.emit("enemy_turn_end");
         }
     }

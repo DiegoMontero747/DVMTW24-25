@@ -416,6 +416,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             yoyo:true,
         });
         this.checkedHit=false;
+        if(this.freeMove==false){
+            this.moveAreaGraphics.setVisible(true);
+        }
         this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
         this.scene.showStatsUI();
     }
