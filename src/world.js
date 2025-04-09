@@ -58,6 +58,55 @@ export default class World extends Phaser.Scene {
             console.log('Entrando al castillo...');
             this.Castillo.setVelocity(0,0);
             // this.scene.start('levelCastillo');
+
+            if (this.dialogoMostrado) return;
+
+            this.dialogoMostrado = true;
+            this.player.setFreeMovement(false); // 🔒 Bloquear movimiento
+        
+            const dialogWidth = 300;
+            const dialogHeight = 100;
+            const offsetY = 90;
+        
+            const posX = this.player.x;
+            const posY = this.player.y + offsetY;
+        
+            // 🖼️ Imagen del guerrero encima del diálogo
+            const icon = this.add.image(posX, posY - dialogHeight / 2 - 120, 'Ciudad')
+                .setScale(1)
+                .setOrigin(0.5);
+        
+            // 🧱 Fondo del diálogo
+            const dialogBg = this.add.rectangle(posX, posY, dialogWidth, dialogHeight, 0x000000, 0.85)
+                .setStrokeStyle(2, 0xffffff)
+                .setOrigin(0.5);
+        
+            // 📝 Texto dentro del cuadro
+            const dialogText = this.add.text(posX, posY - 20, '¿Qué necesitas, guerrero?', {
+                fontSize: '16px',
+                color: '#ffffff',
+                wordWrap: { width: dialogWidth - 30 },
+                align: 'center',
+            }).setOrigin(0.5);
+        
+            // 🔘 Botón "Cerrar"
+            const cerrarBtn = this.add.text(posX, posY + 25, 'Cerrar', {
+                fontSize: '14px',
+                backgroundColor: '#333',
+                color: '#fff',
+                padding: { x: 10, y: 4 },
+            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        
+            cerrarBtn.on('pointerdown', () => {
+                icon.destroy();
+                dialogBg.destroy();
+                dialogText.destroy();
+                cerrarBtn.destroy();
+                this.player.setFreeMovement(true); // 🔓 Volver a mover
+                this.dialogoMostrado = false;
+            });
+            
+            
         });
 
         // Crear casaBoss
@@ -79,6 +128,8 @@ export default class World extends Phaser.Scene {
             this.ponerCueva();
         }
 
+        
+
 
         // Sombra oscura sobre el mapa
         const darkOverlay = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.6 } });
@@ -86,6 +137,52 @@ export default class World extends Phaser.Scene {
 
         // Superposición jugador - cuevas
         this.physics.add.overlap(this.player, this.CuevasGroup, this.entrarCueva, null, this);
+
+        this.player.setFreeMovement(false);
+
+        this.tutorial();
+
+    }
+
+    tutorial(){
+        
+        const popupWidth = 300;
+        const popupHeight = 180;
+
+        const popupBG = this.add.rectangle(0, 0, popupWidth, popupHeight, 0x000000, 0.8);
+        popupBG.setStrokeStyle(2, 0xffffff);
+
+        const popupImage = this.add.image(0, -40, 'tutorialMovimienton').setScale(0.5);
+
+        const popupText = this.add.text(0, 40, 'Movimiento del personaje', {
+            fontSize: '16px',
+            color: '#ffffff',
+        }).setOrigin(0.5);
+
+        const popupButton = this.add.text(0, 75, 'Entendido', {
+            fontSize: '14px',
+            backgroundColor: '#333',
+            color: '#fff',
+            padding: { x: 10, y: 5 },
+            align: 'center',
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+        const tutorialPopup = this.add.container(this.player.x, this.player.y - 100, [
+            popupBG, popupImage, popupText, popupButton
+        ]);
+
+        tutorialPopup.setDepth(10); // Asegurarse de que esté arriba
+
+        popupButton.on('pointerdown', () => {
+            tutorialPopup.destroy(); // Ocultar el popup
+            this.player.setFreeMovement(true);
+        });
+
+        if (tutorialPopup && tutorialPopup.active) {
+            tutorialPopup.setPosition(this.player.x, this.player.y - 100);
+        }
+
+
     }
 
     ponerCueva() {
@@ -98,10 +195,12 @@ export default class World extends Phaser.Scene {
             position = this.getRandomAccessiblePosition();
             attempts++;
         } while (
-            (this.isPositionOccupied(position, minDistance) &&
-             this.isNear(position, this.player, minDistance) &&
-             this.isNear(position, this.Castillo, minDistance) &&
-             this.isNear(position, this.CasaBoss, minDistance))
+            (
+                this.isPositionOccupied(position, minDistance) ||
+                this.isNear(position, this.player, minDistance) ||
+                this.isNear(position, this.Castillo, minDistance) ||
+                this.isNear(position, this.CasaBoss, minDistance)
+            )
             && attempts < maxAttempts
         );
 
@@ -164,5 +263,7 @@ export default class World extends Phaser.Scene {
                 this.ponerCueva();
             }
         }
+
+
     }
 }
