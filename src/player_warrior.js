@@ -35,10 +35,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.hp=10;
         this.maxHp=10;
 
+        this.freeMove=false;
+
         this.attackAreaType="directional";
         this.addAttackArea(this.attackAreaType);
 
-        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,100);
+        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,75);
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 0.50);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.20);
@@ -87,8 +89,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             this.scene.sound.play("touchUISound");
             this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
             this.scene.showStatsUI();
-            if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
-            else this.effect=this.postFX.addGlow();
+            //if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)) this.effect=this.postFX.addGlow("0xc4180f");
+            /*else*/ this.effect=this.postFX.addGlow();
         });
         this.on('pointerout', function (event)
         {
@@ -99,14 +101,14 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         {   
             /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
             this.scene.container.add(this); */
-            if(this.scene.turn=="player"){
+            /* if(this.scene.turn=="player"){
                 this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
                 this.container.setVisible(!this.container.visible);
             }
             if(this.scene.turn=="enemy" && this.scene.physics.overlap(this.scene.orc.attackArea, this.body)){ 
                 this.onHit(1);
                 this.emit("player_hitted");
-            };
+            }; */
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
@@ -165,10 +167,15 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                 duration: 500,
                 delay: this.scene.tweens.stagger(100),
                 onComplete:(tween, targets, param)=>{
-                    this.destroy();
+                    this.onDeath();
+                    //this.destroy();
                 }
             });
         }
+    }
+
+    onDeath(){
+        this.scene.events.emit("gameOver");
     }
     /**
      * Gestiona el movimiento grid cambiando las coordenadas 
@@ -203,38 +210,46 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
             this.facing="up";
-            if(this.moveArea.contains(this.body.center.x,this.body.top)){
+            if(this.moveArea.contains(this.body.center.x,this.body.top) || this.freeMove){
                 this.body.setVelocityY(-1);
                 if(!this.cursors.right.isDown && !this.cursors.left.isDown)this.play({key:'walk_up'},true);
             }else{
-                this.scene.playCollideEffect();
+                if(typeof this.scene.playCollideEffect=='function'){//TODO puede ser mejor pasar ha gestionar con emit event
+                    this.scene.playCollideEffect();
+                }
             }
         }
         else if (this.cursors.down.isDown && !this.cursors.up.isDown) {
             this.facing="down";
-            if(this.moveArea.contains(this.body.center.x,this.body.bottom)){
+            if(this.moveArea.contains(this.body.center.x,this.body.bottom) || this.freeMove){
                 this.body.setVelocityY(1);
                 if(!this.cursors.right.isDown && !this.cursors.left.isDown)this.play({key:'walk_down'},true);
             }else{
-                this.scene.playCollideEffect();
+                if(typeof this.scene.playCollideEffect=='function'){//TODO puede ser mejor pasar ha gestionar con emit event
+                    this.scene.playCollideEffect();
+                }            
             }
         } 
         if (this.cursors.right.isDown && !this.cursors.left.isDown) {
             this.facing="right";
-            if(this.moveArea.contains(this.body.right,this.body.center.y)){
+            if(this.moveArea.contains(this.body.right,this.body.center.y) || this.freeMove){
                 this.body.setVelocityX(1);
                 this.play({key:'walk_right'},true);
             }else{
-                this.scene.playCollideEffect();
+                if(typeof this.scene.playCollideEffect=='function'){//TODO puede ser mejor pasar ha gestionar con emit event
+                    this.scene.playCollideEffect();
+                }
             }
         }
         if (this.cursors.left.isDown && !this.cursors.right.isDown) {
             this.facing="left";
-            if(this.moveArea.contains(this.body.left,this.body.center.y)){
+            if(this.moveArea.contains(this.body.left,this.body.center.y)|| this.freeMove){
                 this.body.setVelocityX(-1);
                 this.play({key:'walk_left'},true);
             }else{
-                this.scene.playCollideEffect();
+                if(typeof this.scene.playCollideEffect=='function'){//TODO puede ser mejor pasar ha gestionar con emit event
+                    this.scene.playCollideEffect();
+                }
             }
         }
         if(this.body.velocity.x==0 && this.body.velocity.y==0 && this.isMoving==false){
@@ -401,12 +416,21 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             yoyo:true,
         });
         this.checkedHit=false;
+        if(this.freeMove==false){
+            this.moveAreaGraphics.setVisible(true);
+        }
+        this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
+        this.scene.showStatsUI();
     }
     onTurnEnd(){
         this.stopMoving();
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         //this.attackArea.setVisible(false);
         this.setDepth(this.depth-1);
+    }
+
+    setFreeMovement(bool){
+        this.freeMove=bool;
     }
 
 
@@ -562,6 +586,28 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             //this.checkedHit=true;
         }
     }
+    checkInDangerZone(){
+        this.isInDanger=false;
+        if(this.scene.enemies){
+            this.scene.enemies.forEach(enemy => {
+                let area=enemy.selectedAttackArea;
+                if(area && this.isInDanger==false && this.scene.physics.overlap(area, this.body) ){
+                    this.isInDanger=true;
+                }
+            });
+        }
+        if(this.isInDanger==true && !this.dangerEffectActive){
+            this.dangerEffectActive=true;
+            this.dangerEffect=this.postFX.addGlow("0xc4180f");
+        }
+        else if(this.isInDanger==false){
+            if(this.dangerEffect){
+                this.postFX.remove(this.dangerEffect);
+                this.dangerEffectActive=false;
+            }
+
+        }
+    }
 
     /**
      * Gestiona movimiento de teletransporte
@@ -587,7 +633,10 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        if(this.scene.turn=="player")this.physics_combat_movement(t);
+        if(this.scene.turn=="player"){
+            this.physics_combat_movement(t);
+            this.checkInDangerZone()
+        }
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;
         this.centerAttackArea(this.attackAreaType);

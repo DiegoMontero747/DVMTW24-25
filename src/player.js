@@ -111,7 +111,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
      */
     preUpdate(t, dt) {
         super.preUpdate(t, dt);
-        this.teleport_grid_movement();
+        this.physics_4way_movement();
     }
 
 }

@@ -21,7 +21,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.score = 0;
         //Auxiliares para animaciones
         let escala=1;
-        this.facing="left";
+        this.facing="down";
         this.anims.createFromAseprite('orc2');
         this.scale=escala;
         var tileSize=48;

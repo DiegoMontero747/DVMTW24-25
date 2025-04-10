@@ -21,6 +21,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.scale=scale;
         this.hp=baseHP;
         this.maxHp=maxHP;
+        this.rangoMovimiento = 6*16;
+        this.rangoDetectar = 8*16;
 
         this.attackAreaType=attackAreaType;
         this.addAttackArea(this.attackAreaType);
