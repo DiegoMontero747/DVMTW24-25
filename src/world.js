@@ -58,54 +58,7 @@ export default class World extends Phaser.Scene {
             console.log('Entrando al castillo...');
             this.Castillo.setVelocity(0,0);
             // this.scene.start('levelCastillo');
-
-            if (this.dialogoMostrado) return;
-
-            this.dialogoMostrado = true;
-            this.player.setFreeMovement(false); // 🔒 Bloquear movimiento
-        
-            const dialogWidth = 300;
-            const dialogHeight = 100;
-            const offsetY = 90;
-        
-            const posX = this.player.x;
-            const posY = this.player.y + offsetY;
-        
-            // 🖼️ Imagen del guerrero encima del diálogo
-            const icon = this.add.image(posX, posY - dialogHeight / 2 - 120, 'Ciudad')
-                .setScale(1)
-                .setOrigin(0.5);
-        
-            // 🧱 Fondo del diálogo
-            const dialogBg = this.add.rectangle(posX, posY, dialogWidth, dialogHeight, 0x000000, 0.85)
-                .setStrokeStyle(2, 0xffffff)
-                .setOrigin(0.5);
-        
-            // 📝 Texto dentro del cuadro
-            const dialogText = this.add.text(posX, posY - 20, '¿Qué necesitas, guerrero?', {
-                fontSize: '16px',
-                color: '#ffffff',
-                wordWrap: { width: dialogWidth - 30 },
-                align: 'center',
-            }).setOrigin(0.5);
-        
-            // 🔘 Botón "Cerrar"
-            const cerrarBtn = this.add.text(posX, posY + 25, 'Cerrar', {
-                fontSize: '14px',
-                backgroundColor: '#333',
-                color: '#fff',
-                padding: { x: 10, y: 4 },
-            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-        
-            cerrarBtn.on('pointerdown', () => {
-                icon.destroy();
-                dialogBg.destroy();
-                dialogText.destroy();
-                cerrarBtn.destroy();
-                this.player.setFreeMovement(true); // 🔓 Volver a mover
-                this.dialogoMostrado = false;
-            });
-            
+            this.funCastillo();
             
         });
 
@@ -128,8 +81,6 @@ export default class World extends Phaser.Scene {
             this.ponerCueva();
         }
 
-        
-
 
         // Sombra oscura sobre el mapa
         const darkOverlay = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.6 } });
@@ -143,6 +94,114 @@ export default class World extends Phaser.Scene {
         this.tutorial();
 
     }
+
+    funCastillo() {
+        if (this.dialogoMostrado) return;
+    
+        this.dialogoMostrado = true;
+        this.player.setFreeMovement(false); // 🔒 Bloquear movimiento
+    
+        const dialogWidth = 300;
+        const dialogHeight = 150; // ⬆️ Aumentado para incluir ambos botones
+        const offsetY = 90;
+    
+        const posX = this.player.x;
+        const posY = this.player.y + offsetY;
+    
+        // 🖼️ Imagen del guerrero encima del diálogo
+        const icon = this.add.image(posX, posY - dialogHeight / 2 - 120, 'Ciudad')
+            .setScale(1)
+            .setOrigin(0.5);
+    
+        // 🧱 Fondo del diálogo
+        const dialogBg = this.add.rectangle(posX, posY, dialogWidth, dialogHeight, 0x000000, 0.85)
+            .setStrokeStyle(2, 0xffffff)
+            .setOrigin(0.5);
+    
+        // 📝 Texto dentro del cuadro
+        const dialogText = this.add.text(posX, posY - 40, '¿Qué necesitas, guerrero?', {
+            fontSize: '16px',
+            color: '#ffffff',
+            wordWrap: { width: dialogWidth - 30 },
+            align: 'center',
+        }).setOrigin(0.5);
+    
+        // 🔘 Botón "Cerrar"
+        const cerrarBtn = this.add.text(posX, posY + 55, 'Cerrar', {
+            fontSize: '14px',
+            backgroundColor: '#333',
+            color: '#fff',
+            padding: { x: 10, y: 4 },
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+        // 🔘 Botón "¿Qué pasó por aquí?"
+        const infoBtn = this.add.text(posX, posY + 25, '¿Qué pasó por aquí?', {
+            fontSize: '14px',
+            backgroundColor: '#444',
+            color: '#fff',
+            padding: { x: 10, y: 4 },
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+        infoBtn.on('pointerdown', () => {
+        
+            this.cuento();
+        });
+    
+        cerrarBtn.on('pointerdown', () => {
+            icon.destroy();
+            dialogBg.destroy();
+            dialogText.destroy();
+            cerrarBtn.destroy();
+            infoBtn.destroy();
+            this.player.setFreeMovement(true); // 🔓 Volver a mover
+            this.dialogoMostrado = false;
+        });
+    }
+    
+    
+
+    cuento() {
+        // 🧙‍♂️ Evitar que el jugador se mueva durante el cuento
+        this.player.setFreeMovement(false);
+    
+        const centerX = this.cameras.main.centerX;
+        const centerY = this.cameras.main.centerY;
+    
+        // 🖼️ Imagen del cuento
+        const imagenCuento = this.add.image(centerX, centerY +20, 'AldeaPixel')
+            .setScale(0.75)
+            .setOrigin(0.5);
+    
+        // 📖 Texto del cuento
+        const textoCuento = this.add.text(centerX, centerY + 100,
+            'Hace muchos años, este castillo fue hogar de un poderoso rey...\n' +
+            'pero una sombra oscura cayó sobre estas tierras.',
+            {
+                fontSize: '16px',
+                color: '#ffffff',
+                backgroundColor: '#000000aa',
+                padding: { x: 10, y: 10 },
+                wordWrap: { width: 400 },
+                align: 'center'
+            })
+            .setOrigin(0.5);
+    
+        // 🔘 Botón para cerrar el cuento
+        const cerrarCuentoBtn = this.add.text(centerX, centerY + 180, 'Cerrar cuento', {
+            fontSize: '14px',
+            backgroundColor: '#222',
+            color: '#fff',
+            padding: { x: 10, y: 6 },
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+        cerrarCuentoBtn.on('pointerdown', () => {
+            imagenCuento.destroy();
+            textoCuento.destroy();
+            cerrarCuentoBtn.destroy();
+            this.player.setFreeMovement(true);
+        });
+    }
+    
 
     tutorial(){
         
@@ -250,6 +309,7 @@ export default class World extends Phaser.Scene {
     }
 
     update(time, delta) {
+
         const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
         const gridOffsetX = 0, gridOffsetY = -1, mouseOffsetX = -1, mouseOffsetY = 0, snapInterval = 3;
         const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x) + mouseOffsetX, snapInterval) + gridOffsetX;
@@ -258,6 +318,7 @@ export default class World extends Phaser.Scene {
         this.marker.y = this.map.tileToWorldY(pointerTileY);
 
         const currentObjectCount = this.CuevasGroup.countActive(true);
+
         if (currentObjectCount < 3) {
             for (let i = currentObjectCount; i < 3; i++) {
                 this.ponerCueva();
