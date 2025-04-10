@@ -370,8 +370,8 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
                 this.attackCursorContainer=this.scene.add.container(this.x,this.y).setDepth(20);
 
                 for(let i=0;i<dirs.length;i++){
-                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsetsAttack[i].x, offsetsAttack[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.25).setVisible(false);
-                    this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xff0000, 1);
+                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsetsAttack[i].x, offsetsAttack[i].y, sizes[i].x,sizes[i].y, 0xd100ab,0.25).setVisible(false);
+                    this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xd100ab, 0.9);
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
                     let dirSelector=this.scene.add.image(offsets[i].x, offsets[i].y,"dirCursor").setScale(0.8).setRotation(rotations[i]);

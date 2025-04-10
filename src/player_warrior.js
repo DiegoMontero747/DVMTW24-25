@@ -40,7 +40,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.attackAreaType="directional";
         this.addAttackArea(this.attackAreaType);
 
-        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,75);
+        this.moveArea=new Phaser.Geom.Circle(this.x,this.y+14,55);
         this.moveAreaGraphics=this.scene.add.graphics().setVisible(false);
         this.moveAreaGraphics.lineStyle(1, 0x0069ff, 0.50);  
         this.moveAreaGraphics.fillStyle("0x0069ff",0.20);
@@ -461,7 +461,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                 this.attackCursorContainer=this.scene.add.container(this.x,this.y).setDepth(20);
 
                 for(let i=0;i<dirs.length;i++){
-                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsets[i].x, offsets[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.25).setVisible(false);
+                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsets[i].x, offsets[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.35).setVisible(false);
                     this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xff0000, 1);
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
