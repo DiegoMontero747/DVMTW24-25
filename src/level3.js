@@ -236,6 +236,7 @@ export default class Level3 extends Phaser.Scene {
                 this.input.keyboard.createCombo('music',{resetOnMatch:true}).comboName='music';
                 this.input.keyboard.createCombo('lights',{resetOnMatch:true}).comboName='lights';
                 this.input.keyboard.createCombo('arena',{resetOnMatch:true}).comboName='arena';
+                this.input.keyboard.createCombo('wwssadadqe',{resetOnMatch:true}).comboName='godMode';
 
                 this.input.keyboard.on('keycombomatch', (combo) => {
                     switch(combo.comboName){
@@ -265,6 +266,9 @@ export default class Level3 extends Phaser.Scene {
                         break;
                         case 'arena':
                             this.scene.start('combatScene');
+                        break;
+                        case 'godMode':
+                            this.player.godMode = true;
                         break;
                     }
         

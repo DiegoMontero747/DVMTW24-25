@@ -16,6 +16,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         super(scene, x, y, 'player_warrior');	
         this.score = 0;
         console.log("a");
+        this.godMode=false;
         //Auxiliares para animaciones
         this.facing="right";
         this.anims.createFromAseprite('player_warrior');
@@ -131,6 +132,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
 
     onHit(dmg){
+        if(this.godMode)
+            return
         this.scene.sound.play("hitSound");
         this.scene.cameras.main.shake(300,0.001);
         this.createBlood();
