@@ -370,6 +370,9 @@ export default class LevelDebug extends Phaser.Scene {
                     zoom_cam/=1.5;
                     cam.setZoom(zoom_cam);
                 break;
+                case 'wwssadadqe':
+                    this.player.godMode = true;
+                break;
             }
 
         });
