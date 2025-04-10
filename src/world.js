@@ -102,7 +102,7 @@ export default class World extends Phaser.Scene {
         this.player.setFreeMovement(false); // 🔒 Bloquear movimiento
     
         const dialogWidth = 300;
-        const dialogHeight = 150; // ⬆️ Aumentado para incluir ambos botones
+        const dialogHeight = 215; // ⬆️ Aumentado para incluir ambos botones
         const offsetY = 90;
     
         const posX = this.player.x;
@@ -127,7 +127,7 @@ export default class World extends Phaser.Scene {
         }).setOrigin(0.5);
     
         // 🔘 Botón "Cerrar"
-        const cerrarBtn = this.add.text(posX, posY + 55, 'Cerrar', {
+        const cerrarBtn = this.add.text(posX, posY + 85, 'Cerrar', {
             fontSize: '14px',
             backgroundColor: '#333',
             color: '#fff',
@@ -141,10 +141,24 @@ export default class World extends Phaser.Scene {
             color: '#fff',
             padding: { x: 10, y: 4 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    
+
+        // 🔘 Botón "Curar"
+        const curarBtn = this.add.text(posX, posY + 55, 'Necesito cura', {
+            fontSize: '14px',
+            backgroundColor: '#333',
+            color: '#fff',
+            padding: { x: 10, y: 4 },
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
         infoBtn.on('pointerdown', () => {
         
             this.cuento();
+        });
+
+
+        curarBtn.on('pointerdown', () => {
+        
+            
         });
     
         cerrarBtn.on('pointerdown', () => {
@@ -153,6 +167,8 @@ export default class World extends Phaser.Scene {
             dialogText.destroy();
             cerrarBtn.destroy();
             infoBtn.destroy();
+            curarBtn.destroy();
+
             this.player.setFreeMovement(true); // 🔓 Volver a mover
             this.dialogoMostrado = false;
         });
@@ -168,12 +184,12 @@ export default class World extends Phaser.Scene {
         const centerY = this.cameras.main.centerY;
     
         // 🖼️ Imagen del cuento
-        const imagenCuento = this.add.image(centerX, centerY +20, 'AldeaPixel')
+        const imagenCuento = this.add.image(centerX, centerY + 20, 'AldeaPixel')
             .setScale(0.75)
             .setOrigin(0.5);
     
         // 📖 Texto del cuento
-        const textoCuento = this.add.text(centerX, centerY + 100,
+        let textoCuento = this.add.text(centerX, centerY + 75,
             'Hace muchos años, este castillo fue hogar de un poderoso rey...\n' +
             'pero una sombra oscura cayó sobre estas tierras.',
             {
@@ -187,20 +203,48 @@ export default class World extends Phaser.Scene {
             .setOrigin(0.5);
     
         // 🔘 Botón para cerrar el cuento
-        const cerrarCuentoBtn = this.add.text(centerX, centerY + 180, 'Cerrar cuento', {
+        const cerrarCuentoBtn = this.add.text(centerX, centerY + 165, 'Cerrar cuento', {
             fontSize: '14px',
             backgroundColor: '#222',
             color: '#fff',
             padding: { x: 10, y: 6 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     
+        // 🔘 Botón "Siguiente" para continuar el cuento
+        const siguienteBtn = this.add.text(centerX, centerY + 135, 'Siguiente', {
+            fontSize: '14px',
+            backgroundColor: '#333',
+            color: '#fff',
+            padding: { x: 10, y: 6 },
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+        siguienteBtn.on('pointerdown', () => {
+            // Cambiar la imagen y el texto cuando se hace clic en "Siguiente"
+            //imagenCuento.setTexture('CastilloOscuro'); // Cambiar a una nueva imagen
+
+            // Crear una capa de filtro rojo
+            const redOverlay = this.add.graphics({ fillStyle: { color: 0xff0000, alpha: 0.2} });
+            redOverlay.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
+
+
+            textoCuento.setText('El rey luchó contra la sombra oscura, pero la oscuridad\n' +
+                'seguía extendiéndose por sus tierras, y el castillo comenzó a caer.');
+    
+            siguienteBtn.destroy();
+           //siguienteBtn.setText('Siguiente'); // Si quieres más páginas, puedes actualizar el texto
+        });
+    
+        // Cerrar el cuento
         cerrarCuentoBtn.on('pointerdown', () => {
             imagenCuento.destroy();
             textoCuento.destroy();
             cerrarCuentoBtn.destroy();
+            siguienteBtn.destroy();
+            redOverlay.destroy();
             this.player.setFreeMovement(true);
         });
     }
+    
     
 
     tutorial(){
