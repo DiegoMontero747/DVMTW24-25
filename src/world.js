@@ -367,6 +367,7 @@ export default class World extends Phaser.Scene {
             duration: 800,
             amount: 50,
             onComplete: () => {
+                this.sound.pauseOnBlur = false;
                 this.scene.start('level3');
             }
         })  
