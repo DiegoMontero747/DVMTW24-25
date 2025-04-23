@@ -22,6 +22,8 @@ export default class World extends Phaser.Scene {
             this.wall_layer.setCollisionByExclusion([-1]);
         }
 
+        
+
         const floor_layer = this.map.createLayer("Fondo", tileset, 0, 0);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
@@ -83,7 +85,7 @@ export default class World extends Phaser.Scene {
 
 
         // Sombra oscura sobre el mapa
-        const darkOverlay = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.6 } });
+        const darkOverlay = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.45 } });
         darkOverlay.fillRect(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // Superposición jugador - cuevas
@@ -92,6 +94,8 @@ export default class World extends Phaser.Scene {
         this.player.setFreeMovement(false);
 
         this.tutorial();
+
+        this.reproducirMusica();
 
     }
 
@@ -134,8 +138,8 @@ export default class World extends Phaser.Scene {
             padding: { x: 10, y: 4 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     
-        // 🔘 Botón "¿Qué pasó por aquí?"
-        const infoBtn = this.add.text(posX, posY + 25, '¿Qué pasó por aquí?', {
+        // 🔘 Botón "¿Qué ha pasado aquí? Esta ciudad parece muerta…"
+        const infoBtn = this.add.text(posX, posY + 15, '¿Qué ha pasado aquí? \n Esta ciudad parece muerta…', {
             fontSize: '14px',
             backgroundColor: '#444',
             color: '#fff',
@@ -177,21 +181,18 @@ export default class World extends Phaser.Scene {
     
 
     cuento() {
-        // 🧙‍♂️ Evitar que el jugador se mueva durante el cuento
         this.player.setFreeMovement(false);
     
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
     
-        // 🖼️ Imagen del cuento
         const imagenCuento = this.add.image(centerX, centerY + 20, 'AldeaPixel')
             .setScale(0.75)
             .setOrigin(0.5);
     
-        // 📖 Texto del cuento
         let textoCuento = this.add.text(centerX, centerY + 75,
-            'Hace muchos años, este castillo fue hogar de un poderoso rey...\n' +
-            'pero una sombra oscura cayó sobre estas tierras.',
+            'Esto era Darkfall, un reino orgulloso, llena de vida. Comerciantes, herreros, niños corriendo por las calles…\n' +
+            'ahora solo quedan ruinas y cenizas.',
             {
                 fontSize: '16px',
                 color: '#ffffff',
@@ -202,7 +203,6 @@ export default class World extends Phaser.Scene {
             })
             .setOrigin(0.5);
     
-        // 🔘 Botón para cerrar el cuento
         const cerrarCuentoBtn = this.add.text(centerX, centerY + 165, 'Cerrar cuento', {
             fontSize: '14px',
             backgroundColor: '#222',
@@ -210,44 +210,64 @@ export default class World extends Phaser.Scene {
             padding: { x: 10, y: 6 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     
-        // 🔘 Botón "Siguiente" para continuar el cuento
-        const siguienteBtn = this.add.text(centerX, centerY + 135, 'Siguiente', {
+        let siguienteBtn = this.add.text(centerX, centerY + 135, 'Siguiente', {
             fontSize: '14px',
             backgroundColor: '#333',
             color: '#fff',
             padding: { x: 10, y: 6 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     
-        siguienteBtn.on('pointerdown', () => {
-            // Cambiar la imagen y el texto cuando se hace clic en "Siguiente"
-            //imagenCuento.setTexture('CastilloOscuro'); // Cambiar a una nueva imagen
-
-            // Crear una capa de filtro rojo
-            const redOverlay = this.add.graphics({ fillStyle: { color: 0xff0000, alpha: 0.2} });
-            redOverlay.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
-
-
-            textoCuento.setText('El rey luchó contra la sombra oscura, pero la oscuridad\n' +
-                'seguía extendiéndose por sus tierras, y el castillo comenzó a caer.');
+        let redOverlay = null;
     
+        siguienteBtn.on('pointerdown', () => {
+            if (!redOverlay) {
+                redOverlay = this.add.graphics({ fillStyle: { color: 0xff0000, alpha: 0.2 } });
+                redOverlay.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
+            }
+    
+            textoCuento.setText('El demonio vino sin aviso. Oscureció el cielo y trajo consigo criaturas de pesadilla.\n' +
+                'Nos defendimos como pudimos… pero no fue suficiente.');
+    
+            // Reemplazar el primer botón "Siguiente" por el segundo
             siguienteBtn.destroy();
-           //siguienteBtn.setText('Siguiente'); // Si quieres más páginas, puedes actualizar el texto
+            siguienteBtn = this.add.text(centerX, centerY + 135, '¿No queda nadie?', {
+                fontSize: '14px',
+                backgroundColor: '#333',
+                color: '#fff',
+                padding: { x: 10, y: 6 },
+            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+            siguienteBtn.on('pointerdown', () => {
+                textoCuento.setText('Unos pocos sobrevivimos, escondidos entre los escombros. Pero vivimos con miedo, y cada noche, los gritos de los que se llevó siguen resonando.\n' +
+                    ' Si estás aquí para enfrentarlo… todos ponemos nuestras esperanzas en ti. Acaba con él, Poncho. Por Darkfall. Por los que ya no pueden luchar.');
+    
+                siguienteBtn.destroy();
+            });
         });
     
-        // Cerrar el cuento
         cerrarCuentoBtn.on('pointerdown', () => {
             imagenCuento.destroy();
             textoCuento.destroy();
             cerrarCuentoBtn.destroy();
             siguienteBtn.destroy();
-            redOverlay.destroy();
+            if (redOverlay) redOverlay.destroy();
             this.player.setFreeMovement(true);
         });
     }
     
+    reproducirMusica() {
+        if (!this.sound.get('dragonMusic')) {
+            const music = this.sound.add('dragonMusic', {
+                loop: true,
+                volume: 0.4
+            });
+            music.play();
+        }
+    }   
     
 
     tutorial(){
+
         
         const popupWidth = 300;
         const popupHeight = 180;
@@ -368,7 +388,6 @@ export default class World extends Phaser.Scene {
                 this.ponerCueva();
             }
         }
-
 
     }
 }

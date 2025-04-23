@@ -76,6 +76,7 @@ export default class Boot extends Phaser.Scene {
 
     this.load.setPath('/assets/audio/music/');
     this.load.audio('combatMusic', 'combatMusic.mp3');
+    this.load.audio('dragonMusic', 'battle-of-the-dragons.mp3');
 
     //Carga de tilemap
     this.load.setPath('/assets/tilemaps/');
@@ -110,6 +111,7 @@ export default class Boot extends Phaser.Scene {
     this.load.image('Ciudad', 'ares.png');
     this.load.image('Aldea', 'aldea.jpeg');
     this.load.image('AldeaPixel', 'aldeaPixel.png');
+
   }
   
   /**
