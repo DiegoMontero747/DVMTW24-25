@@ -12,6 +12,7 @@ export default class Trampa extends Objeto {
     }
 
     activarTrampa(objeto) {
+        console.log(objeto)
         if (objeto.onHit) {
             objeto.onHit(this.danoAlJugador); // Aplica daño al objeto
         }
@@ -19,29 +20,32 @@ export default class Trampa extends Objeto {
         let empujeX = 0; // Lo aleja en la dirección contraria
         let empujeY = 0;
         // Calcula la dirección en la que se empujará al objeto
-        if(objeto.x < this.x){
-            empujeX = -2;
+        if(this.scene.player.x < this.x){
+            empujeX = -20;
         } else {
-            empujeX = 2;
+            empujeX = 20;
         }
 
-        if(objeto.y < this.y){
-            empujeY = -2;
+        if(this.scene.player.y < this.y){
+            empujeY = -16;
         } else {
-            empujeY = 2;
+            empujeY = 16;
         }
 
-        let difX = Math.abs(objeto.x < this.x)
-        let dify = Math.abs(objeto.y < this.y)
+        let difX = Math.abs(this.scene.player.x - this.x)
+        let dify = Math.abs(this.scene.player.y - this.y)
 
         if(difX>dify){
             empujeY = 0;
+        } else if(difX==dify){
+            //nada
         } else {
             empujeX = 0;
         }
         
 
         // Aplica la fuerza de empuje
-        objeto.setVelocity(empujeX, empujeY);
+        this.scene.player.x = this.scene.player.x + empujeX;
+        this.scene.player.y = this.scene.player.y + empujeY;
     }
 }

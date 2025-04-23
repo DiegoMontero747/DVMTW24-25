@@ -168,10 +168,10 @@ export default class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.player.body, this.wall_layer);
         this.physics.add.collider(this.player.body, this.objetosConColision);
 
-        this.physics.add.collider(this.player.body, this.trampas, () => {
+        /*this.physics.add.collider(this.player.body, this.trampas, () => {
             this.player.onHit(2);
             this.player.x -= 16;
-        });
+        });*/
 
 
         if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
