@@ -86,7 +86,7 @@
                 {
                  "name":"colision",
                  "type":"bool",
-                 "value":false
+                 "value":true
                 }],
          "type":"tilelayer",
          "visible":true,
