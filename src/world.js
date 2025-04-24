@@ -65,7 +65,7 @@ export default class World extends Phaser.Scene {
         });
 
         // Crear casaBoss
-        this.CasaBoss = this.physics.add.sprite(200, 200, 'casaBoss');
+        this.CasaBoss = this.physics.add.sprite(195, 160, 'casaBoss');
         this.CasaBoss.setOrigin(0.5, 0.5);
         this.CasaBoss.setScale(1);
 
@@ -75,7 +75,7 @@ export default class World extends Phaser.Scene {
         this.physics.add.collider(this.player, this.CasaBoss, () => {
             console.log('Entrando a la casa del Boss...');
             this.CasaBoss.setVelocity(0, 0);
-            // this.scene.start('levelBoss');
+            this.scene.start('levelBoss');
         });
 
         // Crear cuevas
@@ -309,10 +309,11 @@ export default class World extends Phaser.Scene {
     }
 
     ponerCueva() {
+        
         let position;
         let attempts = 0;
         const maxAttempts = 100;
-        const minDistance = 100;
+        const minDistance = 200;
 
         do {
             position = this.getRandomAccessiblePosition();
