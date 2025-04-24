@@ -27,6 +27,10 @@ export default class Objeto extends Phaser.Physics.Arcade.Sprite {
         console.log(`Interacción con ${this.texture.key}`);
     }
 
+    checkHit(){
+        return this.scene.physics.overlap(this.scene.attackArea, this)
+    }
+
     onHit(cantidad) {
         
     }

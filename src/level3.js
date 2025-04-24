@@ -493,6 +493,15 @@ export default class Level3 extends Phaser.Scene {
 
     async checkEnemyHit(){
         //this.orc.checkHit();
+        this.objetosDestructibles.children.iterate((obj) => {
+            if(obj.checkHit()){
+                if(this.scene.attackEffect.dmg >= obj.hp){
+                    this.objetosDestructibles.remove(obj)
+                    i--;
+                }
+                obj.onHit(this.scene.attackEffect.dmg)
+            }
+        });
         this.enemies.forEach((enemy)=>{enemy.checkHit()});
     }
 
@@ -600,13 +609,11 @@ export default class Level3 extends Phaser.Scene {
                     break;
                 case "orc":
                     nuevoObjeto = new Orc(this, adjustedX, adjustedY);
-                    destructible = true;
                     nuevoObjeto.name="orco";
                     this.addEnemy(nuevoObjeto);
                     break;
                 case "ghostslime":
                     nuevoObjeto = new GhostSlime(this, adjustedX, adjustedY);
-                    destructible = true;
                     nuevoObjeto.name="slime";
                     this.addEnemy(nuevoObjeto);
                     break;
