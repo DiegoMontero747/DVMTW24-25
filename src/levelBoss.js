@@ -61,7 +61,7 @@ export default class levelBoss extends Phaser.Scene {
         const cam = this.cameras.main;
         cam.startFollow(this.player);
         cam.setBounds(0, 0);
-        cam.setZoom(1.5);
+        cam.setZoom(3);
         
         /* Creación de cruadicula que sigue al cursor,
             su movimiento se gestiona en update
