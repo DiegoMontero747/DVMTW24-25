@@ -12,6 +12,22 @@ export default class World extends Phaser.Scene {
         super({ key: 'world' });
     }
 
+    init(data){
+        if(data.hp == undefined){
+            this.datosPlayer = {
+                hp: 10,
+                exp: 0,
+                level: 1
+            };
+        } else {
+            this.datosPlayer = {
+                hp: data.hp,
+                exp: data.exp,
+                level: data.level
+            };
+        }
+    }
+
     create() {
         // Crear layers del mapa
         this.map = this.make.tilemap({ key: 'mapaMundial' });
@@ -145,7 +161,7 @@ export default class World extends Phaser.Scene {
             duration: 800,
             amount: 50,
             onComplete: () => {
-                this.scene.start('level3');
+                this.scene.start('level3', this.datosPlayer);
             }
         })  
     }

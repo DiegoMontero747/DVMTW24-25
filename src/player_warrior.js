@@ -401,7 +401,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     onTurnStart(){
         //Volver a pintar el area de movimiento
         this.scene.attackArea=this.attackArea;
-        this.attackEffect={dmg:2,push:{x:15,y:0}}
+        this.attackEffect={dmg:2*this.scene.datosPlayer.level,push:{x:15,y:0}}
         this.scene.attackEffect=this.attackEffect;
         this.setDepth(this.depth+1);
         this.moveArea.setPosition(this.x,this.y+14);

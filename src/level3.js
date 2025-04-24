@@ -38,14 +38,15 @@ export default class Level3 extends Phaser.Scene {
         super({ key: 'level3' });
     }
 
-    constructor(hp, level, exp) {
-        this.playerData = {
-            hp: hp,
-            level: level,
-            exp: exp
-        }
-        super({ key: 'level3' });
+    init(data) {
+        this.datosPlayer = {
+            hp: data.hp,
+            exp: data.exp,
+            level: data.level
+        };
     }
+
+
     /**
      * Creación de los elementos de la escena principal de juego
      */
@@ -121,6 +122,7 @@ export default class Level3 extends Phaser.Scene {
 
         //const tag=this.anims.createFromAseprite('player_warrior');
         this.player = new Player(this, this.map.widthInPixels/2, this.map.heightInPixels/2).setDepth(3);
+        this.player.hp = this.datosPlayer.hp;
         //this.player2 = new Mage(this, 72, 176);  "x":399.5,"y":57
 
         this.activeCharacter="warrior";
