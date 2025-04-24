@@ -38,14 +38,14 @@ export default class Level3 extends Phaser.Scene {
         super({ key: 'level3' });
     }
 
-    constructor(hp, level, exp) {
+   /*  constructor(hp, level, exp) {
         this.playerData = {
             hp: hp,
             level: level,
             exp: exp
         }
         super({ key: 'level3' });
-    }
+    } */
     /**
      * Creación de los elementos de la escena principal de juego
      */
