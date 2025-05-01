@@ -55,6 +55,9 @@ export default class Level3 extends Phaser.Scene {
         this.cache.tilemap.remove('map');
         this.cache.tilemap.add('map',{format:1,data:data.nuevoMapa})
         this.map_gen= data.nuevoMapa;
+        this.num_enemigos=0;
+        this.recompensa_recogida=true;
+        this.mazmorra_actual=data.mazmorra_actual;
     }
 
 
@@ -549,12 +552,14 @@ export default class Level3 extends Phaser.Scene {
                     nuevoObjeto.name="llave";
                     break;
                 case "orc":
+                    this.num_enemigos++;
                     nuevoObjeto = new Orc(this, adjustedX, adjustedY);
                     destructible = true;
                     nuevoObjeto.name="orco";
                     this.addEnemy(nuevoObjeto);
                     break;
                 case "ghostslime":
+                    this.num_enemigos++;
                     nuevoObjeto = new GhostSlime(this, adjustedX, adjustedY);
                     destructible = true;
                     nuevoObjeto.name="slime";
@@ -580,6 +585,7 @@ export default class Level3 extends Phaser.Scene {
                     nuevoObjeto.name="porton";
                     break;
                 case "Cofre":
+                    this.recompensa_recogida=false;
                     nuevoObjeto = new Cofre(this, adjustedX, adjustedY);
                     nuevoObjeto.name="cofre";
                     break;
@@ -642,6 +648,18 @@ export default class Level3 extends Phaser.Scene {
             if(this.playerLight){
                 this.playerLight.x=this.player.x;
                 this.playerLight.y=this.player.y;
+            }
+            if(this.num_enemigos<=0 && this.recompensa_recogida){
+                console.log("mazmorra okey")
+                if(this.mazmorra_actual==1){
+                    this.datosPlayer.mazmorras.mazmorra1.completada=true;
+                }
+                if(this.mazmorra_actual==2){
+                    this.datosPlayer.mazmorras.mazmorra2.completada=true;
+                }
+                if(this.mazmorra_actual==3){
+                    this.datosPlayer.mazmorras.mazmorra3.completada=true;
+                }
             }
     }
 }

@@ -180,6 +180,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             callback:()=>{this.clearTint()}
         })
         if(this.hp<=0){ console.log("Ripperoni in peperonni");
+            this.scene.num_enemigos--;
+            console.log(this.scene.num_enemigos);
             this.scene.sound.play("wilhelm");
             const deadAnim=this.scene.tweens.add({
                 targets: [this],

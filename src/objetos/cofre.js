@@ -13,7 +13,7 @@ export default class Cofre extends Objeto {
     interactuar() {
         console.log("Has abierto un cofre");
         this.setTexture("openCofre_txt");
-    
+        this.scene.recompensa_recogida=true;
         this.scene.tweens.add({
             targets: this,
             alpha: 0, // Hace que la puerta desaparezca gradualmente

@@ -161,6 +161,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             callback:()=>{this.clearTint()}
         })
         if(this.hp<=0){ console.log("Ripperoni in peperonni");
+            this.scene.num_enemigos--;
+            console.log(this.scene.num_enemigos);
             this.scene.datosPlayer.exp+=25;
             if (this.scene.datosPlayer.exp >= 100){
                 this.scene.datosPlayer.exp-=100;
