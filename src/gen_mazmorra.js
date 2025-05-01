@@ -1212,9 +1212,8 @@ function ponEnemigos(m){
                 lista.push({type:"ghostslime",y:i*2,x:j*2});
             }
             if(m.m_trampa[i][j]==c_trampa){
-                if(Math.random()<0.5){
                 lista.push({type:"Trampa",y:i*2,x:j*2});
-                }
+                
             }
             if(m.m_obstaculo[i][j]==c_obstaculo){
                 lista.push({type:"Caja",y:i*2,x:j*2});

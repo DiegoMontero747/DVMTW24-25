@@ -650,7 +650,6 @@ export default class Level3 extends Phaser.Scene {
                 this.playerLight.y=this.player.y;
             }
             if(this.num_enemigos<=0 && this.recompensa_recogida){
-                console.log("mazmorra okey")
                 if(this.mazmorra_actual==1){
                     this.datosPlayer.mazmorras.mazmorra1.completada=true;
                 }

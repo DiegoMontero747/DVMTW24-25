@@ -46,8 +46,9 @@ export default class Boot extends Phaser.Scene {
     this.load.image('turnBanner', 'turnBar.png');
     this.load.image('dirCursor', 'dir_cursor.png');
     this.load.image('porton_txt', 'Porton.png');
-    this.load.image('trampa_txt', 'trampatxt.png');
+    this.load.image('trampaOff_txt', 'trampatxt.png');
     this.load.image('trampaOn_txt', 'trampaOntxt.png');
+
     this.load.image('llave_txt', 'llavetxt.png');
     this.load.image('cerradura_txt', 'cerraduratxt.png');
     this.load.image('cerraduraConLlave_txt', 'cerraduraConLlavetxt.png');

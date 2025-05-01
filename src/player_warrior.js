@@ -15,7 +15,6 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, 'player_warrior');	
         this.score = 0;
-        console.log("a");
         this.godMode=false;
         //Auxiliares para animaciones
         this.facing="right";
