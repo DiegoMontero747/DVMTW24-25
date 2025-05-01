@@ -3,14 +3,26 @@ import Objeto from '../objeto.js';
 export default class TNT extends Objeto {
     constructor(scene, x, y) {
         super(scene, x, y, "tnt_txt");
+
+        // Hacemos el objeto interactivo y escalado
+        this.setInteractive(this.scene.input.makePixelPerfect());
+        this.setScale(0.75);
+
+        // Atributos personalizados
         this.empujable = true;
-        this.setCollideWorldBounds(true);
         this.colision = true;
         this.isParen = false;
-        this.scale = 0.75;
         this.hp = 1;
-        this.setInteractive(this.scene.input.makePixelPerfect());
+
+        // Agregamos físicas al objeto
+        this.scene.physics.add.existing(this); // Esto crea el body
+        this.setImmovable(false);              // El objeto no es inmóvil
+        this.setPushable(true);
+        this.body.setCollideWorldBounds(true, false, false, true); // Limita la colisión en los bordes deseados
+        
+        // Crear animaciones desde Aseprite
         this.anims.createFromAseprite('KABOOM');
+        
         //console.log(this.anims)
     }
 
@@ -70,5 +82,9 @@ export default class TNT extends Objeto {
             this.explosionArea.destroy();
             this.destruir();
         });
+    }
+    preUpdate(t, dt){
+        this.body.setVelocityX(0);
+        this.body.setVelocityY(0);
     }
 }
