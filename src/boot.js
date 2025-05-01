@@ -95,9 +95,9 @@ export default class Boot extends Phaser.Scene {
     
     //let dato = JSON.parse(texto);
     //this.load.tilemapTiledJSON("map","Prueba_001.json");
-    let mazmorra=gen_mazmorra();
-    console.log(mazmorra);
-    this.load.tilemapTiledJSON("map",mazmorra);
+    //let mazmorra=gen_mazmorra();
+    //console.log(mazmorra);
+    //this.load.tilemapTiledJSON("map",mazmorra);
     
     this.load.image('TilesDungeon', 'Tiles.png');
     this.load.image('PropsA', 'PropsF.png');

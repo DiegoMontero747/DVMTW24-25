@@ -38,12 +38,23 @@ export default class Level3 extends Phaser.Scene {
         super({ key: 'level3' });
     }
 
+    preload(){
+        this.load.image('TilesDungeon', 'Tiles.png');
+        this.load.image('PropsA', 'PropsF.png');
+        this.load.image('Props', 'Props.png');
+    }
+
     init(data) {
         this.datosPlayer = {
             hp: data.hp,
             exp: data.exp,
-            level: data.level
+            level: data.level,
+            mazmorras: data.mazmorras
         };
+
+        this.cache.tilemap.remove('map');
+        this.cache.tilemap.add('map',{format:1,data:data.nuevoMapa})
+        this.map_gen= data.nuevoMapa;
     }
 
 
@@ -57,7 +68,13 @@ export default class Level3 extends Phaser.Scene {
 
         this.enemies=[];
 
-        this.map= this.make.tilemap({key:'map'});  
+        
+        
+        //this.load.tilemapTiledJSON("map_gen",this.map_gen);
+        
+        //this.map_gen= this.make.tilemap({key:'map_gen'});  
+        this.map = this.make.tilemap({key:'map'});
+
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
         const props=this.map.addTilesetImage('PropsA','PropsA');
         const propsA=this.map.addTilesetImage('Objetos','Props');
@@ -80,43 +97,7 @@ export default class Level3 extends Phaser.Scene {
 
         this.wall_layer.setDepth(0);
 
-        /*this.objects_layer.objects.forEach(obj => {
-            // Crear el sprite con la textura especificada en Tiled
-            let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            const sprite = this.physics.add.sprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura);
         
-            // Ajustar el origen porque Tiled usa la esquina superior izquierda
-            sprite.setOrigin(0.5, 0.5);
-        
-            // Si el campo "collide" es verdadero, activamos colisión
-            if (obj.properties.Collide) {
-                this.physics.add.existing(sprite);
-                sprite.body.setImmovable(true);
-                sprite.body.allowGravity = false;
-            }
-        });*/
-
-        //const objectsGroup = this.physics.add.staticGroup();
-
-        //Puertas
-
-        /*const doors = this.doors_layer.objects
-        .filter(obj => obj.properties.find(prop => prop.name === "Collide" && prop.value === true)) // Solo los que tienen "Collide: true"
-        .map(obj => {
-            let textura =obj.properties.find(prop => prop.name === 'Texture')?.value;
-            let door = this.physics.add.staticSprite(obj.x+(obj.width/2), obj.y+(obj.height/2), textura); // Crear sprite estático
-            door.setOrigin(0.5,0.5); // Ajustar la posición si es necesario
-            return door;
-        });
-        const doorsGroup = this.physics.add.staticGroup(doors);*/
-
-
-        /* this.wall_layer.renderDebug(this.add.graphics(),
-        {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
-            faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
-        }); */
         this.physics.world.setBounds(0,0,this.map.widthInPixels, );
 
 
@@ -133,40 +114,14 @@ export default class Level3 extends Phaser.Scene {
         cam.setBounds(0,0);
         cam.setZoom(3);
         this.physics.add.collider(this.player.body, this.wall_layer,()=>{this.playCollideEffect()});
-        //this.physics.add.collider(this.player2.body, this.wall_layer);
-        //this.physics.add.collider(this.player, objectsGroup);
-        //this.physics.add.collider(this.player.body, doorsGroup);
-
-
-        /* Creación de cruadicula que sigue al cursor
-            su movimiento se gestiona en update
-        */
-
-        //this.physics.add.overlap(this.player.body, this.orc.body,()=>{console.log("Player Enemy Overlap")});// Util para entrar en combate
-        //this.physics.world.enable(this.player.attackArea);
-        //this.physics.add.overlap(this.player.attackArea.body, this.orc.body,()=>{console.log("area Enemy Overlap")});// Util para entrar en combate
-        /* this.attackArea=new Phaser.Geom.Rectangle( this.player.x-64, this.player.y-64, 128, 128);
-        const graphics = this.add.graphics({ lineStyle: { width: 2, color: 0x00aaaa } });
-        graphics.strokeRectShape(this.attackArea);
-        // Util para entrar en combate */
-         
-
-        //this.input.on('pointerdown',this.playerTP,this);//listener para tp de player
-
-/* this.wall_layer.renderDebug(this.add.graphics(),
-        {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(255, 0, 0, 50), // Colliding tiles
-            faceColor: new Phaser.Display.Color(255, 255, 255, 100) // Colliding face edges
-        }); */
         this.physics.world.setBounds(0,0,this.map.widthInPixels, this.map.heightInPixels);
 
         this.trampas = this.physics.add.group();
         this.puertas = this.physics.add.group()
 
-        //this.crearObjetosDesdeTiled(this.doors_layer);
+        
         this.crearObjetosDesdeTiled(this.objects_layer);
-        console.log("Objetos destructibles:", this.objetosDestructibles.getChildren());
+        //console.log("Objetos destructibles:", this.objetosDestructibles.getChildren());
 
 
         this.initUI();
@@ -179,18 +134,13 @@ export default class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.player.body, this.wall_layer);
         this.physics.add.collider(this.player.body, this.objetosConColision);
 
-        /*this.physics.add.collider(this.player.body, this.trampas, () => {
-            this.player.onHit(2);
-            this.player.x -= 16;
-        });*/
-
 
         if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
         this.boundLimitSound= this.sound.add("boundLimits")
         this.physics.world.on('worldbounds', (body, up, down, left, right) =>
         {   
             if(this.boundLimitSoundTimeOut===undefined)this.boundLimitSoundTimeOut=false;
-            console.log("collide");
+            //console.log("collide");
             if(!this.boundLimitSound.isPlaying && !this.boundLimitSoundTimeOut){
                 this.cameras.main.shake(300,0.0002);
                 this.boundLimitSound.play({volume:0.7});
@@ -202,7 +152,7 @@ export default class Level3 extends Phaser.Scene {
         this.initKeyCombos();
 
         this.player.on("player_End_Turn",function(){
-            console.log("player end turn");
+            //console.log("player end turn");
         });
 
         this.turn="player";
@@ -332,7 +282,7 @@ export default class Level3 extends Phaser.Scene {
                 ease:'power1',
                 duration: 1000,
             });
-            console.log('Botón presionado');
+            //console.log('Botón presionado');
             if(this.turn=="player"){this.events.emit("enemy_turn_start");} 
             else if(this.turn=="enemy"){this.events.emit("player_turn_start");} 
         });
@@ -488,7 +438,7 @@ export default class Level3 extends Phaser.Scene {
 
     initShaders(){
         let cam = this.cameras.main;
-        this.setCrtShader();
+        //this.setCrtShader();
     }
 
     async checkEnemyHit(){
@@ -662,7 +612,7 @@ export default class Level3 extends Phaser.Scene {
 
 
     showTurnMsg(){
-        console.log(this.cameras.main);
+        //console.log(this.cameras.main);
         //a.setScrollFactor(0);
     }
 

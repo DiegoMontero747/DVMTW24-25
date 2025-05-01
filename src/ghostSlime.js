@@ -102,8 +102,8 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
             /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
             this.scene.container.add(this); */
             if(this.scene.turn=="enemy"){
-                console.log(this.anims.currentAnim.key);
-                console.log(this.playerPreview.anims);
+                //console.log(this.anims.currentAnim.key);
+                //console.log(this.playerPreview.anims);
                 this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
                 this.container.setVisible(!this.container.visible);
             }

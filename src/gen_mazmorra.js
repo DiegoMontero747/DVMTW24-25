@@ -1003,7 +1003,7 @@ function generaMapa(paredes,suelo,enemigos){
         "width": ${paredes[0].length}
     }`;
 
-    console.log(json_text);
+    //console.log(json_text);
     return JSON.parse(json_text);
 }
 
@@ -1074,7 +1074,7 @@ function generaMazmorraV2(){
             }
         }
         else{
-            console.log("No había puerta disponible en la dirección",dir_ex);
+            //console.log("No había puerta disponible en la dirección",dir_ex);
         }
 
     }
@@ -1087,7 +1087,7 @@ function generaMazmorraV2(){
 
     
 
-    console.log(mapa);
+    //console.log(mapa);
     return mapa;
 
 }

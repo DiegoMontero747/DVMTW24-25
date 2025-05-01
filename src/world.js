@@ -1,12 +1,15 @@
 import Player from './player_warrior.js';
 import Phaser from 'phaser';
-
+import gen_mazmorra from './gen_mazmorra.js'; 
 export default class World extends Phaser.Scene {
     map;
     CuevasGroup;
     player;
     Castillo;
     CasaBoss;
+    cueva1;
+    cueva2;
+    cueva3;
 
     constructor() {
         super({ key: 'world' });
@@ -17,15 +20,27 @@ export default class World extends Phaser.Scene {
             this.datosPlayer = {
                 hp: 10,
                 exp: 0,
-                level: 1
+                level: 1,
+                mazmorras:{
+                    mazmorra1:{completada:false,mapa:gen_mazmorra(),posX:0,posY:0},
+                    mazmorra2:{completada:false,mapa:gen_mazmorra(),posX:0,posY:0},
+                    mazmorra3:{completada:false,mapa:gen_mazmorra(),posX:0,posY:0}
+                }
             };
-        } else {
+        } 
+        else {
             this.datosPlayer = {
                 hp: data.hp,
                 exp: data.exp,
-                level: data.level
+                level: data.level,
+                mazmorras:{
+                    mazmorra1: data.mazmorras.mazmorra1,
+                    mazmorra2: data.mazmorras.mazmorra2,
+                    mazmorra3: data.mazmorras.mazmorra3
+                }
             };
         }
+        
     }
 
     create() {
@@ -42,6 +57,12 @@ export default class World extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // Grupo de cuevas
+        
+        //separamos las cuevas individualmente para detectar cual ha sido tocada
+        this.cueva1 = this.physics.add.group();
+        this.cueva2 = this.physics.add.group();
+        this.cueva3 = this.physics.add.group();
+        //esta contiene el grupo completo (usado para que no se superpongan unas a otras)
         this.CuevasGroup = this.physics.add.group();
 
         // Crear jugador
@@ -90,21 +111,43 @@ export default class World extends Phaser.Scene {
             // this.scene.start('levelBoss');
         });
 
+        this.mazmorras=this.datosPlayer.mazmorras;
+
         // Crear cuevas
         for (let i = 0; i < 3; i++) {
-            this.ponerCueva();
+            
+            if(i==0){
+                let posCueva=this.ponerCueva(this.cueva1);
+                this.mazmorras.mazmorra1.completada=false;
+                this.mazmorras.mazmorra1.posX=posCueva.posX;
+                this.mazmorras.mazmorra1.posY=posCueva.posY;
+            }
+            if(i==1){
+                let posCueva=this.ponerCueva(this.cueva2);
+                this.mazmorras.mazmorra2.completada=false;
+                this.mazmorras.mazmorra2.posX=posCueva.posX;
+                this.mazmorras.mazmorra2.posY=posCueva.posY;
+            }
+            if(i==2){
+                let posCueva=this.ponerCueva(this.cueva3);
+                this.mazmorras.mazmorra3.completada=false;
+                this.mazmorras.mazmorra3.posX=posCueva.posX;
+                this.mazmorras.mazmorra3.posY=posCueva.posY;
+            }
         }
-
 
         // Sombra oscura sobre el mapa
         const darkOverlay = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.6 } });
         darkOverlay.fillRect(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // Superposición jugador - cuevas
-        this.physics.add.overlap(this.player, this.CuevasGroup, this.entrarCueva, null, this);
+        this.physics.add.overlap(this.player, this.cueva1, this.entrarCueva1, null, this);
+        this.physics.add.overlap(this.player, this.cueva2, this.entrarCueva2, null, this);
+        this.physics.add.overlap(this.player, this.cueva3, this.entrarCueva3, null, this);
+        //this.physics.add.overlap(this.player, this.CuevasGroup, this.entrarCueva, null, this);
     }
 
-    ponerCueva() {
+    ponerCueva(grupo) {
         let position;
         let attempts = 0;
         const maxAttempts = 100;
@@ -126,9 +169,11 @@ export default class World extends Phaser.Scene {
             return;
         }
 
-        const cueva = this.CuevasGroup.create(position.x, position.y, 'cueva');
+        const cueva = grupo.create(position.x, position.y, 'cueva');
         cueva.setOrigin(0.5, 0.5);
         cueva.setScale(0.75);
+        let posicionCueva= {posX:position.x,posY:position.y};
+        return posicionCueva;
     }
 
     isPositionOccupied(position, minDistance) {
@@ -154,6 +199,7 @@ export default class World extends Phaser.Scene {
     }
 
     entrarCueva(player, cueva) {
+        //this.load.tilemapTiledJSON("map_gen",cueva.mapa);
         console.log('Entrando a la cueva...');
         cueva.setImmovable(true);
         this.add.tween({
@@ -161,6 +207,53 @@ export default class World extends Phaser.Scene {
             duration: 800,
             amount: 50,
             onComplete: () => {
+
+                console.log(cueva.mapa);
+                this.scene.start('level3', this.datosPlayer);
+            }
+        })  
+    }
+
+    entrarCueva1(player, cueva) {
+        this.datosPlayer.nuevoMapa=this.mazmorras.mazmorra1.mapa;
+        console.log('Entrando a la cueva1...');
+        cueva.setImmovable(true);
+        this.add.tween({
+            targets: this.cameras.main.postFX.addPixelate(0),
+            duration: 800,
+            amount: 50,
+            onComplete: () => {
+                console.log(this.mazmorras.mazmorra1.mapa);
+                this.scene.start('level3', this.datosPlayer);
+            }
+        })  
+    }
+
+    entrarCueva2(player, cueva) {
+        this.datosPlayer.nuevoMapa=this.mazmorras.mazmorra2.mapa;
+        console.log('Entrando a la cueva2...');
+        cueva.setImmovable(true);
+        this.add.tween({
+            targets: this.cameras.main.postFX.addPixelate(0),
+            duration: 800,
+            amount: 50,
+            onComplete: () => {
+                console.log(this.mazmorras.mazmorra2.mapa);
+                this.scene.start('level3', this.datosPlayer);
+            }
+        })  
+    }
+
+    entrarCueva3(player, cueva) {
+        this.datosPlayer.nuevoMapa=this.mazmorras.mazmorra3.mapa;
+        console.log('Entrando a la cueva3...');
+        cueva.setImmovable(true);
+        this.add.tween({
+            targets: this.cameras.main.postFX.addPixelate(0),
+            duration: 800,
+            amount: 50,
+            onComplete: () => {
+                console.log(this.mazmorras.mazmorra3.mapa);
                 this.scene.start('level3', this.datosPlayer);
             }
         })  
@@ -174,11 +267,13 @@ export default class World extends Phaser.Scene {
         this.marker.x = this.map.tileToWorldX(pointerTileX);
         this.marker.y = this.map.tileToWorldY(pointerTileY);
 
+        /*
         const currentObjectCount = this.CuevasGroup.countActive(true);
         if (currentObjectCount < 3) {
             for (let i = currentObjectCount; i < 3; i++) {
                 this.ponerCueva();
             }
         }
+            */
     }
 }

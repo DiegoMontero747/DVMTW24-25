@@ -11,11 +11,11 @@ export default class TNT extends Objeto {
         this.hp = 1;
         this.setInteractive(this.scene.input.makePixelPerfect());
         this.anims.createFromAseprite('KABOOM');
-        console.log(this.anims)
+        //console.log(this.anims)
     }
 
     interactuar() {
-        console.log("KABOOOOOOM");
+        //console.log("KABOOOOOOM");
         this.explotar()
     }
 
@@ -23,10 +23,10 @@ export default class TNT extends Objeto {
         if (this.hp <= 0) return; // Evita explotar varias veces
     
         this.hp -= cantidad; // Resta vida a la TNT
-        console.log(`TNT golpeada, HP restante: ${this.hp}`);
+        //console.log(`TNT golpeada, HP restante: ${this.hp}`);
     
         if (this.hp <= 0) {
-            console.log("💥 TNT explotando...");
+            //console.log("💥 TNT explotando...");
             this.scene.time.delayedCall(100, () => this.explotar(), [], this); // Pequeño retardo para la cadena
         }
     }
@@ -44,17 +44,17 @@ export default class TNT extends Objeto {
         this.explosionArea.body.setImmovable(true);  // No debe moverse
     
         // 🔹 DEBUG: Verificar si tiene un cuerpo físico
-        console.log("Cuerpo físico de explosionArea:", this.explosionArea.body);
+        //console.log("Cuerpo físico de explosionArea:", this.explosionArea.body);
     
         // Detectar colisión con objetos destructibles
         this.scene.physics.overlap(this.explosionArea, this.scene.objetosDestructibles, (explosion, objeto) => {
-                console.log("KABOOOOOOM", objeto);
+                //console.log("KABOOOOOOM", objeto);
     
                 if (typeof objeto.onHit === "function") {
-                    console.log(`Ejecutando onHit para ${objeto.texture ? objeto.texture.key : "Objeto desconocido"}`);
+                    //console.log(`Ejecutando onHit para ${objeto.texture ? objeto.texture.key : "Objeto desconocido"}`);
                     objeto.onHit(20);
                 } else {
-                    console.error(`onHit no es una función en:`, objeto);
+                    //console.error(`onHit no es una función en:`, objeto);
                 }
         });
     
