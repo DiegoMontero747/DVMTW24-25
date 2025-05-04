@@ -80,7 +80,7 @@ export default class World extends Phaser.Scene {
 
         // Crear cuevas
         for (let i = 0; i < 3; i++) {
-            this.ponerCueva();
+            this.ponerCueva(i);
         }
 
 
@@ -308,35 +308,48 @@ export default class World extends Phaser.Scene {
 
     }
 
-    ponerCueva() {
-        
+    ponerCueva(tipo) {
         let position;
         let attempts = 0;
         const maxAttempts = 100;
         const minDistance = 200;
-
+    
+        // Buscar una posición válida
         do {
             position = this.getRandomAccessiblePosition();
             attempts++;
         } while (
+            attempts < maxAttempts &&
             (
                 this.isPositionOccupied(position, minDistance) ||
                 this.isNear(position, this.player, minDistance) ||
                 this.isNear(position, this.Castillo, minDistance) ||
                 this.isNear(position, this.CasaBoss, minDistance)
             )
-            && attempts < maxAttempts
         );
-
+    
+        // Si no se encuentra una buena posición, avisar
         if (attempts === maxAttempts) {
             console.warn('No se encontró una posición adecuada para la cueva después de varios intentos.');
             return;
         }
-
-        const cueva = this.CuevasGroup.create(position.x, position.y, 'cueva');
+    
+        // Crear la cueva dependiendo del tipo
+        let key;
+        switch (tipo) {
+            case 1: key = 'cuevaDOS'; break;
+            case 2: key = 'cuevaTRES'; break;
+            default: key = 'cueva'; break;
+        }
+        const cueva = this.CuevasGroup.create(position.x, position.y, key);
+    
         cueva.setOrigin(0.5, 0.5);
         cueva.setScale(0.75);
+    
+        // Puedes guardar la referencia si deseas manipular la cueva más adelante
+        // this.ultimaCueva = cueva;
     }
+    
 
     isPositionOccupied(position, minDistance) {
         return this.CuevasGroup.getChildren().some(cueva => {
