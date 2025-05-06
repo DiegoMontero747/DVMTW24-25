@@ -121,19 +121,19 @@ export default class World extends Phaser.Scene {
         for (let i = 0; i < 3; i++) {
             
             if(i==0){
-                let posCueva=this.ponerCueva(this.cueva1);
+                let posCueva=this.ponerCueva(this.cueva1,1);
                 this.mazmorras.mazmorra1.completada=false;
                 this.mazmorras.mazmorra1.posX=posCueva.posX;
                 this.mazmorras.mazmorra1.posY=posCueva.posY;
             }
             if(i==1){
-                let posCueva=this.ponerCueva(this.cueva2);
+                let posCueva=this.ponerCueva(this.cueva2,2);
                 this.mazmorras.mazmorra2.completada=false;
                 this.mazmorras.mazmorra2.posX=posCueva.posX;
                 this.mazmorras.mazmorra2.posY=posCueva.posY;
             }
             if(i==2){
-                let posCueva=this.ponerCueva(this.cueva3);
+                let posCueva=this.ponerCueva(this.cueva3,3);
                 this.mazmorras.mazmorra3.completada=false;
                 this.mazmorras.mazmorra3.posX=posCueva.posX;
                 this.mazmorras.mazmorra3.posY=posCueva.posY;
@@ -321,7 +321,13 @@ export default class World extends Phaser.Scene {
             });
             music.play();
         }
-    }   
+    }
+    pararMusica() {
+        if (this.sound.get('dragonMusic')) {
+            const music = this.sound.get('dragonMusic');
+            this.sound.remove(music);
+        }
+    }     
     
 
     tutorial(){
@@ -366,7 +372,7 @@ export default class World extends Phaser.Scene {
 
     }
 
-    ponerCueva(tipo) {
+    ponerCueva(grupo,tipo) {
         let position;
         let attempts = 0;
         const maxAttempts = 100;
@@ -406,14 +412,15 @@ export default class World extends Phaser.Scene {
             case 2: key = 'cuevaTRES'; break;
             default: key = 'cueva'; break;
         }
-        const cueva = this.CuevasGroup.create(position.x, position.y, key);
-    
+        const cueva = grupo.create(position.x, position.y, key);
+
         cueva.setOrigin(0.5, 0.5);
         cueva.setScale(0.75);
     
         // Puedes guardar la referencia si deseas manipular la cueva más adelante
         // this.ultimaCueva = cueva;
-
+        let posicionCueva= {posX:position.x,posY:position.y};
+        return posicionCueva;
     }
     
 
@@ -450,6 +457,7 @@ export default class World extends Phaser.Scene {
             onComplete: () => {
 
                 console.log(cueva.mapa);
+                this.pararMusica();
                 this.scene.start('level3', this.datosPlayer);
             }
         })  
@@ -465,6 +473,7 @@ export default class World extends Phaser.Scene {
             amount: 50,
             onComplete: () => {
                 console.log(this.mazmorras.mazmorra1.mapa);
+                this.pararMusica();
                 this.scene.start('level3', this.datosPlayer);
             }
         })  
@@ -480,6 +489,7 @@ export default class World extends Phaser.Scene {
             amount: 50,
             onComplete: () => {
                 console.log(this.mazmorras.mazmorra2.mapa);
+                this.pararMusica();
                 this.scene.start('level3', this.datosPlayer);
             }
         })  
@@ -495,7 +505,7 @@ export default class World extends Phaser.Scene {
             amount: 50,
             onComplete: () => {
                 console.log(this.mazmorras.mazmorra3.mapa);
-                this.sound.pauseOnBlur = false;
+                this.pararMusica();
                 this.scene.start('level3', this.datosPlayer);
             }
         })  
