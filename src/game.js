@@ -11,6 +11,7 @@ import GameShaderGBA from "./shaders/gbaShader.js";
 import GameShaderPixel from "./shaders/pixelShader.js"; 
 import LevelDebug from './levelDebug.js';
 import world from './world.js';
+import levelBoss from './levelBoss.js';
 
 
 /**
@@ -27,7 +28,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot,world, Level,Level2,Level3,combatScene,LevelDebug, End],
+    scene: [Boot,world,levelBoss, Level,Level2,Level3,combatScene,LevelDebug, End],
 
 
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
