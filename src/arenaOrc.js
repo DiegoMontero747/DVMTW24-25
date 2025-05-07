@@ -537,17 +537,9 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.strokeRectShape(this.moveArea);
         this.setDepth(2);
         this.isMoving=true;
-        if(this.gotTurn){
-        this.play({key:'attack_'+this.facing},true);
-        this.scene.sound.play("swingSound");
-        this.scene.checkPlayerHit(this.selectedAttackArea);
-        this.once("animationcomplete",()=>{
-            this.moveToPlayer();
-        });
-        }else{
-            this.gotTurn=true;
-            this.moveToPlayer();
-        }
+        this.gotTurn=true;
+        this.moveToPlayer();
+        
         //Animacion personaje activo
         this.scene.tweens.add({
             targets: [this],
@@ -576,12 +568,22 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         //this.attackArea.setVisible(false);
         this.setDepth(1);
+        this.hasMoved=false;
+        if(this.gotTurn==true && this.selectedAttackArea){
+            this.dirAttackArea[this.facing].setVisible(true);
+            this.playAttack();
+            this.scene.sound.play("swingSound");
+            this.scene.checkPlayerHit(this.selectedAttackArea);
+            this.gotTurn=false;
+        }
     }
 
     playAttack(){ //Usando otra cosa de momento
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
-        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
+        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;
+            if(this.dirAttackArea)this.dirAttackArea[this.facing].setVisible(false);
+        });
         //this.chain({key:'iddle_'+this.facing,repeat:-1},true);
     }
 
@@ -612,15 +614,23 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 this.stopped=true;
                 this.scene.events.emit("enemy_turn_end");
             } 
-        }else{
-            this.hasMoved=true;
         }
     }
 
     setAttackArea(){
+        if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this) <= this.rangoDetectar && this.cursors.up.isDown){
+            debugger;
+        } 
         if(this.facing && this.stopped && this.gotTurn){
-            this.dirAttackArea[this.facing].setVisible(true);
+            let angle=Phaser.Math.Angle.Normalize(Phaser.Math.Angle.Between(this.x,this.y,this.scene.player.x,this.scene.player.y));
+            if(angle>(Math.PI/4) && angle<(3*Math.PI/4)){this.facing="down";}
+            else if((angle>=(3*Math.PI/4)) && (angle<(5*Math.PI/4))){this.facing="left";}
+            else if((angle>(5*Math.PI/4)) && (angle<(7*Math.PI/4))){this.facing="up";}
+            else {this.facing="right";}
             this.selectedAttackArea=this.dirAttackArea[this.facing];
+            if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this) <= this.rangoDetectar){
+                console.log(angle)
+            } 
         }
     }
     /**

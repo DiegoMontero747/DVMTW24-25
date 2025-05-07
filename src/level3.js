@@ -313,8 +313,8 @@ export default class Level3 extends Phaser.Scene {
         });
         this.events.on("enemy_turn_end",()=>{
             let areTurnsFinished=true;
-            this.enemies.forEach((enemy)=>{if(enemy.stopped==false)areTurnsFinished=false});
-            if(areTurnsFinished){
+            this.enemies.forEach((enemy)=>{if(enemy.hasMoved==false)areTurnsFinished=false});
+            if(areTurnsFinished==true){
                 this.time.delayedCall(300,()=>{this.events.emit("player_turn_start");},[],this);
             }
         });
@@ -610,7 +610,6 @@ export default class Level3 extends Phaser.Scene {
                 this.objetosConColision.add(nuevoObjeto)
         });
     }
-
 
     showTurnMsg(){
         //console.log(this.cameras.main);

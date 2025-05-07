@@ -67,7 +67,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
-        this.cursors = this.scene.input.keyboard.createCursorKeys();
+        this.cursors =  this.scene.input.keyboard.addKeys({ up: 'W', left: 'A', down: 'S', right: 'D' });
 
         this.play({key:'iddle_right',repeat:-1});
         
