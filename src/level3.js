@@ -495,11 +495,10 @@ export default class Level3 extends Phaser.Scene {
         //this.orc.checkHit();
         this.objetosDestructibles.children.iterate((obj) => {
             if(obj.checkHit()){
-                if(this.scene.attackEffect.dmg >= obj.hp){
+                if(this.attackEffect.dmg >= obj.hp){
                     this.objetosDestructibles.remove(obj)
-                    i--;
                 }
-                obj.onHit(this.scene.attackEffect.dmg)
+                obj.onHit(this.attackEffect.dmg)
             }
         });
         this.enemies.forEach((enemy)=>{enemy.checkHit()});
