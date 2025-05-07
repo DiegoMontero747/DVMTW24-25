@@ -497,7 +497,7 @@ export default class Level3 extends Phaser.Scene {
             });
         });
     }
-
+ 
     setLights(){
         this.wall_layer.setPipeline("Light2D")
         this.floor_layer.setPipeline("Light2D")
