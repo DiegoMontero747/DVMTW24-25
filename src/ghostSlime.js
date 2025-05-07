@@ -38,7 +38,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         this.container.setVisible(false);
         this.rangoMovimiento = 6*16;
         this.rangoDetectar =8*16;
-        this.colision = true;
+        this.colision = false;
         //let color=this.postFX.addColorMatrix();
         //color.hue(45*5,true);
         //Auxiliares de movimiento grid con fisicas

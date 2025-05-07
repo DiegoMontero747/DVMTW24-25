@@ -78,6 +78,7 @@ export default class Boot extends Phaser.Scene {
 
     this.load.setPath('/assets/audio/music/');
     this.load.audio('combatMusic', 'combatMusic.mp3');
+    this.load.audio('dragonMusic', 'battle-of-the-dragons.mp3');
 
     //Carga de tilemap
     this.load.setPath('/assets/tilemaps/');
@@ -92,8 +93,8 @@ export default class Boot extends Phaser.Scene {
     this.load.tilemapTiledJSON("mapOriginal","sinNombre2.json");
     this.load.tilemapTiledJSON("arena","Arena.json");
     this.load.tilemapTiledJSON("mapaMundial","mapamundi.json");
+  
 
-    
     //let dato = JSON.parse(texto);
     //this.load.tilemapTiledJSON("map","Prueba_001.json");
     //let mazmorra=gen_mazmorra();
@@ -105,9 +106,17 @@ export default class Boot extends Phaser.Scene {
     this.load.image('Props', 'Props.png');
 
 
-    this.load.image('casaBoss', 'casaBoss.png');
+    this.load.image('casaBoss', 'infierno.png');
     this.load.image('castillo', 'castillo.png');
-    this.load.image('cueva', 'cueva.png');
+    this.load.image('cueva', 'mazmorra.png');
+    this.load.image('cuevaDOS', 'mazmorraDOS.png');
+    this.load.image('cuevaTRES', 'mazmorraTRES.png');
+    this.load.image('tutorialMovimienton', 'Movimiento.png');
+    this.load.image('Ciudad', 'ares.png');
+    this.load.image('Aldea', 'aldea.jpeg');
+    this.load.image('AldeaPixel', 'aldeaPixel.png');
+    this.load.tilemapTiledJSON("mapaBoss","mapaBoss.json");
+
   }
   
   /**

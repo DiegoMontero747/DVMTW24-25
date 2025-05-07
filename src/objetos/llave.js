@@ -13,6 +13,7 @@ export default class Llave extends Objeto {
     interactuar() {
         this.scene.datosPlayer.hp = this.scene.player.hp;
         //this.scene.datosPlayer.mazmorras= this.scene.mazmorras;
+        this.scene.stopMusic();
         this.scene.scene.start('world', this.scene.datosPlayer)
     }
 

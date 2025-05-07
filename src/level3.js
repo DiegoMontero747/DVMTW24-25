@@ -138,7 +138,7 @@ export default class Level3 extends Phaser.Scene {
         this.physics.add.collider(this.player.body, this.objetosConColision);
 
 
-        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
+        //if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
         this.boundLimitSound= this.sound.add("boundLimits")
         this.physics.world.on('worldbounds', (body, up, down, left, right) =>
         {   
@@ -249,6 +249,10 @@ export default class Level3 extends Phaser.Scene {
             this.playCollideEffect();
         });
     }
+    stopMusic(){
+        const combatMusic=this.sound.get('combatMusic');
+        if(combatMusic)this.sound.remove(combatMusic);
+    }
 
 
     playCollideEffect(){
@@ -259,15 +263,6 @@ export default class Level3 extends Phaser.Scene {
                 this.boundLimitSoundTimeOut=true;
                 this.time.addEvent({delay:800,callback:()=>{this.boundLimitSoundTimeOut=false;}});
             } 
-    }
-
-    initMusic(){
-        if(!this.sceneMusic) this.sceneMusic=this.sound.play("combatMusic",{loop:true,volume:0.5});
-        this.boundLimitSound= this.sound.add("boundLimits")
-        this.physics.world.on('worldbounds', (body, up, down, left, right) =>
-        {   
-            this.playCollideEffect();
-        });
     }
 
     initUI(){
@@ -502,7 +497,7 @@ export default class Level3 extends Phaser.Scene {
             });
         });
     }
-
+ 
     setLights(){
         this.wall_layer.setPipeline("Light2D")
         this.floor_layer.setPipeline("Light2D")
