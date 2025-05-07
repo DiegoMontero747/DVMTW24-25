@@ -1,6 +1,7 @@
 import Player from './player_warrior.js';
 import Phaser from 'phaser';
 import gen_mazmorra from './gen_mazmorra.js'; 
+
 export default class World extends Phaser.Scene {
     map;
     CuevasGroup;
@@ -44,18 +45,27 @@ export default class World extends Phaser.Scene {
     }
 
     create() {
-        // Crear layers del mapa
-        this.map = this.make.tilemap({ key: 'mapaMundial' });
-        const tileset = this.map.addTilesetImage('mapaPeninsula', 'mapaPeninsula');
+        /*Crear layers json*/
+        this.map= this.make.tilemap({key:'mapOkk'});  
+        const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
+        const props =this.map.addTilesetImage('PropsF','PropsF');
+       
 
-        this.wall_layer = this.map.createLayer("Pared", tileset, 0, 0);
-        if (this.wall_layer.layer.properties.find(prop => prop.name === "Collide" && prop.value === true)) {
+        
+        
+        
+        const floor_layer  = this.map.createLayer("bosque", tileset, 0, 0);
+        this.wall_layer = this.map.createLayer("cao", props, 0, 0);
+
+        console.log('¿PropsA cargada?', this.textures.exists('PropsF'));
+
+        if (this.wall_layer.layer.properties.find(prop => prop.name === "lim" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
         }
 
         
+      
 
-        const floor_layer = this.map.createLayer("Fondo", tileset, 0, 0);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // Grupo de cuevas
@@ -140,9 +150,6 @@ export default class World extends Phaser.Scene {
             }
         }
 
-        // Sombra oscura sobre el mapa
-        const darkOverlay = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.45 } });
-        darkOverlay.fillRect(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // Superposición jugador - cuevas
         this.physics.add.overlap(this.player, this.cueva1, this.entrarCueva1, null, this);
@@ -376,7 +383,7 @@ export default class World extends Phaser.Scene {
         let position;
         let attempts = 0;
         const maxAttempts = 100;
-        const minDistance = 200;
+        const minDistance = 150;
     
         // Buscar una posición válida
         do {

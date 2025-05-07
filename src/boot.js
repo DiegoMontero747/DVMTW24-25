@@ -89,11 +89,8 @@ export default class Boot extends Phaser.Scene {
 
     //Carga .JSON (formato mas comodo en codigo)
 
-    this.load.image('mapaPeninsula', 'mapaPeninsula.jpg');
     this.load.tilemapTiledJSON("mapOriginal","sinNombre2.json");
     this.load.tilemapTiledJSON("arena","Arena.json");
-    this.load.tilemapTiledJSON("mapaMundial","mapamundi.json");
-  
 
     //let dato = JSON.parse(texto);
     //this.load.tilemapTiledJSON("map","Prueba_001.json");
@@ -102,9 +99,10 @@ export default class Boot extends Phaser.Scene {
     //this.load.tilemapTiledJSON("map",mazmorra);
     
     this.load.image('TilesDungeon', 'Tiles.png');
+
+    this.load.image('PropsF', 'PropsF.png');
     this.load.image('PropsA', 'PropsF.png');
     this.load.image('Props', 'Props.png');
-
 
     this.load.image('casaBoss', 'infierno.png');
     this.load.image('castillo', 'castillo.png');
@@ -115,7 +113,12 @@ export default class Boot extends Phaser.Scene {
     this.load.image('Ciudad', 'ares.png');
     this.load.image('Aldea', 'aldea.jpeg');
     this.load.image('AldeaPixel', 'aldeaPixel.png');
-    this.load.tilemapTiledJSON("mapaBoss","mapaBoss.json");
+
+ 
+    this.load.tilemapTiledJSON("mapaBoss","MAPBOSS.json");
+    this.load.tilemapTiledJSON("mapOkk","bosqueV2.json");
+
+
 
   }
   
