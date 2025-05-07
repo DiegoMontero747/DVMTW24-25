@@ -455,7 +455,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             break;
             case "directional":
                 const dirs=["up","down","left","right"];
-                const offsetsAreas=[{x:6,y:-30},{x:6,y:37+this.attackAreaOffsetY},{x:-44,y:this.attackAreaOffsetY+6},{x:37,y:this.attackAreaOffsetY+6}];
+                //const offsetsAreas=[{x:6,y:-30},{x:6,y:37+this.attackAreaOffsetY},{x:-44,y:this.attackAreaOffsetY+6},{x:37,y:this.attackAreaOffsetY+6}];
+                const offsetsAreas=[{x:0,y:-7},{x:0,y:20},{x:-7,y:this.attackAreaOffsetY},{x:7,y:this.attackAreaOffsetY}];
                 const offsets=[{x:0,y:-37+this.attackAreaOffsetY},{x:0,y:37+this.attackAreaOffsetY},{x:-37,y:this.attackAreaOffsetY},{x:37,y:this.attackAreaOffsetY}];
                 const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:64},{x:64,y:64}];
                 const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
@@ -470,12 +471,14 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                     [{x:-6,y:0},{x:16,y:-10},{x:-16,y:-10},{x:6,y:0}]
                     ,[{x:10,y:16},{x:10,y:-16},{x:0,y:6},{x:0,y:-6}]
                     ,[{x:0,y:-6},{x:0,y:6},{x:-10,y:-16},{x:-10,y:16}]];
-                    this.dirAttackArea[dirs[i]]=this.scene.add.polygon( offsetsAreas[i].x, offsetsAreas[i].y, 
+                    /* this.dirAttackArea[dirs[i]]=this.scene.add.polygon( offsetsAreas[i].x, offsetsAreas[i].y, 
                         [[0+shapeDisps[i][0].x,0+shapeDisps[i][0].y],
                         [0+shapeDisps[i][1].x,sizes[i].y+shapeDisps[i][1].y],
                         [sizes[i].x+shapeDisps[i][2].x,sizes[i].y+shapeDisps[i][2].y],
                         [sizes[i].x+shapeDisps[i][3].x,0+shapeDisps[i][3].y]],
-                         0xff0000,0.25).setVisible(false);
+                         0xff0000,0.25).setVisible(false); */
+                    const angles=[{start:180,end:0},{start:0,end:180},{start:90,end:270},{start:270,end:90}];
+                    this.dirAttackArea[dirs[i]]=this.scene.add.arc(offsetsAreas[i].x, offsetsAreas[i].y,50,angles[i].start,angles[i].end,false,0xff0000,0.25).setVisible(false);
                     this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xff0000, 1);
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
