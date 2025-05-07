@@ -113,10 +113,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('Ciudad', 'ares.png');
     this.load.image('Aldea', 'aldea.jpeg');
     this.load.image('AldeaPixel', 'aldeaPixel.png');
+    this.load.image('primer', 'primer.png');
 
  
     this.load.tilemapTiledJSON("mapaBoss","MAPBOSS.json");
-    this.load.tilemapTiledJSON("mapOkk","bosqueV2.json");
+    this.load.tilemapTiledJSON("mapOkk","mapV3.json");
 
 
 

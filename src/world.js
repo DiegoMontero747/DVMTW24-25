@@ -47,24 +47,23 @@ export default class World extends Phaser.Scene {
     create() {
         /*Crear layers json*/
         this.map= this.make.tilemap({key:'mapOkk'});  
+
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
-        const props =this.map.addTilesetImage('PropsF','PropsF');
-       
-
+        const primer =this.map.addTilesetImage('primer','primer');
+        this.wall_layer = this.map.createLayer("agua", primer, 0, 0);
+        this.floor_layer = this.map.createLayer("Fondo", primer, 0, 0);
         
-        
-        
-        const floor_layer  = this.map.createLayer("bosque", tileset, 0, 0);
-        this.wall_layer = this.map.createLayer("cao", props, 0, 0);
 
-        console.log('¿PropsA cargada?', this.textures.exists('PropsF'));
-
-        if (this.wall_layer.layer.properties.find(prop => prop.name === "lim" && prop.value === true)) {
+        if (this.wall_layer.layer.properties.find(prop => prop.name === "shui" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
         }
 
-        
+        this.castillo_layer = this.map.createLayer("castillo", primer,0,0);
       
+        this.casaBoss_layer = this.map.createLayer("boss", tileset,0,0);
+
+
+        this.yaDentroCastillo = false;
 
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
@@ -94,36 +93,6 @@ export default class World extends Phaser.Scene {
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);
         this.marker.strokeRect(0, 0, tileSize, tileSize);
-
-        // Crear castillo
-        this.Castillo = this.physics.add.sprite(500, 375, 'castillo');
-        this.Castillo.setOrigin(0.5, 0.5);
-        this.Castillo.setScale(1);
-
-        this.Castillo.setImmovable(true);
-        this.Castillo.setPushable(false);
-
-        this.physics.add.collider(this.player, this.Castillo, () => {
-            console.log('Entrando al castillo...');
-            this.Castillo.setVelocity(0,0);
-            // this.scene.start('levelCastillo');
-            this.funCastillo();
-            
-        });
-
-        // Crear casaBoss
-        this.CasaBoss = this.physics.add.sprite(195, 160, 'casaBoss');
-        this.CasaBoss.setOrigin(0.5, 0.5);
-        this.CasaBoss.setScale(1);
-
-        this.CasaBoss.setImmovable(true);
-        this.CasaBoss.setPushable(false);
-
-        this.physics.add.collider(this.player, this.CasaBoss, () => {
-            console.log('Entrando a la casa del Boss...');
-            this.CasaBoss.setVelocity(0, 0);
-            this.scene.start('levelBoss');
-        });
 
         this.mazmorras=this.datosPlayer.mazmorras;
 
@@ -242,60 +211,62 @@ export default class World extends Phaser.Scene {
             this.dialogoMostrado = false;
         });
     }
-    
-    
 
     cuento() {
         this.player.setFreeMovement(false);
     
-        const centerX = this.cameras.main.centerX;
-        const centerY = this.cameras.main.centerY;
+        // 📌 Usar el centro de la cámara, no del jugador
+        const centerX = this.cameras.main.worldView.centerX;
+        const centerY = this.cameras.main.worldView.centerY;
     
-        const imagenCuento = this.add.image(centerX, centerY + 20, 'AldeaPixel')
+        const imagenCuento = this.add.image(centerX, centerY - 80, 'AldeaPixel')
             .setScale(0.75)
             .setOrigin(0.5);
     
-        let textoCuento = this.add.text(centerX, centerY + 75,
+        let textoCuento = this.add.text(centerX, centerY + 10,
             'Esto era Darkfall, un reino orgulloso, llena de vida. Comerciantes, herreros, niños corriendo por las calles…\n' +
             'ahora solo quedan ruinas y cenizas.',
             {
                 fontSize: '16px',
                 color: '#ffffff',
-                backgroundColor: '#000000aa',
+                backgroundColor: '#000000cc',
                 padding: { x: 10, y: 10 },
                 wordWrap: { width: 400 },
                 align: 'center'
             })
             .setOrigin(0.5);
     
-        const cerrarCuentoBtn = this.add.text(centerX, centerY + 165, 'Cerrar cuento', {
+        const cerrarCuentoBtn = this.add.text(centerX, centerY + 150, 'Cerrar cuento', {
             fontSize: '14px',
             backgroundColor: '#222',
             color: '#fff',
             padding: { x: 10, y: 6 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     
-        let siguienteBtn = this.add.text(centerX, centerY + 135, 'Siguiente', {
+        let siguienteBtn = this.add.text(centerX, centerY + 115, 'Siguiente', {
             fontSize: '14px',
             backgroundColor: '#333',
             color: '#fff',
             padding: { x: 10, y: 6 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     
-        let redOverlay = null;
+        // 🔴 Overlay rojo inicial oculto
+        let redOverlay = this.add.graphics();
+        redOverlay.fillStyle(0xff0000, 0.15);
+        redOverlay.fillRect(this.cameras.main.worldView.x, this.cameras.main.worldView.y, this.cameras.main.width, this.cameras.main.height);
+        redOverlay.setVisible(false);
     
         siguienteBtn.on('pointerdown', () => {
-            if (!redOverlay) {
-                redOverlay = this.add.graphics({ fillStyle: { color: 0xff0000, alpha: 0.2 } });
-                redOverlay.fillRect(0, 0, this.cameras.main.width, this.cameras.main.height);
-            }
+            redOverlay.setVisible(true);
     
-            textoCuento.setText('El demonio vino sin aviso. Oscureció el cielo y trajo consigo criaturas de pesadilla.\n' +
-                'Nos defendimos como pudimos… pero no fue suficiente.');
+            textoCuento.setText(
+                'El demonio vino sin aviso. Oscureció el cielo y trajo consigo criaturas de pesadilla.\n' +
+                'Nos defendimos como pudimos… pero no fue suficiente.'
+            );
     
-            // Reemplazar el primer botón "Siguiente" por el segundo
             siguienteBtn.destroy();
-            siguienteBtn = this.add.text(centerX, centerY + 135, '¿No queda nadie?', {
+    
+            siguienteBtn = this.add.text(centerX, centerY + 115, '¿No queda nadie?', {
                 fontSize: '14px',
                 backgroundColor: '#333',
                 color: '#fff',
@@ -303,9 +274,10 @@ export default class World extends Phaser.Scene {
             }).setOrigin(0.5).setInteractive({ useHandCursor: true });
     
             siguienteBtn.on('pointerdown', () => {
-                textoCuento.setText('Unos pocos sobrevivimos, escondidos entre los escombros. Pero vivimos con miedo, y cada noche, los gritos de los que se llevó siguen resonando.\n' +
-                    ' Si estás aquí para enfrentarlo… todos ponemos nuestras esperanzas en ti. Acaba con él, Poncho. Por Darkfall. Por los que ya no pueden luchar.');
-    
+                textoCuento.setText(
+                    'Unos pocos sobrevivimos, escondidos entre los escombros. Pero vivimos con miedo, y cada noche, los gritos de los que se llevó siguen resonando.\n' +
+                    'Si estás aquí para enfrentarlo… todos ponemos nuestras esperanzas en ti. Acaba con él, Poncho. Por Darkfall. Por los que ya no pueden luchar.'
+                );
                 siguienteBtn.destroy();
             });
         });
@@ -315,10 +287,11 @@ export default class World extends Phaser.Scene {
             textoCuento.destroy();
             cerrarCuentoBtn.destroy();
             siguienteBtn.destroy();
-            if (redOverlay) redOverlay.destroy();
+            redOverlay.destroy();
             this.player.setFreeMovement(true);
         });
     }
+    
     
     reproducirMusica() {
         if (!this.sound.get('dragonMusic')) {
@@ -385,7 +358,6 @@ export default class World extends Phaser.Scene {
         const maxAttempts = 100;
         const minDistance = 150;
     
-        // Buscar una posición válida
         do {
             position = this.getRandomAccessiblePosition();
             attempts++;
@@ -394,24 +366,18 @@ export default class World extends Phaser.Scene {
             (
                 this.isPositionOccupied(position, minDistance) ||
                 this.isNear(position, this.player, minDistance) ||
-                this.isNear(position, this.Castillo, minDistance) ||
-                this.isNear(position, this.CasaBoss, minDistance)
+                this.isNearCasaBoss(position, minDistance) ||
+                this.isNearCastillo(position, minDistance)
             )
         );
+        
     
         // Si no se encuentra una buena posición, avisar
         if (attempts === maxAttempts) {
             console.warn('No se encontró una posición adecuada para la cueva después de varios intentos.');
             return;
         }
-        /*
-        const cueva = grupo.create(position.x, position.y, 'cueva');
-        cueva.setOrigin(0.5, 0.5);
-        cueva.setScale(0.75);
-        let posicionCueva= {posX:position.x,posY:position.y};
-        return posicionCueva;
-        */
-    
+
         // Crear la cueva dependiendo del tipo
         let key;
         switch (tipo) {
@@ -430,6 +396,44 @@ export default class World extends Phaser.Scene {
         return posicionCueva;
     }
     
+
+    isNearCastillo(position, minDistance) {
+        const tileRadius = Math.ceil(minDistance / this.map.tileWidth);
+        const tileX = this.map.worldToTileX(position.x);
+        const tileY = this.map.worldToTileY(position.y);
+    
+        for (let dx = -tileRadius; dx <= tileRadius; dx++) {
+            for (let dy = -tileRadius; dy <= tileRadius; dy++) {
+                const tx = tileX + dx;
+                const ty = tileY + dy;
+    
+                const tile = this.castillo_layer.getTileAt(tx, ty);
+                if (tile && tile.index !== -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    isNearCasaBoss(position, minDistance) {
+        const tileRadius = Math.ceil(minDistance / this.map.tileWidth);
+        const tileX = this.map.worldToTileX(position.x);
+        const tileY = this.map.worldToTileY(position.y);
+    
+        for (let dx = -tileRadius; dx <= tileRadius; dx++) {
+            for (let dy = -tileRadius; dy <= tileRadius; dy++) {
+                const tx = tileX + dx;
+                const ty = tileY + dy;
+    
+                const tile = this.casaBoss_layer.getTileAt(tx, ty);
+                if (tile && tile.index !== -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+        
 
     isPositionOccupied(position, minDistance) {
         return this.CuevasGroup.getChildren().some(cueva => {
@@ -519,23 +523,32 @@ export default class World extends Phaser.Scene {
     }
 
     update(time, delta) {
-
+        // 🖱️ Actualizar marcador del cursor
         const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
         const gridOffsetX = 0, gridOffsetY = -1, mouseOffsetX = -1, mouseOffsetY = 0, snapInterval = 3;
         const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x) + mouseOffsetX, snapInterval) + gridOffsetX;
         const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y) + mouseOffsetY, snapInterval) + gridOffsetY;
         this.marker.x = this.map.tileToWorldX(pointerTileX);
         this.marker.y = this.map.tileToWorldY(pointerTileY);
-
-        /*
-        const currentObjectCount = this.CuevasGroup.countActive(true);
-
-        if (currentObjectCount < 3) {
-            for (let i = currentObjectCount; i < 3; i++) {
-                this.ponerCueva();
-            }
+    
+        const playerTileX = this.map.worldToTileX(this.player.x);
+        const playerTileY = this.map.worldToTileY(this.player.y);
+    
+        // ✅ Casa del Boss: siempre cambia de escena si la pisa
+        const tileBoss = this.casaBoss_layer.getTileAt(playerTileX, playerTileY);
+        if (tileBoss) {
+            this.scene.start('levelBoss');
         }
-            */
+    
+        // ✅ Castillo: ejecutar solo una vez por pisada
+        const tileCastillo = this.castillo_layer.getTileAt(playerTileX, playerTileY);
+        if (tileCastillo && !this.yaDentroCastillo) {
+            this.yaDentroCastillo = true;
+            this.funCastillo();
+        } else if (!tileCastillo) {
+            this.yaDentroCastillo = false;
+        }
+    }    
 
-    }
+    
 }
