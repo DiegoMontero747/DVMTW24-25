@@ -13,7 +13,7 @@ import LevelDebug from './levelDebug.js';
 import world from './world.js';
 import levelBoss from './levelBoss.js';
 
-
+ 
 /**
  * Inicio del juego en Phaser. Creamos el archivo de configuración del juego y creamos
  * la clase Game de Phaser, encargada de crear e iniciar el juego.
