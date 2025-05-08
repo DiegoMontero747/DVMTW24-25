@@ -77,11 +77,11 @@ export default class World extends Phaser.Scene {
         this.CuevasGroup = this.physics.add.group();
 
         // Crear jugador
-        this.player = new Player(this, 500, 500);
+        this.player = new Player(this, 500, 600);
         this.player.setFreeMovement(true);
         this.turn="player";
         this.physics.add.collider(this.player, this.wall_layer);
-
+        
         // Cámara
         const cam = this.cameras.main;
         cam.startFollow(this.player);
@@ -137,81 +137,84 @@ export default class World extends Phaser.Scene {
         if (this.dialogoMostrado) return;
     
         this.dialogoMostrado = true;
-        this.player.setFreeMovement(false); // 🔒 Bloquear movimiento
+        this.player.setFreeMovement(false);
     
-        const dialogWidth = 300;
-        const dialogHeight = 215; // ⬆️ Aumentado para incluir ambos botones
-        const offsetY = 90;
+        const worldView = this.cameras.main.worldView;
+        const screenWidth = worldView.width;
+        const screenHeight = worldView.height;
     
-        const posX = this.player.x;
-        const posY = this.player.y + offsetY;
+        const anchoDialogo = screenWidth * 0.6;
+        const altoDialogo = screenHeight * 0.4;
     
-        // 🖼️ Imagen del guerrero encima del diálogo
-        const icon = this.add.image(posX, posY - dialogHeight / 2 - 120, 'Ciudad')
-            .setScale(1)
-            .setOrigin(0.5);
+        const leftBound = worldView.x;
+        const bottomBound = worldView.bottom;
     
-        // 🧱 Fondo del diálogo
-        const dialogBg = this.add.rectangle(posX, posY, dialogWidth, dialogHeight, 0x000000, 0.85)
-            .setStrokeStyle(2, 0xffffff)
-            .setOrigin(0.5);
+        const dialogCenterX = leftBound + anchoDialogo / 2 + 20; // margen desde la izquierda
+        const dialogCenterY = bottomBound - altoDialogo / 2 - 20; // margen desde abajo
     
-        // 📝 Texto dentro del cuadro
-        const dialogText = this.add.text(posX, posY - 40, '¿Qué necesitas, guerrero?', {
-            fontSize: '16px',
+        const playerPortrait = this.add.image(leftBound + screenWidth * 0.25, bottomBound - 100, 'soldado')
+        .setOrigin(0.5, 1)
+        .setScale(1.5); // Ajusta según tamaño de la imagen
+    
+        // 🧱 Cuadro de diálogo (fondo)
+        const fondo = this.add.rectangle(dialogCenterX, dialogCenterY, anchoDialogo, altoDialogo, 0x000000, 0.85)
+            .setOrigin(0.5)
+            .setStrokeStyle(2, 0xffffff);
+    
+        // 💬 Texto
+        const texto = this.add.text(dialogCenterX, dialogCenterY - altoDialogo / 4, '¿Qué necesitas, guerrero?', {
+            fontSize: '18px',
             color: '#ffffff',
-            wordWrap: { width: dialogWidth - 30 },
-            align: 'center',
+            wordWrap: { width: anchoDialogo - 40 },
+            align: 'center'
         }).setOrigin(0.5);
     
-        // 🔘 Botón "Cerrar"
-        const cerrarBtn = this.add.text(posX, posY + 85, 'Cerrar', {
-            fontSize: '14px',
-            backgroundColor: '#333',
-            color: '#fff',
-            padding: { x: 10, y: 4 },
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    
-        // 🔘 Botón "¿Qué ha pasado aquí? Esta ciudad parece muerta…"
-        const infoBtn = this.add.text(posX, posY + 15, '¿Qué ha pasado aquí? \n Esta ciudad parece muerta…', {
-            fontSize: '14px',
+        // Botón 1 - Información
+        const btnInfo = this.add.text(dialogCenterX, dialogCenterY, '¿Qué ha pasado aquí?', {
+            fontSize: '16px',
             backgroundColor: '#444',
             color: '#fff',
-            padding: { x: 10, y: 4 },
+            padding: { x: 10, y: 6 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
-        // 🔘 Botón "Curar"
-        const curarBtn = this.add.text(posX, posY + 55, 'Necesito cura', {
-            fontSize: '14px',
+    
+        // Botón 2 - Curar
+        const btnCurar = this.add.text(dialogCenterX, dialogCenterY + 35, 'Necesito cura', {
+            fontSize: '16px',
             backgroundColor: '#333',
             color: '#fff',
-            padding: { x: 10, y: 4 },
+            padding: { x: 10, y: 6 },
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
-        infoBtn.on('pointerdown', () => {
-        
+    
+        // Botón 3 - Cerrar
+        const btnCerrar = this.add.text(dialogCenterX, dialogCenterY + 70, 'Cerrar', {
+            fontSize: '16px',
+            backgroundColor: '#333',
+            color: '#fff',
+            padding: { x: 10, y: 6 },
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    
+        btnInfo.on('pointerdown', () => {
             this.cuento();
         });
-
-
-        curarBtn.on('pointerdown', () => {
-        
-            
+    
+        btnCurar.on('pointerdown', () => {
+            // Curación del jugador
+            this.datosPlayer.hp = 10;
         });
     
-        cerrarBtn.on('pointerdown', () => {
-            icon.destroy();
-            dialogBg.destroy();
-            dialogText.destroy();
-            cerrarBtn.destroy();
-            infoBtn.destroy();
-            curarBtn.destroy();
-
-            this.player.setFreeMovement(true); // 🔓 Volver a mover
+        btnCerrar.on('pointerdown', () => {
+            playerPortrait.destroy();
+            fondo.destroy();
+            texto.destroy();
+            btnInfo.destroy();
+            btnCurar.destroy();
+            btnCerrar.destroy();
             this.dialogoMostrado = false;
+            this.player.setFreeMovement(true);
         });
     }
-
+    
+    
     cuento() {
         this.player.setFreeMovement(false);
     
@@ -309,23 +312,20 @@ export default class World extends Phaser.Scene {
         }
     }     
     
-
-    tutorial(){
-
-        
+    tutorial() {
         const popupWidth = 300;
-        const popupHeight = 180;
-
+        const popupHeight = 200;
+    
         const popupBG = this.add.rectangle(0, 0, popupWidth, popupHeight, 0x000000, 0.8);
         popupBG.setStrokeStyle(2, 0xffffff);
-
+    
         const popupImage = this.add.image(0, -40, 'tutorialMovimienton').setScale(0.5);
-
+    
         const popupText = this.add.text(0, 40, 'Movimiento del personaje', {
             fontSize: '16px',
             color: '#ffffff',
         }).setOrigin(0.5);
-
+    
         const popupButton = this.add.text(0, 75, 'Entendido', {
             fontSize: '14px',
             backgroundColor: '#333',
@@ -333,24 +333,23 @@ export default class World extends Phaser.Scene {
             padding: { x: 10, y: 5 },
             align: 'center',
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-
-        const tutorialPopup = this.add.container(this.player.x, this.player.y - 100, [
+    
+        const tutorialPopup = this.add.container(this.player.x, this.player.y - 125, [
             popupBG, popupImage, popupText, popupButton
         ]);
-
+    
         tutorialPopup.setDepth(10); // Asegurarse de que esté arriba
-
+    
         popupButton.on('pointerdown', () => {
             tutorialPopup.destroy(); // Ocultar el popup
             this.player.setFreeMovement(true);
         });
-
+    
         if (tutorialPopup && tutorialPopup.active) {
-            tutorialPopup.setPosition(this.player.x, this.player.y - 100);
+            tutorialPopup.setPosition(this.player.x, this.player.y - 125);
         }
-
-
     }
+    
 
     ponerCueva(grupo,tipo) {
         let position;
