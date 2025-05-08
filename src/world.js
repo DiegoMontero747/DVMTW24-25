@@ -202,11 +202,19 @@ export default class World extends Phaser.Scene {
         btnInfo.on('pointerdown', () => {
             this.cuento();
         });
-    
+
         btnCurar.on('pointerdown', () => {
-            // Curación del jugador
+            // Efecto de curación
             this.datosPlayer.hp = 10;
+        
+            // Cambiar texto del diálogo
+            texto.setText('¡Has sido curado!');
+        
+            // Ocultar botones de información y curar
+            btnInfo.destroy();
+            btnCurar.destroy();
         });
+        
     
         btnCerrar.on('pointerdown', () => {
             playerPortrait.destroy();
