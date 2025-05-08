@@ -46,21 +46,27 @@ export default class World extends Phaser.Scene {
 
     create() {
         /*Crear layers json*/
-        this.map= this.make.tilemap({key:'mapOkk'});  
+        this.map= this.make.tilemap({key:'mapemm'});  
 
         const tileset = this.map.addTilesetImage('TilesDungeon','TilesDungeon');
         const primer =this.map.addTilesetImage('primer','primer');
+        const primer2 =this.map.addTilesetImage('primer2','primer2');
+        const obt =this.map.addTilesetImage('obt','obt');
+
         this.wall_layer = this.map.createLayer("agua", primer, 0, 0);
         this.floor_layer = this.map.createLayer("Fondo", primer, 0, 0);
+       
         
 
         if (this.wall_layer.layer.properties.find(prop => prop.name === "shui" && prop.value === true)) {
             this.wall_layer.setCollisionByExclusion([-1]);
         }
 
-        this.castillo_layer = this.map.createLayer("castillo", primer,0,0);
+        this.castillo_layer = this.map.createLayer("castillo", primer2,0,0);
       
         this.casaBoss_layer = this.map.createLayer("boss", tileset,0,0);
+
+        this.dec_layer = this.map.createLayer("decoracion", obt, 0, 0);
 
 
         this.yaDentroCastillo = false;
