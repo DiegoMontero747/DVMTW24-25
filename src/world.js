@@ -416,7 +416,7 @@ export default class World extends Phaser.Scene {
         const cueva = grupo.create(position.x, position.y, key);
 
         cueva.setOrigin(0.5, 0.5);
-        cueva.setScale(0.75);
+        cueva.setScale(1.25);
     
         // Puedes guardar la referencia si deseas manipular la cueva más adelante
         // this.ultimaCueva = cueva;
