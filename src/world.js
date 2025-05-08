@@ -343,18 +343,28 @@ export default class World extends Phaser.Scene {
         const tutorialPopup = this.add.container(this.player.x, this.player.y - 125, [
             popupBG, popupImage, popupText, popupButton
         ]);
+        tutorialPopup.setDepth(10);
     
-        tutorialPopup.setDepth(10); // Asegurarse de que esté arriba
+        const cerrarTutorial = () => {
+            if (tutorialPopup && tutorialPopup.active) {
+                tutorialPopup.destroy();
+                this.player.setFreeMovement(true);
+                this.input.keyboard.removeListener('keydown', onKeyDown);
+            }
+        };
     
-        popupButton.on('pointerdown', () => {
-            tutorialPopup.destroy(); // Ocultar el popup
-            this.player.setFreeMovement(true);
-        });
+        popupButton.on('pointerdown', cerrarTutorial);
     
-        if (tutorialPopup && tutorialPopup.active) {
-            tutorialPopup.setPosition(this.player.x, this.player.y - 125);
-        }
+        const onKeyDown = (event) => {
+            const teclasMovimiento = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            if (teclasMovimiento.includes(event.key)) {
+                cerrarTutorial();
+            }
+        };
+    
+        this.input.keyboard.on('keydown', onKeyDown);
     }
+    
     
 
     ponerCueva(grupo,tipo) {
@@ -391,9 +401,10 @@ export default class World extends Phaser.Scene {
             default: key = 'cueva'; break;
         }
         const cueva = grupo.create(position.x, position.y, key);
+        const cuevatmp = this.CuevasGroup.create(position.x, position.y, key);
 
         cueva.setOrigin(0.5, 0.5);
-        cueva.setScale(0.75);
+        cueva.setScale(1);
     
         // Puedes guardar la referencia si deseas manipular la cueva más adelante
         // this.ultimaCueva = cueva;
