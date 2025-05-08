@@ -22,9 +22,9 @@ export default class World extends Phaser.Scene {
                 exp: 0,
                 level: 1,
                 mazmorras:{
-                    mazmorra1:{completada:false,mapa:gen_mazmorra(),posX:0,posY:0},
-                    mazmorra2:{completada:false,mapa:gen_mazmorra(),posX:0,posY:0},
-                    mazmorra3:{completada:false,mapa:gen_mazmorra(),posX:0,posY:0}
+                    mazmorra1:{completada:false,mapa:gen_mazmorra(1),posX:0,posY:0},
+                    mazmorra2:{completada:false,mapa:gen_mazmorra(2),posX:0,posY:0},
+                    mazmorra3:{completada:false,mapa:gen_mazmorra(3),posX:0,posY:0}
                 }
             };
         } 
@@ -408,9 +408,10 @@ export default class World extends Phaser.Scene {
         // Crear la cueva dependiendo del tipo
         let key;
         switch (tipo) {
-            case 1: key = 'cuevaDOS'; break;
-            case 2: key = 'cuevaTRES'; break;
-            default: key = 'cueva'; break;
+            case 1: key = 'cueva'; break;
+            case 2: key = 'cuevaDOS'; break;
+            case 3: key = 'cuevaTRES'; break;
+            default: key = 'cuevaTRES'; break;
         }
         const cueva = grupo.create(position.x, position.y, key);
 

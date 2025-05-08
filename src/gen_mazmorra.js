@@ -15,6 +15,9 @@ const c_pared = '#',
     c_suelo='s',
     c_ocuppied='0';
 const i_suelo = 31,
+    i_suelo_azul=505,
+    i_suelo_verde=508,
+    i_suelo_rojo=502,
     i_pared_negro = 311,
     i_pared_d = 77,
     i_pared_l = 129,
@@ -806,7 +809,7 @@ function guardaPuertas(p,cy,cx,s,dir){
     }
 }
 
-function cabeSalaV2(m, posy, posx, s, dir,p) {
+function cabeSalaV2(m, posy, posx, s, dir,p,tipo) {
     let cx = -1, cy = -1, fx = -1, fy = -1;
     if (dir == 0) {//construimos hacia arriba
         cy = posy - s.y;
@@ -1177,7 +1180,7 @@ function aumentaParedes(m){
     return m_doble;
 }
 
-function aumentaSuelo(m){
+function aumentaSuelo(m,tipo){
     let m_doble=[];
 
     for(let i=0;i<m.length*2;i++){
@@ -1190,10 +1193,33 @@ function aumentaSuelo(m){
     for(let i=0;i<m.length;i++){
         for(let j=0;j<m[0].length;j++){
             if(m[i][j]==c_suelo){
-                m_doble[i*2][j*2]=i_suelo;
-                m_doble[i*2+1][j*2]=i_suelo;
-                m_doble[i*2][j*2+1]=i_suelo;
-                m_doble[i*2+1][j*2+1]=i_suelo;
+                if(tipo==1){
+                    m_doble[i*2][j*2]=i_suelo_azul;
+                    m_doble[i*2+1][j*2]=i_suelo_azul;
+                    m_doble[i*2][j*2+1]=i_suelo_azul;
+                    m_doble[i*2+1][j*2+1]=i_suelo_azul;
+                }
+                else if(tipo==2){
+                    m_doble[i*2][j*2]=i_suelo_verde;
+                    m_doble[i*2+1][j*2]=i_suelo_verde;
+                    m_doble[i*2][j*2+1]=i_suelo_verde;
+                    m_doble[i*2+1][j*2+1]=i_suelo_verde;
+                    
+                }
+                else if(tipo==3){
+                    
+                    m_doble[i*2][j*2]=i_suelo_rojo;
+                    m_doble[i*2+1][j*2]=i_suelo_rojo;
+                    m_doble[i*2][j*2+1]=i_suelo_rojo;
+                    m_doble[i*2+1][j*2+1]=i_suelo_rojo;
+                }
+                else{
+                    
+                    m_doble[i*2][j*2]=i_suelo;
+                    m_doble[i*2+1][j*2]=i_suelo;
+                    m_doble[i*2][j*2+1]=i_suelo;
+                    m_doble[i*2+1][j*2+1]=i_suelo;
+                }
             
             }
         }
@@ -1365,7 +1391,7 @@ function traduceMazmorraASala(m) {
     return salaAux;
 }
 
-export default function gen_mazmorra() {
+export default function gen_mazmorra(tipo) {
     
     let deb=1;
     if(deb==0){
@@ -1380,7 +1406,7 @@ export default function gen_mazmorra() {
     if(deb==1){
         const mapa=generaMazmorraV2();
         const paredes=aumentaParedes(mapa.m_pared);
-        const suelo=aumentaSuelo(mapa.m_suelo);
+        const suelo=aumentaSuelo(mapa.m_suelo,tipo);
         const enemigos= ponEnemigos(mapa);
         return generaMapa(paredes,suelo,enemigos);
     }
