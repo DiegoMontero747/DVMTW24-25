@@ -21,7 +21,7 @@ export default class Boot extends Phaser.Scene {
   preload() {
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
     this.load.setBaseURL('http://localhost:5173/DVMTW24-25');
-    this.load.setPath('/assets/sprites/');
+    this.load.setPath('assets/sprites/');
     this.load.image('platform', 'platform.png');
     this.load.image('base', 'base.png');
   
@@ -35,7 +35,7 @@ export default class Boot extends Phaser.Scene {
     this.load.aseprite('flamethrower', 'flamethrower.png', 'flamethrower.json');
 
 
-    this.load.setPath('/assets/misc/');
+    this.load.setPath('assets/misc/');
     this.load.image('NextTurn', 'NextTurn.png');
     this.load.image('Move', 'Move.png');
     this.load.image('Attack', 'Attack.png');
@@ -64,7 +64,7 @@ export default class Boot extends Phaser.Scene {
     //this.load.image('player', player);
 
     //Carga sfx
-    this.load.setPath('/assets/audio/sfx/');
+    this.load.setPath('assets/audio/sfx/');
     this.load.audio('hitSound', 'hitSound1.wav');
     this.load.audio('touchUISound', 'touchUISound.mp3');
     this.load.audio('woodButton', 'woodButton.mp3');
@@ -76,12 +76,12 @@ export default class Boot extends Phaser.Scene {
 
 
 
-    this.load.setPath('/assets/audio/music/');
+    this.load.setPath('assets/audio/music/');
     this.load.audio('combatMusic', 'combatMusic.mp3');
     this.load.audio('dragonMusic', 'battle-of-the-dragons.mp3');
 
     //Carga de tilemap
-    this.load.setPath('/assets/tilemaps/');
+    this.load.setPath('assets/tilemaps/');
 
     /*Carga .CSV (formato mas sencillo algoritmos de generacion procedural)
     this.load.tilemapCSV('map_floor', 'movetest_floor.csv');
