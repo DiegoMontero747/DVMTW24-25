@@ -39,7 +39,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.colision = false;
         
         this.rangoMovimiento = 6*16;
-        this.rangoDetectar = 8*16;
+        this.rangoDetectar = 9*16;
         //let color=this.postFX.addColorMatrix();
         //color.hue(45*5,true);
         //Auxiliares de movimiento grid con fisicas

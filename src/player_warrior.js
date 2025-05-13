@@ -34,6 +34,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.container.setScale(this.scale);
         this.hp=10;
         this.maxHp=10;
+        this.actionsRemaining=0;
+        this.maxActions=2;
 
         this.freeMove=false;
 
@@ -212,7 +214,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
             this.facing="up";
-            if(this.moveArea.contains(this.body.center.x,this.body.top) || this.freeMove){
+            if((this.moveArea.contains(this.body.center.x,this.body.top) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityY(-1);
                 if(!this.cursors.right.isDown && !this.cursors.left.isDown)this.play({key:'walk_up'},true);
             }else{
@@ -223,7 +225,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         }
         else if (this.cursors.down.isDown && !this.cursors.up.isDown) {
             this.facing="down";
-            if(this.moveArea.contains(this.body.center.x,this.body.bottom) || this.freeMove){
+            if((this.moveArea.contains(this.body.center.x,this.body.bottom) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityY(1);
                 if(!this.cursors.right.isDown && !this.cursors.left.isDown)this.play({key:'walk_down'},true);
             }else{
@@ -234,7 +236,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         } 
         if (this.cursors.right.isDown && !this.cursors.left.isDown) {
             this.facing="right";
-            if(this.moveArea.contains(this.body.right,this.body.center.y) || this.freeMove){
+            if((this.moveArea.contains(this.body.right,this.body.center.y) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityX(1);
                 this.play({key:'walk_right'},true);
             }else{
@@ -245,7 +247,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         }
         if (this.cursors.left.isDown && !this.cursors.right.isDown) {
             this.facing="left";
-            if(this.moveArea.contains(this.body.left,this.body.center.y)|| this.freeMove){
+            if((this.moveArea.contains(this.body.left,this.body.center.y) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityX(-1);
                 this.play({key:'walk_left'},true);
             }else{
@@ -390,14 +392,18 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
         this.scene.sound.play("swingSound");
-        this.once("animationcomplete",()=>{                        
-            this.scene.events.emit("enemy_turn_start");
+        this.once("animationcomplete",()=>{
+            this.actionsRemaining--;
+            if(this.actionsRemaining<=0)                        
+                this.scene.events.emit("enemy_turn_start");
             this.isMoving=false;
         });
         this.chain({key:'iddle_'+this.facing,repeat:-1},true);
     }
 
     onTurnStart(){
+
+        this.actionsRemaining=this.maxActions;
         //Volver a pintar el area de movimiento
         this.scene.attackArea=this.attackArea;
         this.attackEffect={dmg:2*this.scene.datosPlayer.level,push:{x:15,y:0}}
@@ -429,10 +435,23 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         //this.attackArea.setVisible(false);
         this.setDepth(this.depth-1);
+        this.scene.checkPlayerOutCombatArea();
     }
 
     setFreeMovement(bool){
         this.freeMove=bool;
+    }
+    resetMoveArea(){
+        if(this.actionsRemaining>0){
+            this.actionsRemaining--;
+            this.moveArea.setPosition(this.x,this.y+14);
+            this.moveAreaGraphics.clear();
+            this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
+            this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
+            this.moveAreaGraphics.fillCircleShape(this.moveArea);
+            this.moveAreaGraphics.strokeCircleShape(this.moveArea);
+            this.moveAreaGraphics.setVisible(true);
+        }  
     }
 
 

@@ -292,9 +292,9 @@ export default class Level3 extends Phaser.Scene {
             botonNextTurn.clearTint();
         });
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.turnBanner=this.add.image(screenCenterX,100,"turnBanner").setOrigin(0.5).setScrollFactor(0).setDepth(20).setScale(1.2);
-        this.textDisplay=this.add.text(screenCenterX,200,"Combat Start",{strokeThickness:3,stroke:"rgb(65, 32, 5)",color:"rgb(164, 193, 212)"}).setOrigin(0.5).setScrollFactor(0).setDepth(20);
-        var displayTween=this.tweens.add({
+        this.turnBanner=this.add.image(screenCenterX,100,"turnBanner").setOrigin(0.5).setScrollFactor(0).setDepth(20).setScale(1.4);
+        this.textDisplay=this.add.text(screenCenterX,200,"Dungeon entered",{strokeThickness:3,stroke:"rgb(65, 32, 5)",color:"rgb(164, 193, 212)"}).setOrigin(0.5).setScrollFactor(0).setDepth(20);
+        this.displayTween=this.tweens.add({
             targets: [this.textDisplay,this.turnBanner],
             y:{from:200,to:300},
             ease:'expo.out',
@@ -305,8 +305,8 @@ export default class Level3 extends Phaser.Scene {
         })
         this.events.on("enemy_turn_start",()=>{
             this.textDisplay.setText("Enemy Turn");
-            if(displayTween.isActive)displayTween.restart();
-            else displayTween.play();
+            if(this.displayTween.isActive)this.displayTween.restart();
+            else this.displayTween.play();
             this.turn="enemy";
             this.enemies.forEach((enemy)=>{enemy.onTurnStart()});
             this.player.onTurnEnd();
@@ -320,8 +320,8 @@ export default class Level3 extends Phaser.Scene {
         });
         this.events.on("player_turn_start",()=>{
             this.textDisplay.setText("Player Turn");
-            if(displayTween.isActive)displayTween.restart();
-            else displayTween.play();            
+            if(this.displayTween.isActive)this.displayTween.restart();
+            else this.displayTween.play();            
             this.turn="player"; 
             this.player.onTurnStart();
             this.enemies.forEach((enemy)=>{enemy.onTurnEnd()});
@@ -344,7 +344,10 @@ export default class Level3 extends Phaser.Scene {
                 ease:'power1',
                 duration: 1000,
             });
-            if(this.turn=="player"){this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)} 
+            if(this.turn=="player"){
+                this.player.resetMoveArea();
+                //this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)
+            } 
         });
         botonMove.on('pointerover', () => {
             this.sound.play("touchUISound");
@@ -616,6 +619,41 @@ export default class Level3 extends Phaser.Scene {
         //a.setScrollFactor(0);
     }
 
+    checkPlayerInCombatArea(){
+        if(this.player.freeMove==true){
+            let rangoCombate=9*16;
+            let playerInCombatRange=false;
+            this.enemies.forEach((enemy)=>{
+                if(this.player && !playerInCombatRange && Phaser.Math.Distance.BetweenPoints(this.player, enemy) < rangoCombate){
+                    console.log("Check cond")
+                    playerInCombatRange=true;
+                }
+            });
+            if(playerInCombatRange){
+                this.textDisplay.setText("Combat started");
+                if(this.displayTween.isActive)this.displayTween.restart();
+                else this.displayTween.play();
+                this.player.setFreeMovement(false);
+                
+            }
+        }
+    }
+    checkPlayerOutCombatArea(){
+        let rangoCombate=9*16;
+        let playerInCombatRange=false;
+        this.enemies.forEach((enemy)=>{
+            if(this.player && !playerInCombatRange && Phaser.Math.Distance.BetweenPoints(this.player, enemy) < rangoCombate){
+                playerInCombatRange=true;
+            }
+        });
+        if(!playerInCombatRange){
+            this.textDisplay.setText("Out Of Combat");
+            if(this.displayTween.isActive)this.displayTween.restart();
+            else this.displayTween.play();
+            this.player.setFreeMovement(true);
+        }
+    }
+
     update(time, delta)
     {
         const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
@@ -634,7 +672,7 @@ export default class Level3 extends Phaser.Scene {
             this.pointerGridY = this.map.tileToWorldY(pointerTileY);*/
             this.pointerGridX= worldPoint.x;
             this.pointerGridY = worldPoint.y;
-
+            this.checkPlayerInCombatArea()
             if(this.turn=="player"){
                 this.activeCharacter="warrior";
                 this.cameras.main.startFollow(this.player);                
