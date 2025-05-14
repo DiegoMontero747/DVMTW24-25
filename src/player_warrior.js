@@ -424,9 +424,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             yoyo:true,
         });
         this.checkedHit=false;
-        if(this.freeMove==false){
+        /* if(this.freeMove==false){
             this.moveAreaGraphics.setVisible(true);
-        }
+        } */
         this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
         this.scene.showStatsUI();
     }
@@ -533,7 +533,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                                     }
                                 });
                             }
-                            else{
+                            else if(this.actionsRemaining>0){
                                 dirSelector.setVisible(true);
                                 dirSelector.animationPlaying=true;
                                 this.scene.tweens.add({
@@ -561,18 +561,23 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         dirSelector.clearTint();
                     });
                     dirSelector.on('pointerup', () => {
-                        this.scene.sound.play("woodButton");
-                        this.scene.tweens.add({
-                            targets: [dirSelector],
-                            scale:{from:1.4,to:1.0},
-                            ease:'power1',
-                            duration: 200,
-                        });
-                        this.scene.attackArea=this.dirAttackArea[dirs[i]];
-                        this.facing=dirs[i];
-                        this.playAttack();
-                        this.scene.checkEnemyHit();
-                        dirSelector.clearTint();
+                        
+                            this.scene.sound.play("woodButton");
+                            this.scene.tweens.add({
+                                targets: [dirSelector],
+                                scale:{from:1.4,to:1.0},
+                                ease:'power1',
+                                duration: 200,
+                            });
+                        if(this.actionsRemaining>0){
+                            this.scene.attackArea=this.dirAttackArea[dirs[i]];
+                            this.facing=dirs[i];
+                            this.playAttack();
+                            this.scene.checkEnemyHit();
+                            dirSelector.clearTint();
+                        }else {
+                            this.scene.sound.play("boundLimits");
+                        }
                         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
                     });
                     this.attackAreaContainer.add(this.dirAttackArea[dirs[i]]);

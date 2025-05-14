@@ -403,7 +403,6 @@ export default class Level3 extends Phaser.Scene {
                 ease:'power1',
                 duration: 1000,
             });
-            if(this.menuOpen===undefined) this.menuOpen=true;
             if(this.menuOpen){
             this.tweens.add({
                 targets: [botonMove,botonAttack,botonNextTurn],
@@ -435,6 +434,33 @@ export default class Level3 extends Phaser.Scene {
             hpDisplay:this.add.text(390,550,"HP: ?/?",{fontSize:11,strokeThickness:4,stroke:'rgb(49, 0, 0)'}).setScrollFactor(0).setDepth(20),
             portrait:this.add.image(367, 550, 'warriorPortrait').setScrollFactor(0).setDepth(20)
         };
+        this.actionAvailable= [];
+        for(let i=0; i<this.player.maxActions;i++){
+            this.actionAvailable[i] = this.add.image(640, 480-(15*i), 'actionAvailable').setScrollFactor(0).setDepth(20).setScale(1.3);
+        }
+        if(this.menuOpen===undefined) this.menuOpen=true;
+        this.events.on("switch_UI",()=>{
+            if(this.player.freeMove && this.menuOpen){
+                    this.tweens.add({
+                        targets: [botonMove,botonAttack,botonNextTurn],
+                        y:550,
+                        ease:'expo.inout',
+                        duration: 1000,
+                        delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
+                    });
+                    this.menuOpen=false;
+                }else if(!this.player.freeMove && !this.menuOpen){
+                    this.tweens.add({
+                        targets: [botonMove,botonAttack,botonNextTurn],
+                        y:500,
+                        ease:'expo.inout',
+                        duration: 1000,
+                        delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
+                    });
+                    this.menuOpen=true;
+            }
+        });
+
     }
 
     initShaders(){
@@ -692,5 +718,19 @@ export default class Level3 extends Phaser.Scene {
                     this.datosPlayer.mazmorras.mazmorra3.completada=true;
                 }
             }
+            for(let i=0; i<this.player.maxActions;i++){
+                if(this.actionAvailable[i]){
+                if(i<this.player.actionsRemaining)
+                    this.actionAvailable[i].setTexture("actionAvailable")
+                else this.actionAvailable[i].setTexture("actionUnavailable")
+                }
+            }
+            if(this.player.freeMove==true && this.menuOpen==true){
+                this.events.emit("switch_UI");
+            }else if(this.player.freeMove==false && this.menuOpen==false){
+                this.events.emit("switch_UI");
+            }
+            
+            
     }
 }
