@@ -507,6 +507,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                     dirSelector.on('pointerover', () => {
                         this.scene.sound.play("touchUISound");
                         this.dirAttackArea[dirs[i]].setVisible(true);
+                        this.scene.attackArea=this.dirAttackArea[dirs[i]];
                         this.scene.tweens.add({
                             targets: [dirSelector],
                             scale:{from:0.8,to:1.0},

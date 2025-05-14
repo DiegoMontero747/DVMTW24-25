@@ -680,6 +680,27 @@ export default class Level3 extends Phaser.Scene {
         }
     }
 
+    isPointInArc(pointX, pointY, arc) {
+        const dx = pointX - arc.body.center.x;
+        const dy = pointY - arc.body.center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        let a = Phaser.Math.Distance.Between(arc.body.center.x,arc.body.center.y,pointX,pointY);
+        let angle = Phaser.Math.Angle.Between(arc.body.center.x,arc.body.center.y,pointX,pointY);
+        // Si esta fuera del radio del circulo completo nos saltamos los calculos
+        if (distance > arc.radius) {
+            return false;
+        }
+   
+        let degrees= Phaser.Math.RadToDeg(angle);
+        degrees=(degrees + 360) % 360; // nomalizar
+
+        if (arc.startAngle < arc.endAngle) { 
+            return degrees >= arc.startAngle && degrees <= arc.endAngle;
+        } else {
+            return (degrees >= arc.startAngle && degrees <= 360) || (degrees <= arc.endAngle && degrees>=0);
+        }
+    }
+
     update(time, delta)
     {
         const worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
