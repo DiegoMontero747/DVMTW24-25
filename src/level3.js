@@ -292,9 +292,9 @@ export default class Level3 extends Phaser.Scene {
             botonNextTurn.clearTint();
         });
         const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.turnBanner=this.add.image(screenCenterX,100,"turnBanner").setOrigin(0.5).setScrollFactor(0).setDepth(20).setScale(1.2);
-        this.textDisplay=this.add.text(screenCenterX,200,"Combat Start",{strokeThickness:3,stroke:"rgb(65, 32, 5)",color:"rgb(164, 193, 212)"}).setOrigin(0.5).setScrollFactor(0).setDepth(20);
-        var displayTween=this.tweens.add({
+        this.turnBanner=this.add.image(screenCenterX,100,"turnBanner").setOrigin(0.5).setScrollFactor(0).setDepth(20).setScale(1.4);
+        this.textDisplay=this.add.text(screenCenterX,200,"Dungeon entered",{strokeThickness:3,stroke:"rgb(65, 32, 5)",color:"rgb(164, 193, 212)"}).setOrigin(0.5).setScrollFactor(0).setDepth(20);
+        this.displayTween=this.tweens.add({
             targets: [this.textDisplay,this.turnBanner],
             y:{from:200,to:300},
             ease:'expo.out',
@@ -305,23 +305,23 @@ export default class Level3 extends Phaser.Scene {
         })
         this.events.on("enemy_turn_start",()=>{
             this.textDisplay.setText("Enemy Turn");
-            if(displayTween.isActive)displayTween.restart();
-            else displayTween.play();
+            if(this.displayTween.isActive)this.displayTween.restart();
+            else this.displayTween.play();
             this.turn="enemy";
             this.enemies.forEach((enemy)=>{enemy.onTurnStart()});
             this.player.onTurnEnd();
         });
         this.events.on("enemy_turn_end",()=>{
             let areTurnsFinished=true;
-            this.enemies.forEach((enemy)=>{if(enemy.stopped==false)areTurnsFinished=false});
-            if(areTurnsFinished){
+            this.enemies.forEach((enemy)=>{if(enemy.hasMoved==false)areTurnsFinished=false});
+            if(areTurnsFinished==true){
                 this.time.delayedCall(300,()=>{this.events.emit("player_turn_start");},[],this);
             }
         });
         this.events.on("player_turn_start",()=>{
             this.textDisplay.setText("Player Turn");
-            if(displayTween.isActive)displayTween.restart();
-            else displayTween.play();            
+            if(this.displayTween.isActive)this.displayTween.restart();
+            else this.displayTween.play();            
             this.turn="player"; 
             this.player.onTurnStart();
             this.enemies.forEach((enemy)=>{enemy.onTurnEnd()});
@@ -344,7 +344,10 @@ export default class Level3 extends Phaser.Scene {
                 ease:'power1',
                 duration: 1000,
             });
-            if(this.turn=="player"){this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)} 
+            if(this.turn=="player"){
+                this.player.resetMoveArea();
+                //this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)
+            } 
         });
         botonMove.on('pointerover', () => {
             this.sound.play("touchUISound");
@@ -400,7 +403,6 @@ export default class Level3 extends Phaser.Scene {
                 ease:'power1',
                 duration: 1000,
             });
-            if(this.menuOpen===undefined) this.menuOpen=true;
             if(this.menuOpen){
             this.tweens.add({
                 targets: [botonMove,botonAttack,botonNextTurn],
@@ -432,6 +434,33 @@ export default class Level3 extends Phaser.Scene {
             hpDisplay:this.add.text(390,550,"HP: ?/?",{fontSize:11,strokeThickness:4,stroke:'rgb(49, 0, 0)'}).setScrollFactor(0).setDepth(20),
             portrait:this.add.image(367, 550, 'warriorPortrait').setScrollFactor(0).setDepth(20)
         };
+        this.actionAvailable= [];
+        for(let i=0; i<this.player.maxActions;i++){
+            this.actionAvailable[i] = this.add.image(640, 480-(15*i), 'actionAvailable').setScrollFactor(0).setDepth(20).setScale(1.3);
+        }
+        if(this.menuOpen===undefined) this.menuOpen=true;
+        this.events.on("switch_UI",()=>{
+            if(this.player.freeMove && this.menuOpen){
+                    this.tweens.add({
+                        targets: [botonMove,botonAttack,botonNextTurn],
+                        y:550,
+                        ease:'expo.inout',
+                        duration: 1000,
+                        delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
+                    });
+                    this.menuOpen=false;
+                }else if(!this.player.freeMove && !this.menuOpen){
+                    this.tweens.add({
+                        targets: [botonMove,botonAttack,botonNextTurn],
+                        y:500,
+                        ease:'expo.inout',
+                        duration: 1000,
+                        delay:function(target, key, value, targetIndex, totalTargets, tween) { return targetIndex*150; }
+                    });
+                    this.menuOpen=true;
+            }
+        });
+
     }
 
     initShaders(){
@@ -617,10 +646,65 @@ export default class Level3 extends Phaser.Scene {
         });
     }
 
-
     showTurnMsg(){
         //console.log(this.cameras.main);
         //a.setScrollFactor(0);
+    }
+
+    checkPlayerInCombatArea(){
+        if(this.player.freeMove==true){
+            let rangoCombate=9*16;
+            let playerInCombatRange=false;
+            this.enemies.forEach((enemy)=>{
+                if(this.player && !playerInCombatRange && Phaser.Math.Distance.BetweenPoints(this.player, enemy) < rangoCombate){
+                    console.log("Check cond")
+                    playerInCombatRange=true;
+                }
+            });
+            if(playerInCombatRange){
+                this.textDisplay.setText("Combat started");
+                if(this.displayTween.isActive)this.displayTween.restart();
+                else this.displayTween.play();
+                this.player.setFreeMovement(false);
+                
+            }
+        }
+    }
+    checkPlayerOutCombatArea(){
+        let rangoCombate=9*16;
+        let playerInCombatRange=false;
+        this.enemies.forEach((enemy)=>{
+            if(this.player && !playerInCombatRange && Phaser.Math.Distance.BetweenPoints(this.player, enemy) < rangoCombate){
+                playerInCombatRange=true;
+            }
+        });
+        if(!playerInCombatRange){
+            this.textDisplay.setText("Out Of Combat");
+            if(this.displayTween.isActive)this.displayTween.restart();
+            else this.displayTween.play();
+            this.player.setFreeMovement(true);
+        }
+    }
+
+    isPointInArc(pointX, pointY, arc) {
+        const dx = pointX - arc.body.center.x;
+        const dy = pointY - arc.body.center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        let a = Phaser.Math.Distance.Between(arc.body.center.x,arc.body.center.y,pointX,pointY);
+        let angle = Phaser.Math.Angle.Between(arc.body.center.x,arc.body.center.y,pointX,pointY);
+        // Si esta fuera del radio del circulo completo nos saltamos los calculos
+        if (distance > arc.radius) {
+            return false;
+        }
+   
+        let degrees= Phaser.Math.RadToDeg(angle);
+        degrees=(degrees + 360) % 360; // nomalizar
+
+        if (arc.startAngle < arc.endAngle) { 
+            return degrees >= arc.startAngle && degrees <= arc.endAngle;
+        } else {
+            return (degrees >= arc.startAngle && degrees <= 360) || (degrees <= arc.endAngle && degrees>=0);
+        }
     }
 
     update(time, delta)
@@ -641,7 +725,7 @@ export default class Level3 extends Phaser.Scene {
             this.pointerGridY = this.map.tileToWorldY(pointerTileY);*/
             this.pointerGridX= worldPoint.x;
             this.pointerGridY = worldPoint.y;
-
+            this.checkPlayerInCombatArea()
             if(this.turn=="player"){
                 this.activeCharacter="warrior";
                 this.cameras.main.startFollow(this.player);                
@@ -661,5 +745,19 @@ export default class Level3 extends Phaser.Scene {
                     this.datosPlayer.mazmorras.mazmorra3.completada=true;
                 }
             }
+            for(let i=0; i<this.player.maxActions;i++){
+                if(this.actionAvailable[i]){
+                if(i<this.player.actionsRemaining)
+                    this.actionAvailable[i].setTexture("actionAvailable")
+                else this.actionAvailable[i].setTexture("actionUnavailable")
+                }
+            }
+            if(this.player.freeMove==true && this.menuOpen==true){
+                this.events.emit("switch_UI");
+            }else if(this.player.freeMove==false && this.menuOpen==false){
+                this.events.emit("switch_UI");
+            }
+            
+            
     }
 }
