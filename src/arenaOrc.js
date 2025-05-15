@@ -102,7 +102,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         {   
             /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
             this.scene.container.add(this); */
-            if(this.scene.turn=="enemy"){
+            /* if(this.scene.turn=="enemy"){
                 console.log(this.anims.currentAnim.key);
                 console.log(this.playerPreview.anims);
                 this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
@@ -111,7 +111,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             if(this.scene.turn=="player" && this.scene.attackArea &&this.scene.physics.overlap(this.scene.attackArea, this.body)){ 
                 this.onHit(1);
                 this.emit("enemy_hitted");
-            };
+            }; */
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player

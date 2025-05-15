@@ -624,7 +624,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             this.checkedHit=true;
         } */
         if(area){
-            if(this.scene.physics.overlap(area, this.body))this.onHit(this.scene.attackEffect.dmg)
+            if(this.scene.physics.overlap(area, this.body)){
+                if(area.type=="Arc"){
+                    if(this.scene.isPointInArc(this.x,this.y,area)) this.onHit(this.scene.attackEffect.dmg)
+                }
+                 else this.onHit(this.scene.attackEffect.dmg)
+            }
             //this.checkedHit=true;
         }
     }
@@ -677,7 +682,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         super.preUpdate(t, dt);
         if(this.scene.turn=="player"){
             this.physics_combat_movement(t);
-            this.checkInDangerZone()
+            //this.checkInDangerZone()
         }
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;

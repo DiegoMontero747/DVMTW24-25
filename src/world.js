@@ -1,6 +1,8 @@
 import Player from './player_warrior.js';
 import Phaser from 'phaser';
 import gen_mazmorra from './gen_mazmorra.js'; 
+import GameShaderCRT from "./shaders/crtShader.js"; 
+
 
 export default class World extends Phaser.Scene {
     map;
@@ -96,9 +98,9 @@ export default class World extends Phaser.Scene {
 
         // Marcador del cursor
         const tileSize = 48;
-        this.marker = this.add.graphics();
+        /* this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);
-        this.marker.strokeRect(0, 0, tileSize, tileSize);
+        this.marker.strokeRect(0, 0, tileSize, tileSize); */
 
         this.mazmorras=this.datosPlayer.mazmorras;
 
@@ -137,6 +139,14 @@ export default class World extends Phaser.Scene {
 
         this.reproducirMusica();
 
+        this.setCrtShader();
+
+    }
+
+    setCrtShader(){
+        let cam = this.cameras.main;
+        cam.setPostPipeline(GameShaderCRT);
+        var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.40);
     }
 
     funCastillo() {
@@ -253,7 +263,7 @@ export default class World extends Phaser.Scene {
             })
             .setOrigin(0.5);
     
-        const cerrarCuentoBtn = this.add.text(centerX, centerY + 150, 'Cerrar cuento', {
+        const cerrarCuentoBtn = this.add.text(centerX, centerY + 150, 'Saltar historia', {
             fontSize: '14px',
             backgroundColor: '#222',
             color: '#fff',
@@ -553,11 +563,11 @@ export default class World extends Phaser.Scene {
         const gridOffsetX = 0, gridOffsetY = -1, mouseOffsetX = -1, mouseOffsetY = 0, snapInterval = 3;
         const pointerTileX = Phaser.Math.Snap.To(this.map.worldToTileX(worldPoint.x) + mouseOffsetX, snapInterval) + gridOffsetX;
         const pointerTileY = Phaser.Math.Snap.To(this.map.worldToTileY(worldPoint.y) + mouseOffsetY, snapInterval) + gridOffsetY;
-        this.marker.x = this.map.tileToWorldX(pointerTileX);
-        this.marker.y = this.map.tileToWorldY(pointerTileY);
+        /* this.marker.x = this.map.tileToWorldX(pointerTileX);
+        this.marker.y = this.map.tileToWorldY(pointerTileY); */
     
         const playerTileX = this.map.worldToTileX(this.player.x);
-        const playerTileY = this.map.worldToTileY(this.player.y);
+        const playerTileY = this.map.worldToTileY(this.player.y); 
     
         // ✅ Casa del Boss: siempre cambia de escena si la pisa
         const tileBoss = this.casaBoss_layer.getTileAt(playerTileX, playerTileY);

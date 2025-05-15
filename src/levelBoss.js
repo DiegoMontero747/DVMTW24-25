@@ -1,6 +1,8 @@
 
 import Player from './player_warrior.js';
 import Phaser from 'phaser';
+import GameShaderCRT from "./shaders/crtShader.js"; 
+
 
 export default class levelBoss extends Phaser.Scene {
 
@@ -50,8 +52,15 @@ export default class levelBoss extends Phaser.Scene {
         this.marker = this.add.graphics();
         this.marker.lineStyle(2, 0xFFFFFF, 1);
         this.marker.strokeRect(0, 0, tileSize, tileSize);
+
+        this.setCrtShader();
     }
-    
+    setCrtShader(){
+        let cam = this.cameras.main;
+        cam.setPostPipeline(GameShaderCRT);
+        var effect = cam.postFX.addVignette(0.5, 0.5, 0.95, 0.40);
+    }
+
     update(time, delta)
     {
 

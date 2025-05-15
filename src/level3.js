@@ -463,11 +463,6 @@ export default class Level3 extends Phaser.Scene {
 
     }
 
-    initShaders(){
-        let cam = this.cameras.main;
-        //this.setCrtShader();
-    }
-
     async checkEnemyHit(){
         //this.orc.checkHit();
         this.objetosDestructibles.children.iterate((obj) => {
