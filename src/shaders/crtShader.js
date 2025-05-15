@@ -94,7 +94,7 @@ export default class crtShader extends Phaser.Renderer.WebGL.Pipelines.PostFXPip
                 this.colorInc=0.01;
             }
             onPreRender(){
-                this._time += 0.005;
+                this._time += 0.002;
                 this.set1f('time', this._time);
                 if(this.colorDist>0.28){
                    this.colorInc=-0.00025

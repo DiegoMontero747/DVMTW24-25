@@ -142,7 +142,7 @@ export default class World extends Phaser.Scene {
 
         this.reproducirMusica();
 
-        //this.setCrtShader();
+        this.setCrtShader();
 
     }
 

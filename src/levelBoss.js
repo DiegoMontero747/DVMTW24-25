@@ -53,7 +53,7 @@ export default class levelBoss extends Phaser.Scene {
         this.marker.lineStyle(2, 0xFFFFFF, 1);
         this.marker.strokeRect(0, 0, tileSize, tileSize);
 
-        //this.setCrtShader();
+        this.setCrtShader();
     }
     setCrtShader(){
         let cam = this.cameras.main;
