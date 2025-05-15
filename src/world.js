@@ -410,7 +410,7 @@ export default class World extends Phaser.Scene {
             default: key = 'cuevaTRES'; break;
         }
         const cueva = grupo.create(position.x, position.y, key);
-        const cuevatmp = this.CuevasGroup.create(position.x, position.y, key);
+        //const cuevatmp = this.CuevasGroup.create(position.x, position.y, key);
 
         cueva.setOrigin(0.5, 0.5);
         cueva.setScale(1.25);
