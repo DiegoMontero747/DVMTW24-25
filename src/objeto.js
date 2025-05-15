@@ -11,7 +11,7 @@ export default class Objeto extends Phaser.Physics.Arcade.Sprite {
         this.interactuable = false;
         this.empujable = false;
         this.colision = true;
-        this.danoAlJugador = 0; // Daño que causa al jugador (si aplica)
+        this.danoAlJugador = 1; // Daño que causa al jugador (si aplica)
         this.setImmovable(true);
         this.setMass(1000);
         this.setPushable(false);
@@ -25,6 +25,10 @@ export default class Objeto extends Phaser.Physics.Arcade.Sprite {
 
     interactuar() {
         console.log(`Interacción con ${this.texture.key}`);
+    }
+
+    checkHit(){
+        return this.scene.physics.overlap(this.scene.attackArea, this)
     }
 
     onHit(cantidad) {

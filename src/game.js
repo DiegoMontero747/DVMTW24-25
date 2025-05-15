@@ -1,16 +1,18 @@
+console.log("Etoy aqui")
+import Phaser from 'phaser';
 import Boot from './boot.js';
 import End from './end.js';
 import Level from './level.js';
 import Level2 from './level2.js';
 import Level3 from './level3.js';
 import combatScene from './combatScene.js';
-import Phaser from 'phaser';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
 import GameShaderGBA from "./shaders/gbaShader.js"; 
 import GameShaderPixel from "./shaders/pixelShader.js"; 
 import LevelDebug from './levelDebug.js';
 import world from './world.js';
+import levelBoss from './levelBoss.js';
 
 
 /**
@@ -27,7 +29,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot,world, Level,Level2,Level3,combatScene,LevelDebug, End],
+    scene: [Boot,world,levelBoss, Level,Level2,Level3,combatScene,LevelDebug, End],
 
 
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
@@ -35,7 +37,7 @@ let config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
         }
     },
     pipeline: [GameShaderCRT,GameShaderRetro,GameShaderGBA,GameShaderPixel]

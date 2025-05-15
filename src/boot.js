@@ -50,6 +50,7 @@ import slideSound from '/DVMTW24-25/assets/audio/sfx/slideSound.wav';
 import Wilhelm from '/DVMTW24-25/assets/audio/sfx/Wilhelm.wav';
 import boundLimits from '/DVMTW24-25/assets/audio/sfx/boundLimits.wav';
 import swingSound from '/DVMTW24-25/assets/audio/sfx/swingSound.wav';
+
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
  * Esta escena se puede mejorar añadiendo una imagen del juego y una 
@@ -57,6 +58,28 @@ import swingSound from '/DVMTW24-25/assets/audio/sfx/swingSound.wav';
  * @see {@link https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/} como ejemplo
  * sobre cómo hacer una barra de progreso.
  */
+  import combatMusic from '..assets/music/sfx/'
+  import dragonMusic from '..assets/audio/music/battle-of-the-dragons.mp3'
+
+  import mapmm from '../assets/tilemaps/mapV5.json'
+  import primer from '../assets/tilemaps/primer.png'
+  import mapBoss from '../assets/tilemaps/MAPBOSS.json'
+  import primer2 from '../assets/tilemaps/primer2.png'
+  import props from '../assets/tilemaps/Props.png'
+  import propsA from '../assets/tilemaps/PropsF.png'
+  import mapaOriginal from '../assets/tilemaps/sinNombre2.json'
+  import tilesDungeon from '../assets/tilemaps/Tiles.png'
+  import arena from '../assets/tilemaps/Arena.json'
+  import propsF from '../assets/tilemaps/PropsA.png'
+  import mazmorra_1 from '../assets/tilemaps/Mazmorra 1.png'
+  import mazmorra_2 from '../assets/tilemaps/Mazmorra 2.png'
+  import mazmorra_3 from '../assets/tilemaps/Mazmorra 3.png'
+  import movimiento from '../assets/tilemaps/Movimiento.png'
+  import ciudad from '../assets/tilemaps/ciudad.png'
+  import obt from '../assets/tilemaps/obt.png'
+  import ares from '../assets/tilemaps/ares.png'
+  
+
 export default class Boot extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -124,11 +147,12 @@ export default class Boot extends Phaser.Scene {
 
 
 
-    this.load.setPath('/assets/audio/music/');
-    this.load.audio('combatMusic', 'combatMusic.mp3');
+    this.load.setPath('assets/audio/music/');
+    this.load.audio('combatMusic', combatMusic);
+    this.load.audio('dragonMusic', dragonMusic);
 
     //Carga de tilemap
-    this.load.setPath('/assets/tilemaps/');
+    //this.load.setPath('assets/tilemaps/');
 
     /*Carga .CSV (formato mas sencillo algoritmos de generacion procedural)
     this.load.tilemapCSV('map_floor', 'movetest_floor.csv');
@@ -136,26 +160,37 @@ export default class Boot extends Phaser.Scene {
 
     //Carga .JSON (formato mas comodo en codigo)
 
-    this.load.image('mapaPeninsula', 'mapaPeninsula.jpg');
-    this.load.tilemapTiledJSON("mapOriginal","sinNombre2.json");
-    this.load.tilemapTiledJSON("arena","Arena.json");
-    this.load.tilemapTiledJSON("mapaMundial","mapamundi.json");
+    this.load.tilemapTiledJSON("mapOriginal",mapaOriginal);
+    this.load.tilemapTiledJSON("arena", arena);
 
-    
     //let dato = JSON.parse(texto);
     //this.load.tilemapTiledJSON("map","Prueba_001.json");
-    let mazmorra=gen_mazmorra();
-    console.log(mazmorra);
-    this.load.tilemapTiledJSON("map",mazmorra);
+    //let mazmorra=gen_mazmorra();
+    //console.log(mazmorra);
+    //this.load.tilemapTiledJSON("map",mazmorra);
     
-    this.load.image('TilesDungeon', 'Tiles.png');
-    this.load.image('PropsA', 'PropsF.png');
-    this.load.image('Props', 'Props.png');
+    this.load.image('TilesDungeon', tilesDungeon);
+
+    this.load.image('PropsF', propsF);
+    this.load.image('PropsA', propsF);
+    this.load.image('Props', props);
+
+    this.load.image('cueva', mazmorra_1);
+    this.load.image('cuevaDOS', mazmorra_2);
+    this.load.image('cuevaTRES', mazmorra_3);
+    this.load.image('tutorialMovimienton', movimiento);
+
+    this.load.image('AldeaPixel', ciudad);
+    this.load.image('primer', primer);
+    this.load.image('primer2', primer2);
+    this.load.image('soldado', ares);
+    this.load.image('obt', obt);
+ 
+    this.load.tilemapTiledJSON("mapaBoss",mapBoss);
+    this.load.tilemapTiledJSON("mapemm",mapmm);
 
 
-    this.load.image('casaBoss', 'casaBoss.png');
-    this.load.image('castillo', 'castillo.png');
-    this.load.image('cueva', 'cueva.png');
+
   }
   
   /**

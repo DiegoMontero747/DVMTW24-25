@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import MapaGenerador from './generador.js';
 
 /**
  * Clase que representa el jugador del juego. El jugador se mueve por el mundo usando los cursores.

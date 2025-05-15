@@ -36,10 +36,10 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.playerPreview.setAlpha(0.6);
         this.container.add(this.playerPreview);
         this.container.setVisible(false);
-        this.colision = true;
+        this.colision = false;
         
         this.rangoMovimiento = 6*16;
-        this.rangoDetectar = 8*16;
+        this.rangoDetectar = 9*16;
         //let color=this.postFX.addColorMatrix();
         //color.hue(45*5,true);
         //Auxiliares de movimiento grid con fisicas
@@ -102,7 +102,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         {   
             /* this.x-=this.scene.container.x;this.y-=this.scene.container.y;
             this.scene.container.add(this); */
-            if(this.scene.turn=="enemy"){
+            /* if(this.scene.turn=="enemy"){
                 console.log(this.anims.currentAnim.key);
                 console.log(this.playerPreview.anims);
                 this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
@@ -111,7 +111,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             if(this.scene.turn=="player" && this.scene.attackArea &&this.scene.physics.overlap(this.scene.attackArea, this.body)){ 
                 this.onHit(1);
                 this.emit("enemy_hitted");
-            };
+            }; */
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
@@ -134,18 +134,22 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
     }
 
     checkHit(){
-        if(this.scene.physics.overlap(this.scene.attackArea, this.body))this.onHit(this.scene.attackEffect.dmg)
+        if(this.scene.physics.overlap(this.scene.attackArea, this.body) && this.scene.isPointInArc(this.x,this.y,this.scene.attackArea)){
+            this.onHit(this.scene.attackEffect.dmg)
+        }
     }
 
     awaitStop(){
         this.scene.time.delayedCall(2500,()=>{
-            this.body.setVelocityX(0);
-            this.body.setVelocityY(0);
-            
-            this.stopped=true;
-            this.hasMoved=true;
-
-            this.scene.events.emit("enemy_turn_end");
+            if(this.stopped==false){
+                this.body.setVelocityX(0);
+                this.body.setVelocityY(0);
+                
+                this.stopped=true;
+                this.hasMoved=true;
+    
+                this.scene.events.emit("enemy_turn_end");
+            }
         },[],this);
     }
 
@@ -178,6 +182,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             callback:()=>{this.clearTint()}
         })
         if(this.hp<=0){ console.log("Ripperoni in peperonni");
+            this.scene.num_enemigos--;
+            console.log(this.scene.num_enemigos);
             this.scene.sound.play("wilhelm");
             const deadAnim=this.scene.tweens.add({
                 targets: [this],
@@ -374,6 +380,8 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
             case "directional":
                 this.attackAreaType="directional"
                 const dirs=["up","down","left","right"];
+                //const offsetsAreas=[{x:6,y:-30},{x:6,y:37+this.attackAreaOffsetY},{x:-44,y:this.attackAreaOffsetY+6},{x:37,y:this.attackAreaOffsetY+6}];
+                const offsetsAreas=[{x:0,y:-7},{x:0,y:20},{x:-7,y:this.attackAreaOffsetY},{x:7,y:this.attackAreaOffsetY}];
                 const offsets=[{x:0,y:-37+this.attackAreaOffsetY},{x:0,y:37+this.attackAreaOffsetY},{x:-37,y:this.attackAreaOffsetY},{x:37,y:this.attackAreaOffsetY}];
                 const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:64},{x:64,y:64}];
                 const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
@@ -382,7 +390,19 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 this.attackCursorContainer=this.scene.add.container(this.x,this.y).setDepth(20);
 
                 for(let i=0;i<dirs.length;i++){
-                    this.dirAttackArea[dirs[i]]=this.scene.add.rectangle( offsets[i].x, offsets[i].y, sizes[i].x,sizes[i].y, 0xff0000,0.25).setVisible(false);
+                    /* const shapeDisps=[
+                        [{x:16,y:10},{x:-6,y:0},{x:6,y:0},{x:-16,y:10}],
+                        [{x:-6,y:0},{x:16,y:-10},{x:-16,y:-10},{x:6,y:0}]
+                        ,[{x:10,y:16},{x:10,y:-16},{x:0,y:6},{x:0,y:-6}]
+                        ,[{x:0,y:-6},{x:0,y:6},{x:-10,y:-16},{x:-10,y:16}]];
+                    this.dirAttackArea[dirs[i]]=this.scene.add.polygon( offsetsAreas[i].x, offsetsAreas[i].y, 
+                        [[0+shapeDisps[i][0].x,0+shapeDisps[i][0].y],
+                        [0+shapeDisps[i][1].x,sizes[i].y+shapeDisps[i][1].y],
+                        [sizes[i].x+shapeDisps[i][2].x,sizes[i].y+shapeDisps[i][2].y],
+                        [sizes[i].x+shapeDisps[i][3].x,0+shapeDisps[i][3].y]],
+                            0xff0000,0.25).setVisible(false); */
+                    const angles=[{start:180,end:0},{start:0,end:180},{start:90,end:270},{start:270,end:90}];
+                    this.dirAttackArea[dirs[i]]=this.scene.add.arc(offsetsAreas[i].x, offsetsAreas[i].y,50,angles[i].start,angles[i].end,false,0xff0000,0.25).setVisible(false);
                     this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xff0000, 1);
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
@@ -522,17 +542,9 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.strokeRectShape(this.moveArea);
         this.setDepth(2);
         this.isMoving=true;
-        if(this.gotTurn){
-        this.play({key:'attack_'+this.facing},true);
-        this.scene.sound.play("swingSound");
-        this.scene.checkPlayerHit(this.selectedAttackArea);
-        this.once("animationcomplete",()=>{
-            this.moveToPlayer();
-        });
-        }else{
-            this.gotTurn=true;
-            this.moveToPlayer();
-        }
+        this.gotTurn=true;
+        this.moveToPlayer();
+        
         //Animacion personaje activo
         this.scene.tweens.add({
             targets: [this],
@@ -553,7 +565,6 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         } else {
             this.stopped=true;
             this.hasMoved=true;
-
             this.scene.events.emit("enemy_turn_end");
         }
     }
@@ -562,12 +573,22 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         //this.attackArea.setVisible(false);
         this.setDepth(1);
+        this.hasMoved=false;
+        if(this.gotTurn==true && this.selectedAttackArea){
+            this.dirAttackArea[this.facing].setVisible(true);
+            this.playAttack();
+            this.scene.sound.play("swingSound");
+            this.scene.checkPlayerHit(this.selectedAttackArea);
+            this.gotTurn=false;
+        }
     }
 
     playAttack(){ //Usando otra cosa de momento
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
-        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;});
+        this.once("animationcomplete",()=>{console.log("complete");this.isMoving=false;
+            if(this.dirAttackArea)this.dirAttackArea[this.facing].setVisible(false);
+        });
         //this.chain({key:'iddle_'+this.facing,repeat:-1},true);
     }
 
@@ -598,15 +619,23 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
                 this.stopped=true;
                 this.scene.events.emit("enemy_turn_end");
             } 
-        }else{
-            this.hasMoved=true;
         }
     }
 
     setAttackArea(){
+        if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this) <= this.rangoDetectar && this.cursors.up.isDown){
+            debugger;
+        } 
         if(this.facing && this.stopped && this.gotTurn){
-            this.dirAttackArea[this.facing].setVisible(true);
+            let angle=Phaser.Math.Angle.Normalize(Phaser.Math.Angle.Between(this.x,this.y,this.scene.player.x,this.scene.player.y));
+            if(angle>(Math.PI/4) && angle<(3*Math.PI/4)){this.facing="down";}
+            else if((angle>=(3*Math.PI/4)) && (angle<(5*Math.PI/4))){this.facing="left";}
+            else if((angle>(5*Math.PI/4)) && (angle<(7*Math.PI/4))){this.facing="up";}
+            else {this.facing="right";}
             this.selectedAttackArea=this.dirAttackArea[this.facing];
+            if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this) <= this.rangoDetectar){
+                console.log(angle)
+            } 
         }
     }
     /**
@@ -626,6 +655,12 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         /* this.attackArea.x= this.x;
         this.attackArea.y=this.y+5; */
         this.centerAttackArea(this.attackAreaType);
+        if(this.scene.attackArea && this.scene.physics.overlap(this.scene.attackArea, this.body) && this.scene.isPointInArc(this.x,this.y,this.scene.attackArea)){
+            if(!this.marking) this.marking=this.postFX.addGlow("0xc4180f");
+        }else if(this.marking){
+            this.postFX.remove(this.marking);
+            this.marking=null;
+        } 
     }
 
 }
