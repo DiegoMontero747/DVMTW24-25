@@ -282,7 +282,7 @@ export default class Level3 extends Phaser.Scene {
             });
             //console.log('Botón presionado');
             if(this.turn=="player"){this.events.emit("enemy_turn_start");} 
-            else if(this.turn=="enemy"){this.events.emit("player_turn_start");} 
+            //else if(this.turn=="enemy"){this.events.emit("player_turn_start");} 
         });
         botonNextTurn.on('pointerover', () => {
             this.sound.play("touchUISound");
