@@ -5,6 +5,7 @@ import End from './end.js';
 import Level from './level.js';
 import Level2 from './level2.js';
 import Level3 from './level3.js';
+import Logo_scene from'./Logo.js';
 import combatScene from './combatScene.js';
 import GameShaderCRT from "./shaders/crtShader.js"; 
 import GameShaderRetro from "./shaders/retroShader.js"; 
@@ -29,7 +30,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
     pixelArt: true,
-    scene: [Boot,world,levelBoss, Level,Level2,Level3,combatScene,LevelDebug, End],
+    scene: [Boot,world,levelBoss, Level,Level2,Level3,combatScene,LevelDebug, End, Logo_scene],
 
 
     //en nuestro caso scene: [Boot, Mundo, Dungeon, Combate, End],
