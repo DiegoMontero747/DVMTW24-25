@@ -2,15 +2,6 @@
 import Player from './player_warrior.js';
 import Phaser from 'phaser';
 
-
-/**
- * Escena principal del juego. La escena se compone de una serie de plataformas 
- * sobre las que se sitúan las bases en las podrán aparecer las estrellas. 
- * El juego comienza generando aleatoriamente una base sobre la que generar una estrella. 
- * @abstract Cada vez que el jugador recoge la estrella, aparece una nueva en otra base.
- * El juego termina cuando el jugador ha recogido 10 estrellas.
- * @extends Phaser.Scene
- */
 export default class levelBoss extends Phaser.Scene {
 
     map;
@@ -26,18 +17,7 @@ export default class levelBoss extends Phaser.Scene {
      */
     create() {
 
-        /*Crear layers csv
-        const map_floor = this.make.tilemap({ key: 'map_floor', tileWidth: 16, tileHeight: 16 });
-        const map_walls = this.make.tilemap({ key: 'map_walls', tileWidth: 16, tileHeight: 16 });
-
-        const tileset = map_floor.addTilesetImage('tiles');
-        map_walls.addTilesetImage('tiles');
-        
-        const floor_layer = map_floor.createLayer(0, tileset, 0, 0);
-        const wall_layer = map_walls.createLayer(0, tileset, 0, 0);
-        wall_layer.setDepth(2);
-        wall_layer.setCollisionByExclusion([75,76,77]),true;
-        */
+    
 
         /*Crear layers json*/
         this.map= this.make.tilemap({key:'mapaBoss'});  
@@ -45,7 +25,7 @@ export default class levelBoss extends Phaser.Scene {
        
         this.wall_layer = this.map.createLayer("pared", tileset, 0, 0);
 
-        if (this.wall_layer.layer.properties.find(prop => prop.name === "colision" && prop.value === true)) {
+        if (this.wall_layer.layer.properties.find(prop => prop.name === "colision" && prop.value === false)) {
             this.wall_layer.setCollisionByExclusion([-1]);
         }
 

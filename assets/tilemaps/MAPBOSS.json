@@ -40,7 +40,7 @@
          "name":"Capa de patrones 1",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":32,
          "x":0,
          "y":0
@@ -86,7 +86,7 @@
                 {
                  "name":"colision",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }],
          "type":"tilelayer",
          "visible":true,
@@ -101,10 +101,32 @@
  "tiledversion":"1.11.2",
  "tileheight":16,
  "tilesets":[
-        {
-         "firstgid":1,
-         "source":"..\/..\/..\/..\/Desktop\/Tiles.tsj"
-        }],
+       {
+       "columns":25,
+       "firstgid":1,
+       "image":"..\/sprites\/Pixel Crawler - FREE - 1.8\/Environment\/Dungeon Prison\/Assets\/Tiles.png",
+       "imageheight":400,
+       "imagewidth":400,
+       "margin":0,
+       "name":"TilesDungeon",
+       "spacing":0,
+       "tilecount":625,
+       "tileheight":16,
+       "tilewidth":16
+       }, 
+       {
+       "columns":25,
+       "firstgid":626,
+       "image":"..\/sprites\/Pixel Crawler - FREE - 1.8\/Environment\/Dungeon Prison\/Assets\/Props.aseprite",
+       "imageheight":400,
+       "imagewidth":400,
+       "margin":0,
+       "name":"Objetos",
+       "spacing":0,
+       "tilecount":625,
+       "tileheight":16,
+       "tilewidth":16
+       }],
  "tilewidth":16,
  "type":"map",
  "version":"1.10",
