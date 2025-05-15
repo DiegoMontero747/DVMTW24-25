@@ -40,11 +40,11 @@ import puertatxt from '../assets/misc/puertatxt.png';
 import palancaOff from '../assets/misc/palancaOff.png';
 import palancaOn from '../assets/misc/palancaOn.png';
 import TNT from '../assets/misc/TNT.png';
-import Portal from '../assets/misc/Portal.png';
 import obstaculotxt from '../assets/misc/obstaculotxt.png';
+import bannertxt from '../assets/misc/banner.png';
+import Portal from '../assets/misc/Portal.png';
 import accionpng from '../assets/misc/actionAvailable.png';
 import accionGastadapng from '../assets/misc/actionunAvailable.png';
-
 
 import hitSound1 from '../assets/audio/sfx/hitSound1.wav';
 import touchUISound from '../assets/audio/sfx/touchUISound.mp3';
@@ -120,10 +120,8 @@ export default class Boot extends Phaser.Scene {
     this.load.image('turnBanner', turnBar);
     this.load.image('dirCursor', dir_cursor);
     this.load.image('porton_txt', Porton);
-    this.load.image('trampaOff_txt', trampatxt);
     this.load.image('trampaOn_txt', trampaOntxt);
     this.load.image('llave_txt', llavetxt);
-    this.load.image('portal_txt', Portal);
     this.load.image('cerradura_txt', cerraduratxt);
     this.load.image('cerraduraConLlave_txt', cerraduraConLlavetxt);
     this.load.image('cofre_txt', chesstxt);
@@ -133,9 +131,11 @@ export default class Boot extends Phaser.Scene {
     this.load.image('palancaOn_txt', palancaOn);
     this.load.image('tnt_txt', TNT);
     this.load.image('caja_txt', obstaculotxt);
+    this.load.image('banner', bannertxt);
+    this.load.image('portal_txt', Portal);
+    this.load.image('trampaOff_txt', trampatxt);
     this.load.image('actionAvailable', accionpng);
     this.load.image('actionUnavailable', accionGastadapng);
-
     //this.load.image('player', player);
 
     //Carga sfx
@@ -201,6 +201,6 @@ export default class Boot extends Phaser.Scene {
    */
   create() {
     this.input.mouse.disableContextMenu();
-    this.scene.start('world');
+    this.scene.start('Logo');
   }
 }
