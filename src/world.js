@@ -13,7 +13,6 @@ export default class World extends Phaser.Scene {
     cueva1;
     cueva2;
     cueva3;
-
     constructor() {
         super({ key: 'world' });
     }
@@ -28,7 +27,8 @@ export default class World extends Phaser.Scene {
                     mazmorra1:{completada:false,mapa:gen_mazmorra(1),posX:0,posY:0},
                     mazmorra2:{completada:false,mapa:gen_mazmorra(2),posX:0,posY:0},
                     mazmorra3:{completada:false,mapa:gen_mazmorra(3),posX:0,posY:0}
-                }
+                },
+                partida_iniciada: false 
             };
         } 
         else {
@@ -40,7 +40,8 @@ export default class World extends Phaser.Scene {
                     mazmorra1: data.mazmorras.mazmorra1,
                     mazmorra2: data.mazmorras.mazmorra2,
                     mazmorra3: data.mazmorras.mazmorra3
-                }
+                },
+                partida_iniciada:true
             };
         }
         
@@ -133,13 +134,15 @@ export default class World extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.cueva2, this.entrarCueva2, null, this);
         this.physics.add.overlap(this.player, this.cueva3, this.entrarCueva3, null, this);
         //this.physics.add.overlap(this.player, this.CuevasGroup, this.entrarCueva, null, this);
-        this.player.setFreeMovement(false);
-
-        this.tutorial();
+        
+        if(!this.datosPlayer.partida_iniciada){
+            this.tutorial();
+            this.player.setFreeMovement(false);
+        }
 
         this.reproducirMusica();
 
-        this.setCrtShader();
+        //this.setCrtShader();
 
     }
 

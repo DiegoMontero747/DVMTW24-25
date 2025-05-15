@@ -127,7 +127,7 @@ export default class Level3 extends Phaser.Scene {
 
     initShaders(){
         let cam = this.cameras.main;
-        this.setCrtShader();
+        //this.setCrtShader();
     }
 
     initKeyCombos(){
