@@ -11,46 +11,9 @@
 </head>
 
 <body>
+    <script src="Hola.js"></script>
     <h1><img src="assets/misc/banner.png" alt="Dungeons & Pixels"></h1>
     
-    <!-- <audio id="musicaFondo" loop>
-        <source src="assets/audio/music/prueba.mp3" type="audio/mpeg">
-        Tu navegador no soporta el audio.
-    </audio>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const musica = document.getElementById("musicaFondo");
-
-            function iniciarMusica() {
-                if (musica.paused) {
-                    musica.currentTime = 0; // Reinicia desde el principio
-                    musica.play().catch(error => console.log("El navegador bloqueó el autoplay:", error));
-                }
-            }
-
-            // Intentar iniciar la música
-            iniciarMusica();
-
-            // Verificar cada 1 segundos si está en pausa y reiniciarla desde el principio
-            setInterval(() => {
-                if (musica.paused) {
-                    iniciarMusica();
-                }
-            }, 1000);
-
-            // Si la música termina, reiniciar manualmente
-            musica.addEventListener("ended", function () {
-                musica.currentTime = 0;
-                iniciarMusica();
-            });
-
-            // Forzar autoplay con cualquier interacción
-            document.addEventListener("click", iniciarMusica);
-            document.addEventListener("scroll", iniciarMusica);
-            document.addEventListener("keydown", iniciarMusica);
-        });
-    </script> -->
     
     <script src="./src/game.js" type="module">
 
