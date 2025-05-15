@@ -10,8 +10,8 @@ import platform from '../assets/sprites/platform.png';
  * @see {@link https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/} como ejemplo
  * sobre cómo hacer una barra de progreso.
  */
-  import combatMusic from '..assets/music/sfx/'
-  import dragonMusic from '..assets/audio/music/battle-of-the-dragons.mp3'
+  import combatMusic from '../assets/audio/music/combatMusic.mp3'
+  import dragonMusic from '../assets/audio/music/battle-of-the-dragons.mp3'
 
   import mapmm from '../assets/tilemaps/mapV5.json'
   import primer from '../assets/tilemaps/primer.png'
@@ -22,7 +22,7 @@ import platform from '../assets/sprites/platform.png';
   import mapaOriginal from '../assets/tilemaps/sinNombre2.json'
   import tilesDungeon from '../assets/tilemaps/Tiles.png'
   import arena from '../assets/tilemaps/Arena.json'
-  import propsF from '../assets/tilemaps/PropsA.png'
+  import propsF from '../assets/tilemaps/PropsF.png'
   import mazmorra_1 from '../assets/tilemaps/Mazmorra 1.png'
   import mazmorra_2 from '../assets/tilemaps/Mazmorra 2.png'
   import mazmorra_3 from '../assets/tilemaps/Mazmorra 3.png'
