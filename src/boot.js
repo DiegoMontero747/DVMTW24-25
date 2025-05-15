@@ -78,7 +78,7 @@ import swingSound from '../assets/audio/sfx/swingSound.wav';
   import mazmorra_1 from '../assets/tilemaps/Mazmorra 1.png'
   import mazmorra_2 from '../assets/tilemaps/Mazmorra 2.png'
   import mazmorra_3 from '../assets/tilemaps/Mazmorra 3.png'
-  import movimiento from '../assets/tilemaps/Movimiento.png'
+  import movimiento from '../assets/tilemaps/tutorial.png'
   import ciudad from '../assets/tilemaps/ciudad.png'
   import obt from '../assets/tilemaps/obt.png'
   import ares from '../assets/tilemaps/ares.png'
