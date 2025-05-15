@@ -467,10 +467,10 @@ export default class Level3 extends Phaser.Scene {
         //this.orc.checkHit();
         let listaAEliminar = []
         this.objetosDestructibles.children.iterate((obj) => {
-            if(obj.checkHit()){
+            if( obj != undefined && typeof obj.checkHit === "function" && obj.checkHit()){
                 if(this.attackEffect.dmg >= obj.hp){
                     listaAEliminar.push(obj)
-                    this.objetosDestructibles.remove(obj)
+                    //this.objetosDestructibles.remove(obj)
                 }
                 obj.onHit(this.attackEffect.dmg)
             }
