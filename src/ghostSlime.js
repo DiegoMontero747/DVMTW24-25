@@ -592,7 +592,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
     }
     stopNearObjective(){
         if(this.objectiveX && this.objectiveY){
-            const dist=10;
+            const dist=Math.random()*(15)+5;
             if(Phaser.Math.Distance.BetweenPoints(new Phaser.Math.Vector2(this.objectiveX,this.objectiveY), this)<dist && this.hasMoved){
                 this.body.setVelocityX(0);
                 this.body.setVelocityY(0);
@@ -718,6 +718,13 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         /* this.attackArea.x= this.x;
         this.attackArea.y=this.y+5; */
         this.centerAttackArea(this.attackAreaType);
+
+        if(this.scene.attackArea && this.scene.physics.overlap(this.scene.attackArea, this.body) && this.scene.isPointInArc(this.x,this.y,this.scene.attackArea)){
+            if(!this.marking) this.marking=this.postFX.addGlow("0xc4180f");
+        }else if(this.marking){
+            this.postFX.remove(this.marking);
+            this.marking=null;
+        } 
     }
 
 }
