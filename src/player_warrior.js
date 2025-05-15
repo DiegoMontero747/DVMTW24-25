@@ -393,7 +393,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.play({key:'attack_'+this.facing},true);
         this.scene.sound.play("swingSound");
         this.once("animationcomplete",()=>{
-            this.actionsRemaining--;
+            if(this.freeMove==false){
+                this.actionsRemaining--;
+            }
             if(this.actionsRemaining<=0)                        
                 this.scene.events.emit("enemy_turn_start");
             this.isMoving=false;

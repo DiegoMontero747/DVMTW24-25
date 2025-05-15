@@ -347,7 +347,8 @@ export default class Level3 extends Phaser.Scene {
                 duration: 1000,
             });
             if(this.turn=="player"){
-                this.player.resetMoveArea();
+                if(this.player.freeMove==false)
+                    this.player.resetMoveArea();
                 //this.player.moveAreaGraphics.setVisible(!this.player.moveAreaGraphics.visible)
             } 
         });
