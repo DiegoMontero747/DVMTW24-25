@@ -308,8 +308,10 @@ export default class Level3 extends Phaser.Scene {
             if(this.displayTween.isActive)this.displayTween.restart();
             else this.displayTween.play();
             this.turn="enemy";
-            this.enemies.forEach((enemy)=>{enemy.onTurnStart()});
             this.player.onTurnEnd();
+            setTimeout(()=>{
+                this.enemies.forEach((enemy)=>{enemy.onTurnStart()});
+            }, 1000);
         });
         this.events.on("enemy_turn_end",()=>{
             let areTurnsFinished=true;

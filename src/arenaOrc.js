@@ -561,7 +561,7 @@ export default class orc2 extends Phaser.GameObjects.Sprite {
         this.hasMoved=false;
         if(Phaser.Math.Distance.BetweenPoints(this.scene.player, this) <= this.rangoDetectar){
             this.awaitStop();
-            this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),100,2000);
+            this.scene.physics.moveTo(this,this.scene.player.x+(Math.random()*(60)-30),this.scene.player.y+(Math.random()*(60)-30),30);
         } else {
             this.stopped=true;
             this.hasMoved=true;
