@@ -465,14 +465,18 @@ export default class Level3 extends Phaser.Scene {
 
     async checkEnemyHit(){
         //this.orc.checkHit();
+        let listaAEliminar = []
         this.objetosDestructibles.children.iterate((obj) => {
             if(obj.checkHit()){
                 if(this.attackEffect.dmg >= obj.hp){
+                    listaAEliminar.push(obj)
                     this.objetosDestructibles.remove(obj)
                 }
                 obj.onHit(this.attackEffect.dmg)
             }
         });
+        listaAEliminar.forEach((obj) => {this,this.objetosDestructibles.remove(obj)})
+        
         this.enemies.forEach((enemy)=>{enemy.checkHit()});
     }
 
@@ -747,9 +751,7 @@ export default class Level3 extends Phaser.Scene {
                 else this.actionAvailable[i].setTexture("actionUnavailable")
                 }
             }
-            if(this.player.freeMove==true && this.menuOpen==true){
-                this.events.emit("switch_UI");
-            }else if(this.player.freeMove==false && this.menuOpen==false){
+            if(this.player.freeMove==false && this.menuOpen==false){
                 this.events.emit("switch_UI");
             }
             
