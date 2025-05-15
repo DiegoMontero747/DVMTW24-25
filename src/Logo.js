@@ -7,27 +7,35 @@ export default class Logo_scene extends Phaser.Scene {
     }
 
     preload() {
-        // Carga el logo del juego
         this.load.image('banner', bannertxt);
     }
 
     create() {
-        // Agrega el logo al centro de la pantalla
+        // Centrar el logo en pantalla
         const logo = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'banner');
 
-        // Opcional: escalar el logo si es necesario
-        // logo.setScale(0.5);
+        // Establecer opacidad inicial en 0 (invisible)
+        logo.setAlpha(0);
 
-        // Crear el tween de fade out
+        // Tween de fade in
         this.tweens.add({
             targets: logo,
-            alpha: 0, // opacidad a 0 (invisible)
-            duration: 2000, // duración de 2 segundos
+            alpha: 1, // visibilidad completa
+            duration: 1000,
             ease: 'Power1',
-            delay: 1000, // espera 1 segundo antes de empezar
             onComplete: () => {
-                // Cambiar a la siguiente escena después del fade out
-                this.scene.start('world'); // o el nombre de tu siguiente escena
+                // Esperar un poco y hacer fade out
+                this.time.delayedCall(1000, () => {
+                    this.tweens.add({
+                        targets: logo,
+                        alpha: 0,
+                        duration: 1000,
+                        ease: 'Power1',
+                        onComplete: () => {
+                            this.scene.start('world');
+                        }
+                    });
+                });
             }
         });
     }
