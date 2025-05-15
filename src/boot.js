@@ -1,5 +1,55 @@
 import Phaser from 'phaser'
 import gen_mazmorra from './gen_mazmorra.js';
+import platform from '/DVMTW24-25/assets/sprites/platform.png';
+import base from '/DVMTW24-25/assets/sprites/base.png';
+import skeleton_handpng from '/DVMTW24-25/assets/sprites/skeleton_hand.png';
+import skeleton_hand from '/DVMTW24-25/assets/sprites/skeleton_hand.json';
+import warriorpng from '/DVMTW24-25/assets/sprites/warrior.png';
+import warrior from '/DVMTW24-25/assets/sprites/warrior.json';
+import magepng from '/DVMTW24-25/assets/sprites/mage.png';
+import mage from '/DVMTW24-25/assets/sprites/mage.json';
+import orcpng from '/DVMTW24-25/assets/sprites/orc2.png';
+import orc from '/DVMTW24-25/assets/sprites/orc2.json';
+import slimepng from '/DVMTW24-25/assets/sprites/slime2.png';
+import slime from '/DVMTW24-25/assets/sprites/slime2.json';
+import splatterpng from '/DVMTW24-25/assets/sprites/splatter.png';
+import splatter from '/DVMTW24-25/assets/sprites/splatter.json';
+import boompng from '/DVMTW24-25/assets/sprites/explosion-sheet.png';
+import boom from '/DVMTW24-25/assets/sprites/explosion.json';
+import flamethrowerpng from '/DVMTW24-25/assets/sprites/flamethrower.png';
+import flamethrower from '/DVMTW24-25/assets/sprites/flamethrower.json';
+
+import NextTurn from '/DVMTW24-25/assets/misc/NextTurn.png';
+import Move from '/DVMTW24-25/assets/misc/Move.png';
+import Attack from '/DVMTW24-25/assets/misc/Attack.png';
+import Menu from '/DVMTW24-25/assets/misc/Menu.png';
+import StatsBar from '/DVMTW24-25/assets/misc/StatsBar.png';
+import warriorPortrait from '/DVMTW24-25/assets/misc/warriorPortrait.png';
+import orcPortrait from '/DVMTW24-25/assets/misc/orcPortrait.png';
+import turnBar from '/DVMTW24-25/assets/misc/turnBar.png';
+import dir_cursor from '/DVMTW24-25/assets/misc/dir_cursor.png';
+import Porton from '/DVMTW24-25/assets/misc/Porton.png';
+import trampatxt from '/DVMTW24-25/assets/misc/trampatxt.png';
+import trampaOntxt from '/DVMTW24-25/assets/misc/trampaOntxt.png';
+import llavetxt from '/DVMTW24-25/assets/misc/llavetxt.png';
+import cerraduratxt from '/DVMTW24-25/assets/misc/cerraduratxt.png';
+import cerraduraConLlavetxt from '/DVMTW24-25/assets/misc/cerraduraConLlavetxt.png';
+import chesstxt from '/DVMTW24-25/assets/misc/chesstxt.png';
+import Openchesstxt from '/DVMTW24-25/assets/misc/Openchesstxt.png';
+import puertatxt from '/DVMTW24-25/assets/misc/puertatxt.png';
+import palancaOff from '/DVMTW24-25/assets/misc/palancaOff.png';
+import palancaOn from '/DVMTW24-25/assets/misc/palancaOn.png';
+import TNT from '/DVMTW24-25/assets/misc/TNT.png';
+import obstaculotxt from '/DVMTW24-25/assets/misc/obstaculotxt.png';
+
+import hitSound1 from '/DVMTW24-25/assets/audio/sfx/hitSound1.wav';
+import touchUISound from '/DVMTW24-25/assets/audio/sfx/touchUISound.mp3';
+import woodButton from '/DVMTW24-25/assets/audio/sfx/woodButton.mp3';
+import showGridSound from '/DVMTW24-25/assets/audio/sfx/showGridSound.mp3';
+import slideSound from '/DVMTW24-25/assets/audio/sfx/slideSound.wav';
+import Wilhelm from '/DVMTW24-25/assets/audio/sfx/Wilhelm.wav';
+import boundLimits from '/DVMTW24-25/assets/audio/sfx/boundLimits.wav';
+import swingSound from '/DVMTW24-25/assets/audio/sfx/swingSound.wav';
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
  * Esta escena se puede mejorar añadiendo una imagen del juego y una 
@@ -22,55 +72,55 @@ export default class Boot extends Phaser.Scene {
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
     this.load.setBaseURL('http://localhost:5173/DVMTW24-25');
     this.load.setPath('/assets/sprites/');
-    this.load.image('platform', 'platform.png');
-    this.load.image('base', 'base.png');
+    this.load.image('platform', platform);
+    this.load.image('base', base);
   
-    this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json');
-    this.load.aseprite('player_warrior','warrior.png','warrior.json');
-    this.load.aseprite('player_mage','mage.png','mage.json');
-    this.load.aseprite('orc2','orc2.png','orc2.json');
-    this.load.aseprite('slime2','slime2.png','slime2.json');
-    this.load.aseprite('blood','splatter.png','splatter.json');
-    this.load.aseprite('KABOOM', 'explosion-sheet.png', 'explosion.json');
-    this.load.aseprite('flamethrower', 'flamethrower.png', 'flamethrower.json');
+    this.load.aseprite('player',skeleton_handpng, skeleton_hand);
+    this.load.aseprite('player_warrior',warriorpng,warrior);
+    this.load.aseprite('player_mage',magepng,mage);
+    this.load.aseprite('orc2',orcpng,orc);
+    this.load.aseprite('slime2',slimepng,slime);
+    this.load.aseprite('blood',splatterpng,splatter);
+    this.load.aseprite('KABOOM', boompng, boom);
+    this.load.aseprite('flamethrower', flamethrowerpng, flamethrower);
 
 
     this.load.setPath('/assets/misc/');
-    this.load.image('NextTurn', 'NextTurn.png');
-    this.load.image('Move', 'Move.png');
-    this.load.image('Attack', 'Attack.png');
-    this.load.image('Menu', 'Menu.png');
-    this.load.image('StatsBar', 'StatsBar.png');
-    this.load.image('warriorPortrait', 'warriorPortrait.png');
-    this.load.image('orcPortrait', 'orcPortrait.png');
-    this.load.image('turnBanner', 'turnBar.png');
-    this.load.image('dirCursor', 'dir_cursor.png');
-    this.load.image('porton_txt', 'Porton.png');
-    this.load.image('trampa_txt', 'trampatxt.png');
-    this.load.image('trampaOn_txt', 'trampaOntxt.png');
-    this.load.image('llave_txt', 'llavetxt.png');
-    this.load.image('cerradura_txt', 'cerraduratxt.png');
-    this.load.image('cerraduraConLlave_txt', 'cerraduraConLlavetxt.png');
-    this.load.image('cofre_txt', 'chesstxt.png');
-    this.load.image('openCofre_txt', 'Openchesstxt.png');
-    this.load.image('puerta_txt', 'puertatxt.png');
-    this.load.image('palanca_txt', 'palancaOff.png');
-    this.load.image('palancaOn_txt', 'palancaOn.png');
-    this.load.image('tnt_txt', 'TNT.png');
-    this.load.image('caja_txt', 'obstaculotxt.png');
+    this.load.image('NextTurn', NextTurn);
+    this.load.image('Move', Move);
+    this.load.image('Attack', Attack);
+    this.load.image('Menu', Menu);
+    this.load.image('StatsBar', StatsBar);
+    this.load.image('warriorPortrait', warriorPortrait);
+    this.load.image('orcPortrait', orcPortrait);
+    this.load.image('turnBanner', turnBar);
+    this.load.image('dirCursor', dir_cursor);
+    this.load.image('porton_txt', Porton);
+    this.load.image('trampa_txt', trampatxt);
+    this.load.image('trampaOn_txt', trampaOntxt);
+    this.load.image('llave_txt', llavetxt);
+    this.load.image('cerradura_txt', cerraduratxt);
+    this.load.image('cerraduraConLlave_txt', cerraduraConLlavetxt);
+    this.load.image('cofre_txt', chesstxt);
+    this.load.image('openCofre_txt', Openchesstxt);
+    this.load.image('puerta_txt', puertatxt);
+    this.load.image('palanca_txt', palancaOff);
+    this.load.image('palancaOn_txt', palancaOn);
+    this.load.image('tnt_txt', TNT);
+    this.load.image('caja_txt', obstaculotxt);
 
     //this.load.image('player', player);
 
     //Carga sfx
     this.load.setPath('/assets/audio/sfx/');
-    this.load.audio('hitSound', 'hitSound1.wav');
-    this.load.audio('touchUISound', 'touchUISound.mp3');
-    this.load.audio('woodButton', 'woodButton.mp3');
-    this.load.audio('showGridSound', 'showGridSound.mp3');
-    this.load.audio('slideSound', 'slideSound.wav');
-    this.load.audio('wilhelm', 'Wilhelm.wav');
-    this.load.audio('boundLimits', 'boundLimits.wav');
-    this.load.audio('swingSound', 'swingSound.wav');
+    this.load.audio('hitSound', hitSound1);
+    this.load.audio('touchUISound', touchUISound);
+    this.load.audio('woodButton', woodButton);
+    this.load.audio('showGridSound', showGridSound);
+    this.load.audio('slideSound', slideSound);
+    this.load.audio('wilhelm', Wilhelm);
+    this.load.audio('boundLimits', boundLimits);
+    this.load.audio('swingSound', swingSound);
 
 
 
