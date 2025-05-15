@@ -20,7 +20,8 @@ export default class Boot extends Phaser.Scene {
    */
   preload() {
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
-    this.load.setBaseURL('http://localhost:5173/DVMTW24-25');
+    //this.load.setBaseURL('http://localhost:5173/DVMTW24-25');
+    this.load.setBaseURL(window.location.origin+'/DVMTW24-25');
     this.load.setPath('assets/sprites/');
     this.load.image('platform', 'platform.png');
     this.load.image('base', 'base.png');
