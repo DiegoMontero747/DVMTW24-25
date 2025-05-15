@@ -1,55 +1,55 @@
 import Phaser from 'phaser'
 import gen_mazmorra from './gen_mazmorra.js';
-import platform from '/DVMTW24-25/assets/sprites/platform.png';
-import base from '/DVMTW24-25/assets/sprites/base.png';
-import skeleton_handpng from '/DVMTW24-25/assets/sprites/skeleton_hand.png';
-import skeleton_hand from '/DVMTW24-25/assets/sprites/skeleton_hand.json';
-import warriorpng from '/DVMTW24-25/assets/sprites/warrior.png';
-import warrior from '/DVMTW24-25/assets/sprites/warrior.json';
-import magepng from '/DVMTW24-25/assets/sprites/mage.png';
-import mage from '/DVMTW24-25/assets/sprites/mage.json';
-import orcpng from '/DVMTW24-25/assets/sprites/orc2.png';
-import orc from '/DVMTW24-25/assets/sprites/orc2.json';
-import slimepng from '/DVMTW24-25/assets/sprites/slime2.png';
-import slime from '/DVMTW24-25/assets/sprites/slime2.json';
-import splatterpng from '/DVMTW24-25/assets/sprites/splatter.png';
-import splatter from '/DVMTW24-25/assets/sprites/splatter.json';
-import boompng from '/DVMTW24-25/assets/sprites/explosion-sheet.png';
-import boom from '/DVMTW24-25/assets/sprites/explosion.json';
-import flamethrowerpng from '/DVMTW24-25/assets/sprites/flamethrower.png';
-import flamethrower from '/DVMTW24-25/assets/sprites/flamethrower.json';
+import platform from '../assets/sprites/platform.png';
+import base from '../assets/sprites/base.png';
+import skeleton_handpng from '../assets/sprites/skeleton_hand.png';
+import skeleton_hand from '../assets/sprites/skeleton_hand.json';
+import warriorpng from '../assets/sprites/warrior.png';
+import warrior from '../assets/sprites/warrior.json';
+import magepng from '../assets/sprites/mage.png';
+import mage from '../assets/sprites/mage.json';
+import orcpng from '../assets/sprites/orc2.png';
+import orc from '../assets/sprites/orc2.json';
+import slimepng from '../assets/sprites/slime2.png';
+import slime from '../assets/sprites/slime2.json';
+import splatterpng from '../assets/sprites/splatter.png';
+import splatter from '../assets/sprites/splatter.json';
+import boompng from '../assets/sprites/explosion-sheet.png';
+import boom from '../assets/sprites/explosion.json';
+import flamethrowerpng from '../assets/sprites/flamethrower.png';
+import flamethrower from '../assets/sprites/flamethrower.json';
 
-import NextTurn from '/DVMTW24-25/assets/misc/NextTurn.png';
-import Move from '/DVMTW24-25/assets/misc/Move.png';
-import Attack from '/DVMTW24-25/assets/misc/Attack.png';
-import Menu from '/DVMTW24-25/assets/misc/Menu.png';
-import StatsBar from '/DVMTW24-25/assets/misc/StatsBar.png';
-import warriorPortrait from '/DVMTW24-25/assets/misc/warriorPortrait.png';
-import orcPortrait from '/DVMTW24-25/assets/misc/orcPortrait.png';
-import turnBar from '/DVMTW24-25/assets/misc/turnBar.png';
-import dir_cursor from '/DVMTW24-25/assets/misc/dir_cursor.png';
-import Porton from '/DVMTW24-25/assets/misc/Porton.png';
-import trampatxt from '/DVMTW24-25/assets/misc/trampatxt.png';
-import trampaOntxt from '/DVMTW24-25/assets/misc/trampaOntxt.png';
-import llavetxt from '/DVMTW24-25/assets/misc/llavetxt.png';
-import cerraduratxt from '/DVMTW24-25/assets/misc/cerraduratxt.png';
-import cerraduraConLlavetxt from '/DVMTW24-25/assets/misc/cerraduraConLlavetxt.png';
-import chesstxt from '/DVMTW24-25/assets/misc/chesstxt.png';
-import Openchesstxt from '/DVMTW24-25/assets/misc/Openchesstxt.png';
-import puertatxt from '/DVMTW24-25/assets/misc/puertatxt.png';
-import palancaOff from '/DVMTW24-25/assets/misc/palancaOff.png';
-import palancaOn from '/DVMTW24-25/assets/misc/palancaOn.png';
-import TNT from '/DVMTW24-25/assets/misc/TNT.png';
-import obstaculotxt from '/DVMTW24-25/assets/misc/obstaculotxt.png';
+import NextTurn from '../assets/misc/NextTurn.png';
+import Move from '../assets/misc/Move.png';
+import Attack from '../assets/misc/Attack.png';
+import Menu from '../assets/misc/Menu.png';
+import StatsBar from '../assets/misc/StatsBar.png';
+import warriorPortrait from '../assets/misc/warriorPortrait.png';
+import orcPortrait from '../assets/misc/orcPortrait.png';
+import turnBar from '../assets/misc/turnBar.png';
+import dir_cursor from '../assets/misc/dir_cursor.png';
+import Porton from '../assets/misc/Porton.png';
+import trampatxt from '../assets/misc/trampatxt.png';
+import trampaOntxt from '../assets/misc/trampaOntxt.png';
+import llavetxt from '../assets/misc/llavetxt.png';
+import cerraduratxt from '../assets/misc/cerraduratxt.png';
+import cerraduraConLlavetxt from '../assets/misc/cerraduraConLlavetxt.png';
+import chesstxt from '../assets/misc/chesstxt.png';
+import Openchesstxt from '../assets/misc/Openchesstxt.png';
+import puertatxt from '../assets/misc/puertatxt.png';
+import palancaOff from '../assets/misc/palancaOff.png';
+import palancaOn from '../assets/misc/palancaOn.png';
+import TNT from '../assets/misc/TNT.png';
+import obstaculotxt from '../assets/misc/obstaculotxt.png';
 
-import hitSound1 from '/DVMTW24-25/assets/audio/sfx/hitSound1.wav';
-import touchUISound from '/DVMTW24-25/assets/audio/sfx/touchUISound.mp3';
-import woodButton from '/DVMTW24-25/assets/audio/sfx/woodButton.mp3';
-import showGridSound from '/DVMTW24-25/assets/audio/sfx/showGridSound.mp3';
-import slideSound from '/DVMTW24-25/assets/audio/sfx/slideSound.wav';
-import Wilhelm from '/DVMTW24-25/assets/audio/sfx/Wilhelm.wav';
-import boundLimits from '/DVMTW24-25/assets/audio/sfx/boundLimits.wav';
-import swingSound from '/DVMTW24-25/assets/audio/sfx/swingSound.wav';
+import hitSound1 from '../assets/audio/sfx/hitSound1.wav';
+import touchUISound from '../assets/audio/sfx/touchUISound.mp3';
+import woodButton from '../assets/audio/sfx/woodButton.mp3';
+import showGridSound from '../assets/audio/sfx/showGridSound.mp3';
+import slideSound from '../assets/audio/sfx/slideSound.wav';
+import Wilhelm from '../assets/audio/sfx/Wilhelm.wav';
+import boundLimits from '../assets/audio/sfx/boundLimits.wav';
+import swingSound from '../assets/audio/sfx/swingSound.wav';
 
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
@@ -93,8 +93,6 @@ export default class Boot extends Phaser.Scene {
    */
   preload() {
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
-    this.load.setBaseURL('http://localhost:5173/DVMTW24-25');
-    this.load.setPath('/assets/sprites/');
     this.load.image('platform', platform);
     this.load.image('base', base);
   
@@ -108,7 +106,6 @@ export default class Boot extends Phaser.Scene {
     this.load.aseprite('flamethrower', flamethrowerpng, flamethrower);
 
 
-    this.load.setPath('/assets/misc/');
     this.load.image('NextTurn', NextTurn);
     this.load.image('Move', Move);
     this.load.image('Attack', Attack);
@@ -135,7 +132,6 @@ export default class Boot extends Phaser.Scene {
     //this.load.image('player', player);
 
     //Carga sfx
-    this.load.setPath('/assets/audio/sfx/');
     this.load.audio('hitSound', hitSound1);
     this.load.audio('touchUISound', touchUISound);
     this.load.audio('woodButton', woodButton);
@@ -147,7 +143,6 @@ export default class Boot extends Phaser.Scene {
 
 
 
-    this.load.setPath('assets/audio/music/');
     this.load.audio('combatMusic', combatMusic);
     this.load.audio('dragonMusic', dragonMusic);
 
