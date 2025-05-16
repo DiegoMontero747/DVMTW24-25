@@ -96,6 +96,20 @@ export default class Boot extends Phaser.Scene {
    * Carga de los assets del juego
    */
   preload() {
+
+    var progressBar = this.add.graphics();
+    var progressBox = this.add.graphics();
+    let xPos= 300,yPos=380,width=400,height=40;
+    progressBox.fillStyle(0x770000, 0.6);
+    progressBox.fillRect(xPos, yPos, width, height);
+
+    this.load.on('progress', function (value) {
+      console.log(value);
+      progressBar.clear();
+      progressBar.fillStyle(0xffe600, 1);
+      progressBar.fillRect(xPos+10, yPos+10, (width-20) * value, height-20);
+    });
+    
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
     this.load.image('platform', platform);
     this.load.image('base', base);
