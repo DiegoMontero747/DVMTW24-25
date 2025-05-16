@@ -340,51 +340,64 @@ export default class World extends Phaser.Scene {
     }     
     
     tutorial() {
-        const popupWidth = 300;
-        const popupHeight = 200;
-    
-        const popupBG = this.add.rectangle(0, 0, popupWidth, popupHeight, 0x000000, 0.8);
-        popupBG.setStrokeStyle(2, 0xffffff);
-    
-        const popupImage = this.add.image(0, -40, 'tutorialMovimienton').setScale(0.5);
-    
-        const popupText = this.add.text(0, 40, 'Movimiento del personaje', {
-            fontSize: '16px',
-            color: '#ffffff',
-        }).setOrigin(0.5);
-    
-        const popupButton = this.add.text(0, 75, 'Entendido', {
-            fontSize: '14px',
-            backgroundColor: '#333',
-            color: '#fff',
-            padding: { x: 10, y: 5 },
-            align: 'center',
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    
-        const tutorialPopup = this.add.container(this.player.x, this.player.y - 125, [
-            popupBG, popupImage, popupText, popupButton
-        ]);
-        tutorialPopup.setDepth(10);
-    
-        const cerrarTutorial = () => {
-            if (tutorialPopup && tutorialPopup.active) {
-                tutorialPopup.destroy();
-                this.player.setFreeMovement(true);
-                this.input.keyboard.removeListener('keydown', onKeyDown);
-            }
-        };
-    
-        popupButton.on('pointerdown', cerrarTutorial);
-    
-        const onKeyDown = (event) => {
-            const teclasMovimiento = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-            if (teclasMovimiento.includes(event.key)) {
-                cerrarTutorial();
-            }
-        };
-    
-        this.input.keyboard.on('keydown', onKeyDown);
-    }
+    // Escala deseada para la imagen
+    const imageScale = 0.6;
+
+    // Crear la imagen primero para obtener sus dimensiones reales
+    const popupImage = this.add.image(0, 0, 'tutorialMovimienton').setScale(imageScale);
+
+    // Obtener tamaño real de la imagen ya escalada
+    const imageWidth = popupImage.width * imageScale;
+    const imageHeight = popupImage.height * imageScale;
+
+    // Ajustar el tamaño del cuadro al tamaño de la imagen + espacio para texto y botón
+    const popupWidth = Math.max(300, imageWidth + 40);
+    const popupHeight = imageHeight + 100;
+
+    const popupBG = this.add.rectangle(0, 0, popupWidth, popupHeight, 0x000000, 0.8);
+    popupBG.setStrokeStyle(2, 0xffffff);
+
+    // Reposicionar la imagen dentro del popup
+    popupImage.setY(-popupHeight / 2 + imageHeight / 2 + 20);
+
+    const popupText = this.add.text(0, popupImage.y + imageHeight / 2 + 20, 'Movimiento del personaje', {
+        fontSize: '16px',
+        color: '#ffffff',
+        align: 'center',
+        wordWrap: { width: popupWidth - 40 }
+    }).setOrigin(0.5);
+
+    const popupButton = this.add.text(0, popupText.y + 40, 'Entendido', {
+        fontSize: '14px',
+        backgroundColor: '#333',
+        color: '#fff',
+        padding: { x: 10, y: 5 },
+        align: 'center',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    // Crear el contenedor centrado en el jugador
+    const tutorialPopup = this.add.container(this.player.x, this.player.y, [
+        popupBG, popupImage, popupText, popupButton
+    ]);
+    tutorialPopup.setDepth(10);
+
+    const cerrarTutorial = () => {
+        if (tutorialPopup && tutorialPopup.active) {
+            tutorialPopup.destroy();
+            this.player.setFreeMovement(true);
+            this.input.keyboard.removeListener('keydown', onKeyDown);
+        }
+    };
+
+    popupButton.on('pointerdown', cerrarTutorial);
+
+    const onKeyDown = () => {
+        cerrarTutorial();
+    };
+
+    this.input.keyboard.on('keydown', onKeyDown);
+}
+
     
     
 
@@ -423,7 +436,7 @@ export default class World extends Phaser.Scene {
             default: key = 'cuevaTRES'; break;
         }
         const cueva = grupo.create(position.x, position.y, key);
-        //const cuevatmp = this.CuevasGroup.create(position.x, position.y, key);
+        const cuevatmp = this.CuevasGroup.create(position.x, position.y, key);
 
         cueva.setOrigin(0.5, 0.5);
         cueva.setScale(1.25);
