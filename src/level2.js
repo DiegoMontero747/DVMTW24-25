@@ -136,7 +136,7 @@ export default class Level2 extends Phaser.Scene {
     initShaders(){
         let cam = this.cameras.main;
         cam.startFollow(this.player);
-        this.setCrtShader();
+        //this.setCrtShader();
     }
 
     setCrtShader(){

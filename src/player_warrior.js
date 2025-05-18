@@ -34,6 +34,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.container.setScale(this.scale);
         this.hp=10;
         this.maxHp=10;
+        this.actionsRemaining=0;
+        this.maxActions=2;
 
         this.freeMove=false;
 
@@ -67,7 +69,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
         // Esta label es la UI en la que pondremos la puntuación del jugador
         //this.label = this.scene.add.text(10, 10, "", {fontSize: 20});
-        this.cursors = this.scene.input.keyboard.createCursorKeys();
+        this.cursors =  this.scene.input.keyboard.addKeys({ up: 'W', left: 'A', down: 'S', right: 'D' });
 
         this.play({key:'iddle_right',repeat:-1});
         
@@ -212,7 +214,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
 
         if (this.cursors.up.isDown && !this.cursors.down.isDown) {
             this.facing="up";
-            if(this.moveArea.contains(this.body.center.x,this.body.top) || this.freeMove){
+            if((this.moveArea.contains(this.body.center.x,this.body.top) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityY(-1);
                 if(!this.cursors.right.isDown && !this.cursors.left.isDown)this.play({key:'walk_up'},true);
             }else{
@@ -223,7 +225,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         }
         else if (this.cursors.down.isDown && !this.cursors.up.isDown) {
             this.facing="down";
-            if(this.moveArea.contains(this.body.center.x,this.body.bottom) || this.freeMove){
+            if((this.moveArea.contains(this.body.center.x,this.body.bottom) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityY(1);
                 if(!this.cursors.right.isDown && !this.cursors.left.isDown)this.play({key:'walk_down'},true);
             }else{
@@ -234,7 +236,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         } 
         if (this.cursors.right.isDown && !this.cursors.left.isDown) {
             this.facing="right";
-            if(this.moveArea.contains(this.body.right,this.body.center.y) || this.freeMove){
+            if((this.moveArea.contains(this.body.right,this.body.center.y) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityX(1);
                 this.play({key:'walk_right'},true);
             }else{
@@ -245,7 +247,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         }
         if (this.cursors.left.isDown && !this.cursors.right.isDown) {
             this.facing="left";
-            if(this.moveArea.contains(this.body.left,this.body.center.y)|| this.freeMove){
+            if((this.moveArea.contains(this.body.left,this.body.center.y) && this.moveAreaGraphics.visible) || this.freeMove){
                 this.body.setVelocityX(-1);
                 this.play({key:'walk_left'},true);
             }else{
@@ -390,14 +392,20 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.isMoving=true;
         this.play({key:'attack_'+this.facing},true);
         this.scene.sound.play("swingSound");
-        this.once("animationcomplete",()=>{                        
-            this.scene.events.emit("enemy_turn_start");
+        this.once("animationcomplete",()=>{
+            if(this.freeMove==false){
+                this.actionsRemaining--;
+            }
+            if(this.actionsRemaining<=0)                        
+                this.scene.events.emit("enemy_turn_start");
             this.isMoving=false;
         });
         this.chain({key:'iddle_'+this.facing,repeat:-1},true);
     }
 
     onTurnStart(){
+
+        this.actionsRemaining=this.maxActions;
         //Volver a pintar el area de movimiento
         this.scene.attackArea=this.attackArea;
         this.attackEffect={dmg:2*this.scene.datosPlayer.level,push:{x:15,y:0}}
@@ -418,9 +426,9 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             yoyo:true,
         });
         this.checkedHit=false;
-        if(this.freeMove==false){
+        /* if(this.freeMove==false){
             this.moveAreaGraphics.setVisible(true);
-        }
+        } */
         this.scene.changeStatsUI("warrior",this.hp,this.maxHp);
         this.scene.showStatsUI();
     }
@@ -429,10 +437,23 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         this.moveAreaGraphics.fillRectShape(this.moveArea).setVisible(false);
         //this.attackArea.setVisible(false);
         this.setDepth(this.depth-1);
+        this.scene.checkPlayerOutCombatArea();
     }
 
     setFreeMovement(bool){
         this.freeMove=bool;
+    }
+    resetMoveArea(){
+        if(this.actionsRemaining>0){
+            this.actionsRemaining--;
+            this.moveArea.setPosition(this.x,this.y+14);
+            this.moveAreaGraphics.clear();
+            this.moveAreaGraphics.lineStyle(1, 0x0069ff, 1);  
+            this.moveAreaGraphics.fillStyle("0x0069ff",0.25);
+            this.moveAreaGraphics.fillCircleShape(this.moveArea);
+            this.moveAreaGraphics.strokeCircleShape(this.moveArea);
+            this.moveAreaGraphics.setVisible(true);
+        }  
     }
 
 
@@ -455,7 +476,8 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             break;
             case "directional":
                 const dirs=["up","down","left","right"];
-                const offsetsAreas=[{x:6,y:-30},{x:6,y:37+this.attackAreaOffsetY},{x:-44,y:this.attackAreaOffsetY+6},{x:37,y:this.attackAreaOffsetY+6}];
+                //const offsetsAreas=[{x:6,y:-30},{x:6,y:37+this.attackAreaOffsetY},{x:-44,y:this.attackAreaOffsetY+6},{x:37,y:this.attackAreaOffsetY+6}];
+                const offsetsAreas=[{x:0,y:-7},{x:0,y:20},{x:-7,y:this.attackAreaOffsetY},{x:7,y:this.attackAreaOffsetY}];
                 const offsets=[{x:0,y:-37+this.attackAreaOffsetY},{x:0,y:37+this.attackAreaOffsetY},{x:-37,y:this.attackAreaOffsetY},{x:37,y:this.attackAreaOffsetY}];
                 const sizes=[{x:64,y:64},{x:64,y:64},{x:64,y:64},{x:64,y:64}];
                 const rotations=[0,Math.PI,(3*Math.PI)/2,Math.PI/2];
@@ -470,12 +492,14 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                     [{x:-6,y:0},{x:16,y:-10},{x:-16,y:-10},{x:6,y:0}]
                     ,[{x:10,y:16},{x:10,y:-16},{x:0,y:6},{x:0,y:-6}]
                     ,[{x:0,y:-6},{x:0,y:6},{x:-10,y:-16},{x:-10,y:16}]];
-                    this.dirAttackArea[dirs[i]]=this.scene.add.polygon( offsetsAreas[i].x, offsetsAreas[i].y, 
+                    /* this.dirAttackArea[dirs[i]]=this.scene.add.polygon( offsetsAreas[i].x, offsetsAreas[i].y, 
                         [[0+shapeDisps[i][0].x,0+shapeDisps[i][0].y],
                         [0+shapeDisps[i][1].x,sizes[i].y+shapeDisps[i][1].y],
                         [sizes[i].x+shapeDisps[i][2].x,sizes[i].y+shapeDisps[i][2].y],
                         [sizes[i].x+shapeDisps[i][3].x,0+shapeDisps[i][3].y]],
-                         0xff0000,0.25).setVisible(false);
+                         0xff0000,0.25).setVisible(false); */
+                    const angles=[{start:180,end:0},{start:0,end:180},{start:90,end:270},{start:270,end:90}];
+                    this.dirAttackArea[dirs[i]]=this.scene.add.arc(offsetsAreas[i].x, offsetsAreas[i].y,50,angles[i].start,angles[i].end,false,0xff0000,0.25).setVisible(false);
                     this.dirAttackArea[dirs[i]].setStrokeStyle(1, 0xff0000, 1);
                     this.dirAttackArea[dirs[i]].setDepth();
                     this.scene.physics.add.existing(this.dirAttackArea[dirs[i]]);
@@ -485,6 +509,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                     dirSelector.on('pointerover', () => {
                         this.scene.sound.play("touchUISound");
                         this.dirAttackArea[dirs[i]].setVisible(true);
+                        this.scene.attackArea=this.dirAttackArea[dirs[i]];
                         this.scene.tweens.add({
                             targets: [dirSelector],
                             scale:{from:0.8,to:1.0},
@@ -511,7 +536,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                                     }
                                 });
                             }
-                            else{
+                            else if(this.actionsRemaining>0){
                                 dirSelector.setVisible(true);
                                 dirSelector.animationPlaying=true;
                                 this.scene.tweens.add({
@@ -539,18 +564,23 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
                         dirSelector.clearTint();
                     });
                     dirSelector.on('pointerup', () => {
-                        this.scene.sound.play("woodButton");
-                        this.scene.tweens.add({
-                            targets: [dirSelector],
-                            scale:{from:1.4,to:1.0},
-                            ease:'power1',
-                            duration: 200,
-                        });
-                        this.scene.attackArea=this.dirAttackArea[dirs[i]];
-                        this.facing=dirs[i];
-                        this.playAttack();
-                        this.scene.checkEnemyHit();
-                        dirSelector.clearTint();
+                        
+                            this.scene.sound.play("woodButton");
+                            this.scene.tweens.add({
+                                targets: [dirSelector],
+                                scale:{from:1.4,to:1.0},
+                                ease:'power1',
+                                duration: 200,
+                            });
+                        if(this.actionsRemaining>0){
+                            this.scene.attackArea=this.dirAttackArea[dirs[i]];
+                            this.facing=dirs[i];
+                            this.playAttack();
+                            this.scene.checkEnemyHit();
+                            dirSelector.clearTint();
+                        }else {
+                            this.scene.sound.play("boundLimits");
+                        }
                         this.attackCursorContainer.each((cursor)=>{cursor.emit("showSelector")});
                     });
                     this.attackAreaContainer.add(this.dirAttackArea[dirs[i]]);
@@ -596,7 +626,12 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
             this.checkedHit=true;
         } */
         if(area){
-            if(this.scene.physics.overlap(area, this.body))this.onHit(this.scene.attackEffect.dmg)
+            if(this.scene.physics.overlap(area, this.body)){
+                if(area.type=="Arc"){
+                    if(this.scene.isPointInArc(this.x,this.y,area)) this.onHit(this.scene.attackEffect.dmg)
+                }
+                 else this.onHit(this.scene.attackEffect.dmg)
+            }
             //this.checkedHit=true;
         }
     }
@@ -649,7 +684,7 @@ export default class Player_warrior extends Phaser.GameObjects.Sprite {
         super.preUpdate(t, dt);
         if(this.scene.turn=="player"){
             this.physics_combat_movement(t);
-            this.checkInDangerZone()
+            //this.checkInDangerZone()
         }
         this.container.x=this.scene.pointerGridX;
         this.container.y=this.scene.pointerGridY;

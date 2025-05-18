@@ -1,5 +1,60 @@
 import Phaser from 'phaser'
 import gen_mazmorra from './gen_mazmorra.js';
+import platform from '../assets/sprites/platform.png';
+import base from '../assets/sprites/base.png';
+import skeleton_handpng from '../assets/sprites/skeleton_hand.png';
+import skeleton_hand from '../assets/sprites/skeleton_hand.json';
+import warriorpng from '../assets/sprites/warrior.png';
+import warrior from '../assets/sprites/warrior.json';
+import magepng from '../assets/sprites/mage.png';
+import mage from '../assets/sprites/mage.json';
+import orcpng from '../assets/sprites/orc2.png';
+import orc from '../assets/sprites/orc2.json';
+import slimepng from '../assets/sprites/slime2.png';
+import slime from '../assets/sprites/slime2.json';
+import splatterpng from '../assets/sprites/splatter.png';
+import splatter from '../assets/sprites/splatter.json';
+import boompng from '../assets/sprites/explosion-sheet.png';
+import boom from '../assets/sprites/explosion.json';
+import flamethrowerpng from '../assets/sprites/flamethrower.png';
+import flamethrower from '../assets/sprites/flamethrower.json';
+
+import NextTurn from '../assets/misc/NextTurn.png';
+import Move from '../assets/misc/Move.png';
+import Attack from '../assets/misc/Attack.png';
+import Menu from '../assets/misc/Menu.png';
+import StatsBar from '../assets/misc/StatsBar.png';
+import warriorPortrait from '../assets/misc/warriorPortrait.png';
+import orcPortrait from '../assets/misc/orcPortrait.png';
+import turnBar from '../assets/misc/turnBar.png';
+import dir_cursor from '../assets/misc/dir_cursor.png';
+import Porton from '../assets/misc/Porton.png';
+import trampatxt from '../assets/misc/trampatxt.png';
+import trampaOntxt from '../assets/misc/trampaOntxt.png';
+import llavetxt from '../assets/misc/llavetxt.png';
+import cerraduratxt from '../assets/misc/cerraduratxt.png';
+import cerraduraConLlavetxt from '../assets/misc/cerraduraConLlavetxt.png';
+import chesstxt from '../assets/misc/chesstxt.png';
+import Openchesstxt from '../assets/misc/Openchesstxt.png';
+import puertatxt from '../assets/misc/puertatxt.png';
+import palancaOff from '../assets/misc/palancaOff.png';
+import palancaOn from '../assets/misc/palancaOn.png';
+import TNT from '../assets/misc/TNT.png';
+import obstaculotxt from '../assets/misc/obstaculotxt.png';
+import bannertxt from '../assets/misc/banner.png';
+import Portal from '../assets/misc/Portal.png';
+import accionpng from '../assets/misc/actionAvailable.png';
+import accionGastadapng from '../assets/misc/actionunAvailable.png';
+
+import hitSound1 from '../assets/audio/sfx/hitSound1.wav';
+import touchUISound from '../assets/audio/sfx/touchUISound.mp3';
+import woodButton from '../assets/audio/sfx/woodButton.mp3';
+import showGridSound from '../assets/audio/sfx/showGridSound.mp3';
+import slideSound from '../assets/audio/sfx/slideSound.wav';
+import Wilhelm from '../assets/audio/sfx/Wilhelm.wav';
+import boundLimits from '../assets/audio/sfx/boundLimits.wav';
+import swingSound from '../assets/audio/sfx/swingSound.wav';
+
 /**
  * Escena para la precarga de los assets que se usarán en el juego.
  * Esta escena se puede mejorar añadiendo una imagen del juego y una 
@@ -7,6 +62,28 @@ import gen_mazmorra from './gen_mazmorra.js';
  * @see {@link https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/} como ejemplo
  * sobre cómo hacer una barra de progreso.
  */
+  import combatMusic from '../assets/audio/music/combatMusic.mp3'
+  import dragonMusic from '../assets/audio/music/battle-of-the-dragons.mp3'
+
+  import mapmm from '../assets/tilemaps/mapV5.json'
+  import primer from '../assets/tilemaps/primer.png'
+  import mapBoss from '../assets/tilemaps/MAPBOSS.json'
+  import primer2 from '../assets/tilemaps/primer2.png'
+  import props from '../assets/tilemaps/Props.png'
+  import propsA from '../assets/tilemaps/PropsF.png'
+  import mapaOriginal from '../assets/tilemaps/sinNombre2.json'
+  import tilesDungeon from '../assets/tilemaps/Tiles.png'
+  import arena from '../assets/tilemaps/Arena.json'
+  import propsF from '../assets/tilemaps/PropsF.png'
+  import mazmorra_1 from '../assets/tilemaps/Mazmorra 1.png'
+  import mazmorra_2 from '../assets/tilemaps/Mazmorra 2.png'
+  import mazmorra_3 from '../assets/tilemaps/Mazmorra 3.png'
+  import movimiento from '../assets/tilemaps/tutorial.png'
+  import ciudad from '../assets/tilemaps/ciudad.png'
+  import obt from '../assets/tilemaps/obt.png'
+  import ares from '../assets/tilemaps/ares.png'
+  
+
 export default class Boot extends Phaser.Scene {
   /**
    * Constructor de la escena
@@ -19,69 +96,79 @@ export default class Boot extends Phaser.Scene {
    * Carga de los assets del juego
    */
   preload() {
+
+    var progressBar = this.add.graphics();
+    var progressBox = this.add.graphics();
+    let xPos= 300,yPos=380,width=400,height=40;
+    progressBox.fillStyle(0x770000, 0.6);
+    progressBox.fillRect(xPos, yPos, width, height);
+
+    this.load.on('progress', function (value) {
+      console.log(value);
+      progressBar.clear();
+      progressBar.fillStyle(0xffe600, 1);
+      progressBar.fillRect(xPos+10, yPos+10, (width-20) * value, height-20);
+    });
+
     // Con setPath podemos establecer el prefijo que se añadirá a todos los load que aparecen a continuación
-    this.load.setBaseURL('http://localhost:5173/DVMTW24-25');
-    this.load.setPath('/assets/sprites/');
-    this.load.image('platform', 'platform.png');
-    this.load.image('base', 'base.png');
+    this.load.image('platform', platform);
+    this.load.image('base', base);
   
-    this.load.aseprite('player','skeleton_hand.png','skeleton_hand.json');
-    this.load.aseprite('player_warrior','warrior.png','warrior.json');
-    this.load.aseprite('player_mage','mage.png','mage.json');
-    this.load.aseprite('orc2','orc2.png','orc2.json');
-    this.load.aseprite('slime2','slime2.png','slime2.json');
-    this.load.aseprite('blood','splatter.png','splatter.json');
-    this.load.aseprite('KABOOM', 'explosion-sheet.png', 'explosion.json');
-    this.load.aseprite('flamethrower', 'flamethrower.png', 'flamethrower.json');
+    this.load.aseprite('player',skeleton_handpng, skeleton_hand);
+    this.load.aseprite('player_warrior',warriorpng,warrior);
+    this.load.aseprite('player_mage',magepng,mage);
+    this.load.aseprite('orc2',orcpng,orc);
+    this.load.aseprite('slime2',slimepng,slime);
+    this.load.aseprite('blood',splatterpng,splatter);
+    this.load.aseprite('KABOOM', boompng, boom);
+    this.load.aseprite('flamethrower', flamethrowerpng, flamethrower);
 
 
-    this.load.setPath('/assets/misc/');
-    this.load.image('NextTurn', 'NextTurn.png');
-    this.load.image('Move', 'Move.png');
-    this.load.image('Attack', 'Attack.png');
-    this.load.image('Menu', 'Menu.png');
-    this.load.image('StatsBar', 'StatsBar.png');
-    this.load.image('warriorPortrait', 'warriorPortrait.png');
-    this.load.image('orcPortrait', 'orcPortrait.png');
-    this.load.image('turnBanner', 'turnBar.png');
-    this.load.image('dirCursor', 'dir_cursor.png');
-    this.load.image('porton_txt', 'Porton.png');
-    this.load.image('trampaOff_txt', 'trampatxt.png');
-    this.load.image('trampaOn_txt', 'trampaOntxt.png');
-
-    this.load.image('llave_txt', 'llavetxt.png');
-    this.load.image('cerradura_txt', 'cerraduratxt.png');
-    this.load.image('cerraduraConLlave_txt', 'cerraduraConLlavetxt.png');
-    this.load.image('cofre_txt', 'chesstxt.png');
-    this.load.image('openCofre_txt', 'Openchesstxt.png');
-    this.load.image('puerta_txt', 'puertatxt.png');
-    this.load.image('portal_txt', 'Portal.png');
-    this.load.image('palanca_txt', 'palancaOff.png');
-    this.load.image('palancaOn_txt', 'palancaOn.png');
-    this.load.image('tnt_txt', 'TNT.png');
-    this.load.image('caja_txt', 'obstaculotxt.png');
-
+    this.load.image('NextTurn', NextTurn);
+    this.load.image('Move', Move);
+    this.load.image('Attack', Attack);
+    this.load.image('Menu', Menu);
+    this.load.image('StatsBar', StatsBar);
+    this.load.image('warriorPortrait', warriorPortrait);
+    this.load.image('orcPortrait', orcPortrait);
+    this.load.image('turnBanner', turnBar);
+    this.load.image('dirCursor', dir_cursor);
+    this.load.image('porton_txt', Porton);
+    this.load.image('trampaOn_txt', trampaOntxt);
+    this.load.image('llave_txt', llavetxt);
+    this.load.image('cerradura_txt', cerraduratxt);
+    this.load.image('cerraduraConLlave_txt', cerraduraConLlavetxt);
+    this.load.image('cofre_txt', chesstxt);
+    this.load.image('openCofre_txt', Openchesstxt);
+    this.load.image('puerta_txt', puertatxt);
+    this.load.image('palanca_txt', palancaOff);
+    this.load.image('palancaOn_txt', palancaOn);
+    this.load.image('tnt_txt', TNT);
+    this.load.image('caja_txt', obstaculotxt);
+    this.load.image('banner', bannertxt);
+    this.load.image('portal_txt', Portal);
+    this.load.image('trampaOff_txt', trampatxt);
+    this.load.image('actionAvailable', accionpng);
+    this.load.image('actionUnavailable', accionGastadapng);
     //this.load.image('player', player);
 
     //Carga sfx
-    this.load.setPath('/assets/audio/sfx/');
-    this.load.audio('hitSound', 'hitSound1.wav');
-    this.load.audio('touchUISound', 'touchUISound.mp3');
-    this.load.audio('woodButton', 'woodButton.mp3');
-    this.load.audio('showGridSound', 'showGridSound.mp3');
-    this.load.audio('slideSound', 'slideSound.wav');
-    this.load.audio('wilhelm', 'Wilhelm.wav');
-    this.load.audio('boundLimits', 'boundLimits.wav');
-    this.load.audio('swingSound', 'swingSound.wav');
+    this.load.audio('hitSound', hitSound1);
+    this.load.audio('touchUISound', touchUISound);
+    this.load.audio('woodButton', woodButton);
+    this.load.audio('showGridSound', showGridSound);
+    this.load.audio('slideSound', slideSound);
+    this.load.audio('wilhelm', Wilhelm);
+    this.load.audio('boundLimits', boundLimits);
+    this.load.audio('swingSound', swingSound);
 
 
 
-    this.load.setPath('/assets/audio/music/');
-    this.load.audio('combatMusic', 'combatMusic.mp3');
-    this.load.audio('dragonMusic', 'battle-of-the-dragons.mp3');
+    this.load.audio('combatMusic', combatMusic);
+    this.load.audio('dragonMusic', dragonMusic);
 
     //Carga de tilemap
-    this.load.setPath('/assets/tilemaps/');
+    //this.load.setPath('assets/tilemaps/');
 
     /*Carga .CSV (formato mas sencillo algoritmos de generacion procedural)
     this.load.tilemapCSV('map_floor', 'movetest_floor.csv');
@@ -89,11 +176,8 @@ export default class Boot extends Phaser.Scene {
 
     //Carga .JSON (formato mas comodo en codigo)
 
-    this.load.image('mapaPeninsula', 'mapaPeninsula.jpg');
-    this.load.tilemapTiledJSON("mapOriginal","sinNombre2.json");
-    this.load.tilemapTiledJSON("arena","Arena.json");
-    this.load.tilemapTiledJSON("mapaMundial","mapamundi.json");
-  
+    this.load.tilemapTiledJSON("mapOriginal",mapaOriginal);
+    this.load.tilemapTiledJSON("arena", arena);
 
     //let dato = JSON.parse(texto);
     //this.load.tilemapTiledJSON("map","Prueba_001.json");
@@ -101,21 +185,27 @@ export default class Boot extends Phaser.Scene {
     //console.log(mazmorra);
     //this.load.tilemapTiledJSON("map",mazmorra);
     
-    this.load.image('TilesDungeon', 'Tiles.png');
-    this.load.image('PropsA', 'PropsF.png');
-    this.load.image('Props', 'Props.png');
+    this.load.image('TilesDungeon', tilesDungeon);
+
+    this.load.image('PropsF', propsF);
+    this.load.image('PropsA', propsF);
+    this.load.image('Props', props);
+
+    this.load.image('cueva', mazmorra_1);
+    this.load.image('cuevaDOS', mazmorra_2);
+    this.load.image('cuevaTRES', mazmorra_3);
+    this.load.image('tutorialMovimienton', movimiento);
+
+    this.load.image('AldeaPixel', ciudad);
+    this.load.image('primer', primer);
+    this.load.image('primer2', primer2);
+    this.load.image('soldado', ares);
+    this.load.image('obt', obt);
+ 
+    this.load.tilemapTiledJSON("mapaBoss",mapBoss);
+    this.load.tilemapTiledJSON("mapemm",mapmm);
 
 
-    this.load.image('casaBoss', 'infierno.png');
-    this.load.image('castillo', 'castillo.png');
-    this.load.image('cueva', 'mazmorra.png');
-    this.load.image('cuevaDOS', 'mazmorraDOS.png');
-    this.load.image('cuevaTRES', 'mazmorraTRES.png');
-    this.load.image('tutorialMovimienton', 'Movimiento.png');
-    this.load.image('Ciudad', 'ares.png');
-    this.load.image('Aldea', 'aldea.jpeg');
-    this.load.image('AldeaPixel', 'aldeaPixel.png');
-    this.load.tilemapTiledJSON("mapaBoss","mapaBoss.json");
 
   }
   
@@ -125,6 +215,6 @@ export default class Boot extends Phaser.Scene {
    */
   create() {
     this.input.mouse.disableContextMenu();
-    this.scene.start('world');
+    this.scene.start('Logo');
   }
 }

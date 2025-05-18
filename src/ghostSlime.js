@@ -104,13 +104,13 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
             if(this.scene.turn=="enemy"){
                 //console.log(this.anims.currentAnim.key);
                 //console.log(this.playerPreview.anims);
-                this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
-                this.container.setVisible(!this.container.visible);
+                /* this.playerPreview.play({key:this.anims.currentAnim.key,repeat:-1});
+                this.container.setVisible(!this.container.visible); */
             }
-            if(this.scene.turn=="player" && this.scene.attackArea &&this.scene.physics.overlap(this.scene.attackArea, this.body)){ 
+            /* if(this.scene.turn=="player" && this.scene.attackArea &&this.scene.physics.overlap(this.scene.attackArea, this.body)){ 
                 this.onHit(1);
                 this.emit("enemy_hitted");
-            };
+            }; */
         });
 
         this.scene.input.on('pointerdown',this.player_tp,this);//listener para tp de player
@@ -134,7 +134,7 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
     }
 
     checkHit(){
-        if(this.scene.physics.overlap(this.scene.attackArea, this.body))this.onHit(this.scene.attackEffect.dmg)
+        if(this.scene.physics.overlap(this.scene.attackArea, this.body) && this.scene.isPointInArc(this.x,this.y,this.scene.attackArea))this.onHit(this.scene.attackEffect.dmg)
     }
 
     onHit(dmg){
@@ -504,6 +504,16 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         },[],this);
     }
 
+    facePlayerAngle(){
+        let angle = Phaser.Math.Angle.Between(this.x,this.y,this.scene.player.x,this.scene.player.y);
+        let degrees= Phaser.Math.RadToDeg(angle);
+        degrees=(degrees + 360) % 360; // nomalizar
+        if(degrees>45 && degrees <135) this.facing="down"
+        else if(degrees>135 && degrees <225) this.facing="left"
+        else if (degrees>225 && degrees <315) this.facing="up"
+        else this.facing="right"
+    }
+
     /**
      * Gestiona movimiento de teletransporte
      */
@@ -582,17 +592,19 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
     }
     stopNearObjective(){
         if(this.objectiveX && this.objectiveY){
-            const dist=10;
+            const dist=Math.random()*(15)+5;
             if(Phaser.Math.Distance.BetweenPoints(new Phaser.Math.Vector2(this.objectiveX,this.objectiveY), this)<dist && this.hasMoved){
                 this.body.setVelocityX(0);
                 this.body.setVelocityY(0);
                 if(this.stopped==false){
                     this.stopped=true;
+                    this.facePlayerAngle();
                     this.scene.events.emit("enemy_turn_end");
                 } 
             }else{
                 this.hasMoved=true;
             }
+            
         }
     }
 
@@ -706,6 +718,13 @@ export default class ghostSlime extends Phaser.GameObjects.Sprite {
         /* this.attackArea.x= this.x;
         this.attackArea.y=this.y+5; */
         this.centerAttackArea(this.attackAreaType);
+
+        if(this.scene.attackArea && this.scene.physics.overlap(this.scene.attackArea, this.body) && this.scene.isPointInArc(this.x,this.y,this.scene.attackArea)){
+            if(!this.marking) this.marking=this.postFX.addGlow("0xc4180f");
+        }else if(this.marking){
+            this.postFX.remove(this.marking);
+            this.marking=null;
+        } 
     }
 
 }

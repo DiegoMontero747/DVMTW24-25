@@ -5,7 +5,7 @@ export default class TNT extends Objeto {
         super(scene, x, y, "tnt_txt");
 
         // Hacemos el objeto interactivo y escalado
-        this.setInteractive(this.scene.input.makePixelPerfect());
+        //this.setInteractive(this.scene.input.makePixelPerfect());
         this.setScale(0.75);
 
         // Atributos personalizados
@@ -69,6 +69,17 @@ export default class TNT extends Objeto {
                     //console.error(`onHit no es una función en:`, objeto);
                 }
         });
+
+        this.scene.physics.overlap(this.explosionArea, this.scene.enemies, (explosion, objeto) => {
+            //console.log("KABOOOOOOM", objeto);
+
+            if (typeof objeto.onHit === "function") {
+                //console.log(`Ejecutando onHit para ${objeto.texture ? objeto.texture.key : "Objeto desconocido"}`);
+                objeto.onHit(20);
+            } else {
+                //console.error(`onHit no es una función en:`, objeto);
+            }
+    });
     
         // Animación de explosión
         let kaboom = this.scene.add.sprite(this.x, this.y, "KABOOM");
